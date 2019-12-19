@@ -1,3 +1,4 @@
+// clang-format off
 /*
  * Copyright (c) 2018, Alliance for Open Media. All rights reserved
  *
@@ -121,3 +122,4 @@ void eb_av1_txb_init_levels_avx2(const TranLow *const coeff,
         xx_storeu_128(ls + 4 * 32, x_zeros);
     }
 }
+// clang-format on

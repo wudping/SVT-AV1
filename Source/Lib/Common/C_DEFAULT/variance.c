@@ -1,3 +1,4 @@
+// clang-format off
 /*
  * Copyright (c) 2016, Alliance for Open Media. All rights reserved
  *
@@ -419,3 +420,4 @@ void eb_aom_highbd_8_mse16x16_c(const uint8_t* src_ptr, int32_t  source_stride,
     }
     *sse = (uint32_t)tsse;
 }
+// clang-format on

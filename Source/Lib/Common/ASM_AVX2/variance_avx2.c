@@ -1,3 +1,4 @@
+// clang-format off
 /*
  * Copyright (c) 2016, Alliance for Open Media. All rights reserved
  *
@@ -459,3 +460,4 @@ AOM_VAR_LOOP_AVX2(64, 64, 12, 32);    // 64x32 * ( 64/32)
 AOM_VAR_LOOP_AVX2(64, 128, 13, 32);   // 64x32 * (128/32)
 AOM_VAR_LOOP_AVX2(128, 64, 13, 16);   // 128x16 * ( 64/16)
 AOM_VAR_LOOP_AVX2(128, 128, 14, 16);  // 128x16 * (128/16)
+// clang-format on

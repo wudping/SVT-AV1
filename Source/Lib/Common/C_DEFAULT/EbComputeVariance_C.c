@@ -1,3 +1,4 @@
+// clang-format off
 /*
 * Copyright(c) 2019 Intel Corporation
 * SPDX - License - Identifier: BSD - 2 - Clause - Patent
@@ -82,3 +83,4 @@ VAR(64, 64)
 VAR(64, 128)
 VAR(128, 64)
 VAR(128, 128)
+// clang-format on

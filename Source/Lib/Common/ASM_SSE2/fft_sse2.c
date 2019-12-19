@@ -1,3 +1,4 @@
+// clang-format off
 /*
  * Copyright (c) 2018, Alliance for Open Media. All rights reserved
  *
@@ -119,3 +120,4 @@ void eb_aom_ifft4x4_float_sse2(const float *input, float *temp, float *output) {
     eb_aom_ifft_2d_gen(input, temp, output, 4, eb_aom_fft1d_4_float, eb_aom_fft1d_4_sse2,
         eb_aom_ifft1d_4_sse2, eb_aom_transpose_float_sse2, 4);
 }
+// clang-format on

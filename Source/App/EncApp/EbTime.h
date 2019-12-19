@@ -1,3 +1,4 @@
+// clang-format off
 /*
 * Copyright(c) 2019 Intel Corporation
 * SPDX - License - Identifier: BSD - 2 - Clause - Patent
@@ -26,3 +27,4 @@ void Injector(uint64_t processedFrameCount, uint32_t injector_frame_rate);
 
 #endif // EbTime_h
 /* File EOF */
+// clang-format on

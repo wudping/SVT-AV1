@@ -1,3 +1,4 @@
+// clang-format off
 /*
 * Copyright(c) 2019 Intel Corporation
 * SPDX - License - Identifier: BSD - 2 - Clause - Patent
@@ -482,3 +483,4 @@ void dec_build_obmc_inter_predictors_sb(void *pv_dec_mod_ctxt,
         dst_buf, dec_mod_ctxt->obmc_ctx.dst_stride);
 }
 
+// clang-format on

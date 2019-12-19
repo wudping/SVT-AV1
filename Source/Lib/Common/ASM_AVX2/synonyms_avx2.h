@@ -1,3 +1,4 @@
+// clang-format off
 /*
  * Copyright (c) 2018, Alliance for Open Media. All rights reserved
  *
@@ -75,3 +76,4 @@ static INLINE void yy_storeu2_128(void *hi, void *lo, const __m256i a) {
     _mm_storeu_si128((__m128i *)lo, _mm256_castsi256_si128(a));
 }
 #endif  // AOM_DSP_X86_SYNONYMS_AVX2_H_
+// clang-format on

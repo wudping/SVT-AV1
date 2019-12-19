@@ -1,3 +1,4 @@
+// clang-format off
 /*
 * Copyright(c) 2019 Netflix, Inc.
 * SPDX - License - Identifier: BSD - 2 - Clause - Patent
@@ -69,3 +70,4 @@ void set_lbd_lf_filter_tap_functions(void);
 void set_hbd_lf_filter_tap_functions(void);
 
 #endif  // EbDecLF_h
+// clang-format on

@@ -1,3 +1,4 @@
+// clang-format off
 /*------------------------------------------------------------------
 * strncpy_s.c / strcpy_s.c / strnlen_s.c
 *
@@ -305,3 +306,4 @@ eb_strnlen_ss(const char *dest, rsize_t dmax)
 }
 
 /* SAFE STRING LIBRARY */
+// clang-format on

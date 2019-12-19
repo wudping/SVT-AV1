@@ -1,3 +1,4 @@
+// clang-format off
 /*
 * Copyright(c) 2019 Netflix, Inc.
 * SPDX - License - Identifier: BSD - 2 - Clause - Patent
@@ -72,3 +73,4 @@ static INLINE int has_second_ref(const BlockModeInfo *mbmi) {
 }
 #endif
 #endif // EbDecUtils_h
+// clang-format on

@@ -1,3 +1,4 @@
+// clang-format off
 /*
 * Copyright(c) 2019 Netflix, Inc.
 * SPDX - License - Identifier: BSD - 2 - Clause - Patent
@@ -83,3 +84,4 @@ int seg_feature_active(SegmentationParams *seg, int segment_id,
 int find_warp_samples(EbDecHandle *dec_handle, TileInfo *tile, PartitionInfo_t *pi,
     int *pts, int *pts_inref);
 #endif  // EbDecParseHelper_h
+// clang-format on

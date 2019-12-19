@@ -1,3 +1,4 @@
+// clang-format off
 /*
 * Copyright(c) 2019 Intel Corporation
 * SPDX - License - Identifier: BSD - 2 - Clause - Patent
@@ -546,3 +547,4 @@ void PictureCopyKernelOutRaw_SSSE3(
         ref_pic += 8;
     } while (col_count != 0);
 }
+// clang-format on

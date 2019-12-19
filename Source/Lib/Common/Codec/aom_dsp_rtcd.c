@@ -1,3 +1,4 @@
+// clang-format off
 /*
 * Copyright(c) 2019 Intel Corporation
 * SPDX - License - Identifier: BSD - 2 - Clause - Patent
@@ -2021,3 +2022,4 @@ void setup_rtcd_internal(CPU_FLAGS flags)
 
 }
 
+// clang-format on

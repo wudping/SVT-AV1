@@ -1,3 +1,4 @@
+// clang-format off
 /*
  * Copyright (c) 2017, Alliance for Open Media. All rights reserved
  *
@@ -787,3 +788,4 @@ void eb_aom_highbd_dc_predictor_32x16_sse2(uint16_t *dst, ptrdiff_t stride,
         dst += stride;
     }
 }
+// clang-format on

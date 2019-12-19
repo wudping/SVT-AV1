@@ -1,3 +1,4 @@
+// clang-format off
 /*
 * Copyright(c) 2019 Netflix, Inc.
 * SPDX - License - Identifier: BSD - 2 - Clause - Patent
@@ -115,3 +116,4 @@ void cfl_init(CflCtx *cfl, EbColorConfig *cc);
 #endif
 
 #endif // EbDecProcessFrame_h
+// clang-format on

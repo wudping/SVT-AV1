@@ -1,3 +1,4 @@
+// clang-format off
 /*
  * Copyright (c) 2018, Alliance for Open Media. All rights reserved
  *
@@ -2975,3 +2976,4 @@ static INLINE __m256i highbd_convolve_rounding(
 }
 
 #endif
+// clang-format on

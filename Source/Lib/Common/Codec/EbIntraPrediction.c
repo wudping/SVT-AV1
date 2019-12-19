@@ -1,3 +1,4 @@
+// clang-format off
 /*
 * Copyright(c) 2019 Intel Corporation
 * SPDX - License - Identifier: BSD - 2 - Clause - Patent
@@ -4833,3 +4834,4 @@ EbErrorType intra_prediction_open_loop(
     }
     return return_error;
 }
+// clang-format on

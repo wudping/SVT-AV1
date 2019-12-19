@@ -1,3 +1,4 @@
+// clang-format off
 /*
  * Copyright (c) 2018, Alliance for Open Media. All rights reserved
  *
@@ -932,3 +933,4 @@ void eb_apply_selfguided_restoration_avx2(const uint8_t *dat8, int32_t width,
         } while (--i);
     }
 }
+// clang-format on

@@ -1,3 +1,4 @@
+// clang-format off
 /*
  * Copyright(c) 2019 Intel Corporation
  * SPDX - License - Identifier: BSD - 2 - Clause - Patent
@@ -1652,3 +1653,4 @@ void aom_highbd_smooth_h_predictor_64x64_avx512(uint16_t *dst, ptrdiff_t stride,
     smooth_h_pred_64x8(dst, stride, above, left, 8);
 }
 #endif
+// clang-format on

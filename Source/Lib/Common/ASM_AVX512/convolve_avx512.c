@@ -1,3 +1,4 @@
+// clang-format off
 /*
 * Copyright(c) 2019 Intel Corporation
 * SPDX - License - Identifier: BSD - 2 - Clause - Patent
@@ -1702,3 +1703,4 @@ void eb_av1_convolve_x_sr_avx512(const uint8_t *src, int32_t src_stride,
 }
 
 #endif  // !NON_AVX512_SUPPORT
+// clang-format on

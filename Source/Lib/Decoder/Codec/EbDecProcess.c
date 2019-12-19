@@ -1,3 +1,4 @@
+// clang-format off
 /*
 * Copyright(c) 2019 Netflix, Inc.
 * SPDX - License - Identifier: BSD - 2 - Clause - Patent
@@ -1261,3 +1262,4 @@ void dec_sync_all_threads(EbDecHandle *dec_handle_ptr) {
             dec_handle_ptr->dec_config.threads - 1)
         EbSleepMs(5);
 }
+// clang-format on

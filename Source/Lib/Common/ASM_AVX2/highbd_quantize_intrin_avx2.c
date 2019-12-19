@@ -1,3 +1,4 @@
+// clang-format off
 /*
  * Copyright (c) 2017, Alliance for Open Media. All rights reserved
  *
@@ -948,3 +949,4 @@ void eb_av1_highbd_quantize_fp_avx2(
     *eob_ptr = _mm_extract_epi16(final_eob, 0);
   }
 }
+// clang-format on

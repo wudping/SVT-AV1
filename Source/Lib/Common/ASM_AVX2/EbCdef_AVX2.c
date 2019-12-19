@@ -1,3 +1,4 @@
+// clang-format off
 /*
 * Copyright(c) 2019 Intel Corporation
 * SPDX - License - Identifier: BSD - 2 - Clause - Patent
@@ -394,3 +395,4 @@ uint64_t compute_cdef_dist_8bit_avx2(const uint8_t *dst8, int32_t dstride, const
     }
     return sum >> 2 * coeff_shift;
 }
+// clang-format on

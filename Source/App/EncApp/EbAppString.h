@@ -1,3 +1,4 @@
+// clang-format off
 /*------------------------------------------------------------------
 * strncpy_s.c / strcpy_s.c / strnlen_s.c
 *
@@ -170,3 +171,4 @@ rsize_t strnlen_ss(
 
 #endif // EbAppString_h
 /* File EOF */
+// clang-format on

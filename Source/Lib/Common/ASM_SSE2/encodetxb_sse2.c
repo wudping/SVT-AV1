@@ -1,3 +1,4 @@
+// clang-format off
 /*
  * Copyright (c) 2017, Alliance for Open Media. All rights reserved
  *
@@ -534,3 +535,4 @@ void eb_av1_get_nz_map_contexts_sse2(
     else
         coeff_contexts[pos] = 3;
 }
+// clang-format on

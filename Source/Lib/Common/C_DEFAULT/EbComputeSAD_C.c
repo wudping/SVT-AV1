@@ -1,3 +1,4 @@
+// clang-format off
 /*
 * Copyright(c) 2019 Intel Corporation
 * SPDX - License - Identifier: BSD - 2 - Clause - Patent
@@ -353,3 +354,4 @@ uint32_t nxm_sad_avg_kernel_helper_c(
 
     return nxm_sad_avg;
 }
+// clang-format on

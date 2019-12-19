@@ -1,3 +1,4 @@
+// clang-format off
 /*
  * Copyright (c) 2018, Alliance for Open Media. All rights reserved
  *
@@ -224,3 +225,4 @@ av1_eob_to_eobxy_32x16_default,
 #endif
 
 #endif  // AV1_COMMON_X86_AV1_INV_TXFM_SSSE3_H_
+// clang-format on

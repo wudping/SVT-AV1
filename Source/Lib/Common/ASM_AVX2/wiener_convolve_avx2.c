@@ -1,3 +1,4 @@
+// clang-format off
 /*
  * Copyright (c) 2018, Alliance for Open Media. All rights reserved
  *
@@ -1003,3 +1004,4 @@ void eb_av1_highbd_wiener_convolve_add_src_avx2(
         }
     }
 }
+// clang-format on

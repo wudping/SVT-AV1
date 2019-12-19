@@ -1,3 +1,4 @@
+// clang-format off
 /*
 * Copyright(c) 2019 Intel Corporation
 * SPDX - License - Identifier: BSD - 2 - Clause - Patent
@@ -300,3 +301,4 @@ typedef uint64_t CPU_FLAGS;
 #endif // __cplusplus
 
 #endif // EbSvtAv1_h
+// clang-format on

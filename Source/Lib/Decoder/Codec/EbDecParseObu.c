@@ -1,3 +1,4 @@
+// clang-format off
 /*
 * Copyright(c) 2019 Netflix, Inc.
 * SPDX - License - Identifier: BSD - 2 - Clause - Patent
@@ -2900,3 +2901,4 @@ EB_API EbErrorType eb_get_sequence_info(
     } while (status == EB_ErrorNone && frame_sz > 0);
     return EB_ErrorUndefined;
 }
+// clang-format on

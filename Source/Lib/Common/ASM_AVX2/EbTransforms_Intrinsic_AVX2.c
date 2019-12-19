@@ -1,3 +1,4 @@
+// clang-format off
 /*
 * Copyright(c) 2019 Intel Corporation
 * SPDX - License - Identifier: BSD - 2 - Clause - Patent
@@ -740,3 +741,4 @@ uint64_t HandleTransform64x64_avx2(int32_t *output) {
 
     return three_quad_energy;
 }
+// clang-format on

@@ -1,4 +1,5 @@
-﻿/*------------------------------------------------------------------
+// clang-format off
+/*-----------------------------------------------------------------
 * strncpy_s.c / strcpy_s.c / strnlen_s.c
 *
 * October 2008, Bo Berry
@@ -305,3 +306,4 @@ strnlen_ss(const char *dest, rsize_t dmax)
 }
 
 /* SAFE STRING LIBRARY */
+// clang-format on

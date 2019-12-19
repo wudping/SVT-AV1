@@ -1,3 +1,4 @@
+// clang-format off
 /*
 * Copyright(c) 2019 Netflix, Inc.
 * SPDX - License - Identifier: BSD - 2 - Clause - Patent
@@ -185,3 +186,4 @@ int inverse_recenter(int r, int v)
     else
         return r + (v >> 1);
 }
+// clang-format on

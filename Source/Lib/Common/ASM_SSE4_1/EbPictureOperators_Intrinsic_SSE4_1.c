@@ -1,3 +1,4 @@
+// clang-format off
 /*
 * Copyright(c) 2019 Intel Corporation
 * SPDX - License - Identifier: BSD - 2 - Clause - Patent
@@ -486,3 +487,4 @@ uint64_t compute8x8_satd_u8_sse4(
 
     return satdBlock8x8;
 }
+// clang-format on

@@ -1,3 +1,4 @@
+// clang-format off
 /*
 * Copyright(c) 2019 Intel Corporation
 * SPDX - License - Identifier: BSD - 2 - Clause - Patent
@@ -292,3 +293,4 @@ EbErrorType av1_inter_prediction_hbd(
 }
 #endif
 #endif //EbInterPrediction_h
+// clang-format on

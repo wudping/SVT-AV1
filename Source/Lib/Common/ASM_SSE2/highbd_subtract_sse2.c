@@ -1,3 +1,4 @@
+// clang-format off
 /*
  * Copyright (c) 2016, Alliance for Open Media. All rights reserved
  *
@@ -261,3 +262,4 @@ void aom_highbd_subtract_block_sse2(int rows, int cols, int16_t *diff,
   func = getSubtractFunc(rows, cols);
   func(diff, diff_stride, src, src_stride, pred, pred_stride);
 }
+// clang-format on

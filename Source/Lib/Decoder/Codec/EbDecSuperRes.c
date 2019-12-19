@@ -1,3 +1,4 @@
+// clang-format off
 /*
 * Copyright(c) 2019 Netflix, Inc.
 * SPDX - License - Identifier: BSD - 2 - Clause - Patent
@@ -165,3 +166,4 @@ void av1_superres_upscale(Av1Common *cm, FrameHeader *frm_hdr, SeqHeader*seq_hdr
     av1_upscale_normative_and_extend_frame(cm, frm_hdr, seq_hdr,
         ps_recon_pic_temp, recon_picture_src);
 }
+// clang-format on

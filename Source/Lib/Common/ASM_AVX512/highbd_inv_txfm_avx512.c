@@ -1,3 +1,4 @@
+// clang-format off
 /*
  * Copyright(c) 2019 Intel Corporation
  * SPDX - License - Identifier: BSD - 2 - Clause - Patent
@@ -3268,3 +3269,4 @@ void eb_av1_inv_txfm2d_add_32x16_avx512(const int32_t *coeff, uint16_t *output_r
     write_buffer_32x16n_avx512(out, output_r, stride_r, output_w, stride_w, 0, 0, bd, 32);
 }
 #endif
+// clang-format on

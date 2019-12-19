@@ -1,3 +1,4 @@
+// clang-format off
 /*
 * Copyright(c) 2019 Intel Corporation
 * SPDX - License - Identifier: BSD - 2 - Clause - Patent
@@ -457,3 +458,4 @@ uint64_t spatial_full_distortion_kernel_avx512(
 }
 
 #endif // !NON_AVX512_SUPPORT
+// clang-format on

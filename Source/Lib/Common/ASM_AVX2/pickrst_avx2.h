@@ -1,3 +1,4 @@
+// clang-format off
 /*
  * Copyright(c) 2019 Intel Corporation
  * SPDX - License - Identifier: BSD - 2 - Clause - Patent
@@ -802,3 +803,4 @@ static INLINE void step3_win7_avx2(const int16_t **const d,
 }
 
 #endif  // AOM_DSP_X86_PICKRST_AVX2_H_
+// clang-format on

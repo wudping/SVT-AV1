@@ -1,3 +1,4 @@
+// clang-format off
 /*
  * Copyright (c) 2016, Alliance for Open Media. All rights reserved
  *
@@ -1059,3 +1060,4 @@ void eb_copy_rect8_16bit_to_16bit_avx2(uint16_t *dst, int32_t dstride,
             dst[i * dstride + j] = src[i * sstride + j];
     }
 }
+// clang-format on

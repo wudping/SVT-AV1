@@ -1,3 +1,4 @@
+// clang-format off
 /*
 * Copyright(c) 2019 Intel Corporation
 * SPDX - License - Identifier: BSD - 2 - Clause - Patent
@@ -29,3 +30,4 @@ static INLINE __m128i load_u16_2x2_sse4_1(const uint16_t *const src,
 }
 
 #endif // EbMemory_SSE4_1_h
+// clang-format on

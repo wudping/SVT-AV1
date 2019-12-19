@@ -1,3 +1,4 @@
+// clang-format off
 /*
  * Copyright (c) 2018, Alliance for Open Media. All rights reserved
  *
@@ -3885,3 +3886,4 @@ int64_t eb_av1_highbd_pixel_proj_error_avx2(
     err += sum[0] + sum[1] + sum[2] + sum[3];
     return err;
 }
+// clang-format on

@@ -1,3 +1,4 @@
+// clang-format off
 /*
  * Copyright (c) 2016, Alliance for Open Media. All rights reserved
  *
@@ -105,3 +106,4 @@ static INLINE __m128i half_btf_0_sse4_1(const __m128i *w0, const __m128i *n0,
 }
 
 #endif  // _HIGHBD_TXFM_UTILITY_SSE4_H
+// clang-format on

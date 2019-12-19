@@ -1,3 +1,4 @@
+// clang-format off
 /*
  * Copyright (c) 2018, Alliance for Open Media. All rights reserved
  *
@@ -348,3 +349,4 @@ static INLINE void extract_reg(const __m256i *in, __m128i *out1) {
 #endif
 
 #endif  // AV1_COMMON_X86_AV1_TXFM_COMMON_AVX2_H_
+// clang-format on

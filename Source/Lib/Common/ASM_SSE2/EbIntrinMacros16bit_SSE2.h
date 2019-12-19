@@ -1,3 +1,4 @@
+// clang-format off
 /*
 * Copyright(c) 2019 Intel Corporation
 * SPDX - License - Identifier: BSD - 2 - Clause - Patent
@@ -30,3 +31,4 @@
     ARG4  = _mm_unpacklo_epi##ARG1(ARG4, ARG5);\
     ARG6  = _mm_unpacklo_epi##ARG1(ARG6, ARG7);\
     ARG8  = _mm_unpacklo_epi##ARG1(ARG8, ARG9);
+// clang-format on

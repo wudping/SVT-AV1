@@ -1,3 +1,4 @@
+// clang-format off
 /*
  * Copyright (c) 2018, Alliance for Open Media. All rights reserved
  *
@@ -76,3 +77,4 @@ double av1_compute_cross_correlation_avx2(unsigned char *im1, int stride1,
   return cov / sqrt((double)var2);
 }
 
+// clang-format on

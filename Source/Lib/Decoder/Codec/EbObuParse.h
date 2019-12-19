@@ -1,3 +1,4 @@
+// clang-format off
 /*
 * Copyright(c) 2019 Netflix, Inc.
 * SPDX - License - Identifier: BSD - 2 - Clause - Patent
@@ -83,3 +84,4 @@ static INLINE int allow_intrabc(const EbDecHandle *dec_handle) {
 }
 
 #endif  // EbDecObuParser_h
+// clang-format on

@@ -1,3 +1,4 @@
+// clang-format off
 /*
  * Copyright (c) 2017, Alliance for Open Media. All rights reserved
  *
@@ -29,3 +30,4 @@ void eb_av1_get_nz_map_contexts_c(const uint8_t* const levels,
 #endif
 
 #endif
+// clang-format on

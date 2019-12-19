@@ -1,3 +1,4 @@
+// clang-format off
 /*
  * Copyright (c) 2016, Alliance for Open Media. All rights reserved
  *
@@ -94,3 +95,4 @@ static INLINE void variance8_no_sum_sse2(const uint8_t *src, const int32_t src_s
 }
 
 #endif  // EBVARIANCE_SSE2_H
+// clang-format on

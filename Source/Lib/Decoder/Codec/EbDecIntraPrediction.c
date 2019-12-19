@@ -1,3 +1,4 @@
+// clang-format off
 /*
 * Copyright(c) 2019 Intel Corporation
 * SPDX - License - Identifier: BSD - 2 - Clause - Patent
@@ -840,3 +841,4 @@ void svt_av1_predict_intra(DecModCtxt *dec_mod_ctxt, PartitionInfo_t *part_info,
         dec_mod_ctxt->seq_header, mode,
         blk_mi_col_off, blk_mi_row_off, bit_depth);
 }
+// clang-format on

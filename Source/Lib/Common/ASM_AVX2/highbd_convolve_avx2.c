@@ -1,3 +1,4 @@
+// clang-format off
 /*
  * Copyright (c) 2017, Alliance for Open Media. All rights reserved
  *
@@ -278,3 +279,4 @@ void eb_av1_highbd_convolve_x_sr_avx2(const uint16_t *src, int32_t src_stride,
 //HIGH_FUN_CONV_1D(vert, y_step_q4, filter_y, v, src - src_stride * 3, , avx2);
 
 #undef HIGHBD_FUNC
+// clang-format on

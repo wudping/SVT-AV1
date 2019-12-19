@@ -1,3 +1,4 @@
+// clang-format off
 /*
 * Copyright(c) 2019 Netflix, Inc.
 * SPDX - License - Identifier: BSD - 2 - Clause - Patent
@@ -19,3 +20,4 @@ int32_t inverse_quantize(DecModCtxt *dec_mod_ctxt, PartitionInfo_t *part,
     TxType tx_type, TxSize tx_size, int plane);
 
 #endif // EbDecInverseQuantize_h
+// clang-format on

@@ -1,3 +1,4 @@
+// clang-format off
 /*
  * Copyright (c) 2018, Alliance for Open Media. All rights reserved
  *
@@ -159,3 +160,4 @@ OBMCSADWXH(8, 32)
 OBMCSADWXH(32, 8)
 OBMCSADWXH(16, 64)
 OBMCSADWXH(64, 16)
+// clang-format on

@@ -1,3 +1,4 @@
+// clang-format off
 /*
 * Copyright(c) 2019 Intel Corporation
 * SPDX - License - Identifier: BSD - 2 - Clause - Patent
@@ -261,3 +262,4 @@ const uint8_t *aom_daala_reader_find_begin(DaalaReader_t *r) {
 const uint8_t *aom_daala_reader_find_end(DaalaReader_t *r) {
   return r->buffer_end;
 }
+// clang-format on

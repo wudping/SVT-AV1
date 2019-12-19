@@ -1,3 +1,4 @@
+// clang-format off
 /*
  * Copyright (c) 2018, Alliance for Open Media. All rights reserved
  *
@@ -71,3 +72,4 @@ void eb_aom_ifft32x32_float_avx2(const float *input, float *temp, float *output)
         eb_aom_fft1d_32_avx2, eb_aom_ifft1d_32_avx2,
         eb_aom_transpose_float_sse2, 8);
 }
+// clang-format on

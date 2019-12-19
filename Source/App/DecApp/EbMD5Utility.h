@@ -1,3 +1,4 @@
+// clang-format off
 /*
 * Copyright(c) 2019 Netflix, Inc.
 * SPDX - License - Identifier: BSD - 2 - Clause - Patent
@@ -43,3 +44,4 @@ void print_md5(unsigned char digest[16]);
 void write_md5(EbBufferHeaderType *recon_buffer, MD5Context *md5);
 
 #endif
+// clang-format on

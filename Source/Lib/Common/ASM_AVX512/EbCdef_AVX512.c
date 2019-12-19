@@ -1,3 +1,4 @@
+// clang-format off
 /*
 * Copyright(c) 2019 Intel Corporation
 * SPDX - License - Identifier: BSD - 2 - Clause - Patent
@@ -76,3 +77,4 @@ uint64_t search_one_dual_avx512(int *lev0, int *lev1, int nb_strengths,
 }
 
 #endif  // !NON_AVX512_SUPPORT
+// clang-format on

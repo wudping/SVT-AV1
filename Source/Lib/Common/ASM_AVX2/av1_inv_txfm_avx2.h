@@ -1,3 +1,4 @@
+// clang-format off
 /*
  * Copyright (c) 2018, Alliance for Open Media. All rights reserved
  *
@@ -62,3 +63,4 @@ extern "C" {
 #endif
 
 #endif  // AV1_COMMON_X86_AV1_INV_TXFM_AVX2_H_
+// clang-format on

@@ -1,3 +1,4 @@
+// clang-format off
 /*
  * Copyright(c) 2019 Intel Corporation
  * SPDX - License - Identifier: BSD - 2 - Clause - Patent
@@ -31,3 +32,4 @@ void transpose_64bit_4x8_reg256bit_instance_avx2(const __m256i *const in,
                                                  __m256i *const out) {
     transpose_64bit_4x8_avx2(in, out);
 }
+// clang-format on

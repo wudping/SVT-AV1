@@ -1,3 +1,4 @@
+// clang-format off
 /*
 * Copyright(c) 2019 Intel Corporation
 * SPDX - License - Identifier: BSD - 2 - Clause - Patent
@@ -280,3 +281,4 @@ static INLINE int daala_read_symbol(DaalaReader_t *r, const AomCdfProb *cdf,
 }
 #endif
 #endif // EbDecBitstreamUnit_h
+// clang-format on
