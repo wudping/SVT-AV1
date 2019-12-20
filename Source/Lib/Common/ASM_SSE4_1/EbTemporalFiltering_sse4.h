@@ -1,4 +1,3 @@
-// clang-format off
 /*
  * Copyright (c) 2016, Alliance for Open Media. All rights reserved
  *
@@ -29,4 +28,3 @@ void svt_av1_highbd_apply_temporal_filter_sse4_1(
         int ss_x, int ss_y, int strength, const int *blk_fw, int use_whole_blk,
         uint32_t *y_accum, uint16_t *y_count, uint32_t *u_accum, uint16_t *u_count,
         uint32_t *v_accum, uint16_t *v_count);
-// clang-format on

@@ -1,4 +1,3 @@
-// clang-format off
 /*
  * Copyright (c) 2018, Alliance for Open Media. All rights reserved
  *
@@ -128,4 +127,3 @@ void aom_var_filter_block2d_bil_second_pass_ssse3(
     a += src_pixels_per_line - output_width;
   }
 }
-// clang-format on

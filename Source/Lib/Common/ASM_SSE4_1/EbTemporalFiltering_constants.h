@@ -1,4 +1,3 @@
-// clang-format off
 /*
  * Copyright (c) 2019, Alliance for Open Media. All rights reserved
  *
@@ -398,4 +397,3 @@ static const uint32_t *const HIGHBD_CHROMA_DOUBLE_SS_RIGHT_COLUMN_NEIGHBORS[2] =
           HIGHBD_RIGHT_EDGE_NEIGHBORS_PLUS_4 };
 
 #define DIST_STRIDE ((BW) + 2)
-// clang-format on

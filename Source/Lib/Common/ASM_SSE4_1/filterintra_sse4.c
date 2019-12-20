@@ -1,4 +1,3 @@
-// clang-format off
 /*
  * Copyright (c) 2018, Alliance for Open Media. All rights reserved
  *
@@ -78,4 +77,3 @@ void eb_av1_filter_intra_predictor_sse4_1(uint8_t *dst, ptrdiff_t stride,
     dst += stride;
   }
 }
-// clang-format on

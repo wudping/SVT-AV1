@@ -1,4 +1,3 @@
-// clang-format off
 /*
 * Copyright(c) 2019 Intel Corporation
 * SPDX - License - Identifier: BSD - 2 - Clause - Patent
@@ -900,4 +899,3 @@ void eb_aom_paeth_predictor_64x16_ssse3(uint8_t *dst, ptrdiff_t stride,
     rep = _mm_add_epi16(rep, one);
   }
 }
-// clang-format on

@@ -1,4 +1,3 @@
-// clang-format off
 /*
 * Copyright(c) 2019 Intel Corporation
 * SPDX - License - Identifier: BSD - 2 - Clause - Patent
@@ -4898,4 +4897,3 @@ void get_eight_horizontal_search_point_results_32x32_64x64_pu_sse41_intrin(
         p_best_mv64x64[0] = ((uint16_t)y_mv << 16) | ((uint16_t)x_mv);
     }
 }
-// clang-format on

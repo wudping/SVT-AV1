@@ -1,4 +1,3 @@
-// clang-format off
 /*
  * Copyright (c) 2018, Alliance for Open Media. All rights reserved
  *
@@ -111,4 +110,3 @@ void av1_build_compound_diffwtd_mask_highbd_ssse3(
     }
   }
 }
-// clang-format on

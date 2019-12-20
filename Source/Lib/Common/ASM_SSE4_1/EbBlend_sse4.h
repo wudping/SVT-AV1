@@ -1,4 +1,3 @@
-// clang-format off
 /*
 * Copyright(c) 2019 Intel Corporation
 * SPDX - License - Identifier: BSD - 2 - Clause - Patent
@@ -431,4 +430,3 @@ static INLINE void aom_lowbd_blend_a64_d16_mask_subw0_subh1_w8_sse4_1(
     }
 }
 #endif  // AOM_AOM_DSP_X86_BLEND_SSE4_H_
-// clang-format on

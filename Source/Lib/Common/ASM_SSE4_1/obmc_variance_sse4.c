@@ -1,4 +1,3 @@
-// clang-format off
 /*
  * Copyright (c) 2016, Alliance for Open Media. All rights reserved
  *
@@ -74,4 +73,3 @@ OBMC_SUBPIX_VAR(8, 32)
 OBMC_SUBPIX_VAR(32, 8)
 OBMC_SUBPIX_VAR(16, 64)
 OBMC_SUBPIX_VAR(64, 16)
-// clang-format on

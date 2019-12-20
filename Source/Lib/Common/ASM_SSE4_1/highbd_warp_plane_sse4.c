@@ -1,4 +1,3 @@
-// clang-format off
 /*
  * Copyright (c) 2016, Alliance for Open Media. All rights reserved
  *
@@ -629,4 +628,3 @@ void eb_av1_highbd_warp_affine_sse4_1(const int32_t *mat, const uint16_t *ref,
     }
   }
 }
-// clang-format on

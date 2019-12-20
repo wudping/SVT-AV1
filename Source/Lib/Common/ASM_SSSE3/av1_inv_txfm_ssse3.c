@@ -1,4 +1,3 @@
-// clang-format off
 /*
  * Copyright (c) 2018, Alliance for Open Media. All rights reserved
  *
@@ -2993,4 +2992,3 @@ void eb_av1_inv_txfm_add_ssse3(const TranLow *dqcoeff,
                               stride_w, txfm_param);
     }
 }
-// clang-format on

@@ -1,4 +1,3 @@
-// clang-format off
 /*
  * Copyright (c) 2017, Alliance for Open Media. All rights reserved
  *
@@ -68,4 +67,3 @@ OBMCSADMxN(16, 64)
 OBMCSADMxN(64, 16)
     /* clang-format on */
 
-// clang-format on

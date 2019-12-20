@@ -1,4 +1,3 @@
-// clang-format off
 /*
 * Copyright(c) 2019 Intel Corporation
 * SPDX - License - Identifier: BSD - 2 - Clause - Patent
@@ -225,4 +224,3 @@ void unpack_avg_safe_sub_c(
         }
     }
 }
-// clang-format on

@@ -1,4 +1,3 @@
-// clang-format off
 /*
 * Copyright (c) 2016, Alliance for Open Media. All rights reserved
 *

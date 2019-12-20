@@ -1,4 +1,3 @@
-// clang-format off
 /*
  * Copyright (c) 2018, Alliance for Open Media. All rights reserved
  *
@@ -242,4 +241,3 @@ void av1_nn_predict_sse3(const float *input_nodes,
   }
   if (reduce_prec) av1_nn_output_prec_reduce(output, nn_config->num_outputs);
 }
-// clang-format on
