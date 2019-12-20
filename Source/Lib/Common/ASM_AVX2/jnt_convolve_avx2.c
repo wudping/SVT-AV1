@@ -1,4 +1,3 @@
-// clang-format off
 /*
  * Copyright (c) 2018, Alliance for Open Media. All rights reserved
  *
@@ -4901,4 +4900,3 @@ void eb_av1_jnt_convolve_x_avx2(const uint8_t *src, int32_t src_stride,
         subpel_x_q4,
         conv_params);
 }
-// clang-format on

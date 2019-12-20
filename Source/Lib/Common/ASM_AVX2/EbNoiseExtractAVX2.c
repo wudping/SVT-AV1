@@ -1,4 +1,3 @@
-// clang-format off
 /*
 * Copyright(c) 2019 Intel Corporation
 * SPDX - License - Identifier: BSD - 2 - Clause - Patent
@@ -1555,4 +1554,3 @@ void noise_extract_chroma_weak_avx2_intrin(
         }
     }
 }
-// clang-format on

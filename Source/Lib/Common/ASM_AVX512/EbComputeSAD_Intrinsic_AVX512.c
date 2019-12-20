@@ -1,4 +1,3 @@
-// clang-format off
 /*
 * Copyright(c) 2019 Intel Corporation
 * SPDX - License - Identifier: BSD - 2 - Clause - Patent
@@ -3559,4 +3558,3 @@ void sad_loop_kernel_avx512_intrin(
 }
 
 #endif // !NON_AVX512_SUPPORT
-// clang-format on

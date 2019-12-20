@@ -1,4 +1,3 @@
-// clang-format off
 /*
 * Copyright(c) 2019 Intel Corporation
 * SPDX - License - Identifier: BSD - 2 - Clause - Patent
@@ -56,4 +55,3 @@ EB_ALIGN(16) const int16_t intra_prediction_const_sse2[344] = {
     31, 31, 31, 31, 31, 31, 31, 31,
     32, 32, 32, 32, 32, 32, 32, 32,
 };
-// clang-format on

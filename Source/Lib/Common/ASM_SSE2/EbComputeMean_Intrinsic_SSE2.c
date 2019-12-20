@@ -1,4 +1,3 @@
-// clang-format off
 /*
 * Copyright(c) 2019 Intel Corporation
 * SPDX - License - Identifier: BSD - 2 - Clause - Patent
@@ -163,4 +162,3 @@ void compute_interm_var_four8x8_helper_sse2(
     mean_of8x8_blocks[3] = compute_sub_mean8x8_sse2_intrin(input_samples + blockIndex, input_stride);
     mean_of_squared8x8_blocks[3] = compute_subd_mean_of_squared_values8x8_sse2_intrin(input_samples + blockIndex, input_stride);
 }
-// clang-format on

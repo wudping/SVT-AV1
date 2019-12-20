@@ -1,4 +1,3 @@
-// clang-format off
 /*
 * Copyright(c) 2019 Intel Corporation
 * SPDX - License - Identifier: BSD - 2 - Clause - Patent
@@ -6693,4 +6692,3 @@ uint32_t  sad_16bit_kernel_avx2(
     return sad;
 }
 
-// clang-format on

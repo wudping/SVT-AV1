@@ -1,4 +1,3 @@
-// clang-format off
 /*
  * Copyright (c) 2017, Alliance for Open Media. All rights reserved
  *
@@ -582,4 +581,3 @@ static INLINE void transpose8x16_16x8_sse2(
 }
 
 #endif  // AOM_AOM_DSP_X86_LPF_COMMON_SSE2_H_
-// clang-format on

@@ -1,4 +1,3 @@
-// clang-format off
 /*
  * Copyright (c) 2016, Alliance for Open Media. All rights reserved
  *
@@ -207,4 +206,3 @@ static INLINE __m256i _mm256_insert_epi32(__m256i a, int32_t b, const int32_t i)
 #endif
 
 #endif  // AOM_DSP_X86_SYNONYMS_H_
-// clang-format on

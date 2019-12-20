@@ -1,4 +1,3 @@
-// clang-format off
 /*
  * Copyright (c) 2018, Alliance for Open Media. All rights reserved
  *
@@ -666,4 +665,3 @@ static INLINE void transpose_32bit_8x4(const __m128i *const in,
 }
 
 #endif  // AOM_DSP_X86_TRANSPOSE_SSE2_H_
-// clang-format on

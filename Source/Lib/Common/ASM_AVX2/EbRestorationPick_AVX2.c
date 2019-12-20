@@ -1,4 +1,3 @@
-// clang-format off
 /*
 * Copyright(c) 2019 Intel Corporation
 * SPDX - License - Identifier: BSD - 2 - Clause - Patent
@@ -312,4 +311,3 @@ void get_proj_subspace_avx2(const uint8_t *src8, int width, int height,
     xq[1] = (int)rint(x[1] * (1 << SGRPROJ_PRJ_BITS));
   }
  }
-// clang-format on

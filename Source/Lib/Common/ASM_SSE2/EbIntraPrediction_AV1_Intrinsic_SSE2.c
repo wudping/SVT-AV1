@@ -1,4 +1,3 @@
-// clang-format off
 /*
 * Copyright(c) 2019 Intel Corporation
 * SPDX - License - Identifier: BSD - 2 - Clause - Patent
@@ -1246,4 +1245,3 @@ void eb_aom_dc_predictor_32x8_sse2(uint8_t *dst, ptrdiff_t stride,
     const __m128i row = _mm_set1_epi8((uint8_t)sum);
     dc_store_32xh(&row, 8, dst, stride);
 }
-// clang-format on

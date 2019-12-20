@@ -1,4 +1,3 @@
-// clang-format off
 /*
  * Copyright (c) 2018, Alliance for Open Media. All rights reserved
  *
@@ -215,4 +214,3 @@ int64_t aom_highbd_sse_avx2(const uint8_t *a8, int a_stride, const uint8_t *b8,
   return sse;
 }
 // CONFIG_AV1_HIGHBITDEPTH
-// clang-format on

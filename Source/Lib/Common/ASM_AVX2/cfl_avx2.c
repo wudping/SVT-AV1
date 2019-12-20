@@ -1,4 +1,3 @@
-// clang-format off
 /*
  * Copyright (c) 2017, Alliance for Open Media. All rights reserved
  *
@@ -307,4 +306,3 @@ static INLINE __m256i _mm256_addl_epi16(__m256i a) {
         } while (src < end);
     }
 }
-// clang-format on

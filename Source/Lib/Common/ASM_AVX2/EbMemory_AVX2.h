@@ -1,4 +1,3 @@
-// clang-format off
 /*
 * Copyright(c) 2019 Intel Corporation
 * SPDX - License - Identifier: BSD - 2 - Clause - Patent
@@ -117,4 +116,3 @@ static INLINE void storeu_u16_8x2_avx2(const __m256i src,
 }
 #endif
 #endif // EbIntraPrediction_AVX2_h
-// clang-format on

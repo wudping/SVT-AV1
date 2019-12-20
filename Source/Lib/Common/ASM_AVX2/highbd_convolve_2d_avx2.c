@@ -1,4 +1,3 @@
-// clang-format off
 /*
  * Copyright (c) 2017, Alliance for Open Media. All rights reserved
  *
@@ -332,4 +331,3 @@ void eb_av1_highbd_convolve_2d_copy_sr_avx2(
         } while (h);
     }
 }
-// clang-format on

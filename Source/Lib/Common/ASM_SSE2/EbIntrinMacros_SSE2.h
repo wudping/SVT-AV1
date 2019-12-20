@@ -1,4 +1,3 @@
-// clang-format off
 /*
 * Copyright(c) 2019 Intel Corporation
 * SPDX - License - Identifier: BSD - 2 - Clause - Patent
@@ -23,4 +22,3 @@
     A = _mm_srli_si128(A, 1); \
     _mm_storeu_si128((__m128i*)(prediction_ptr + 3*pStride), _mm_or_si128(_mm_and_si128(A, B), C)); \
     A = _mm_srli_si128(A, 1);
-// clang-format on

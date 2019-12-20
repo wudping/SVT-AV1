@@ -1,4 +1,3 @@
-// clang-format off
 /*
 * Copyright(c) 2019 Intel Corporation
 * SPDX - License - Identifier: BSD - 2 - Clause - Patent
@@ -2656,4 +2655,3 @@ void aom_highbd_lpf_vertical_14_dual_sse2(uint16_t *s, int32_t pitch,
     _mm_storeu_si128((__m128i *)(s + 6 * pitch), d6_out);
     _mm_storeu_si128((__m128i *)(s + 7 * pitch), d7_out);
 }
-// clang-format on

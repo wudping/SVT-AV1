@@ -1,4 +1,3 @@
-// clang-format off
 /*
  * Copyright (c) 2016, Alliance for Open Media. All rights reserved
  *
@@ -332,4 +331,3 @@ void aom_upsampled_pred_sse2(MacroBlockD *xd, const struct AV1Common *const cm,
   }
 }
 #endif
-// clang-format on

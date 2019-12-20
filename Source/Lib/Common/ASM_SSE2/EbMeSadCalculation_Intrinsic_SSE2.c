@@ -1,4 +1,3 @@
-// clang-format off
 /*
 * Copyright(c) 2019 Intel Corporation
 * SPDX - License - Identifier: BSD - 2 - Clause - Patent
@@ -163,4 +162,3 @@ void initialize_buffer_32bits_sse2_intrin(
         *(pointer) = _mm_cvtsi128_si32(xmm2);
     }
 }
-// clang-format on

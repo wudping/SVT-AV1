@@ -1,4 +1,3 @@
-// clang-format off
 /*
 * Copyright(c) 2019 Intel Corporation
 * SPDX - License - Identifier: BSD - 2 - Clause - Patent
@@ -33,4 +32,3 @@ uint32_t combined_averaging_4xm_sad_sse2_intrin(
     }
     return _mm_cvtsi128_si32(_mm_add_epi32(sad0, sad1));
 }
-// clang-format on

@@ -1,4 +1,3 @@
-// clang-format off
 /*
  * Copyright (c) 2017, Alliance for Open Media. All rights reserved
  *
@@ -2713,4 +2712,3 @@ void av1_wedge_compute_delta_squares_avx2(int16_t *d, const int16_t *a,
         N -= 64;
     } while (N);
 }
-// clang-format on

@@ -1,4 +1,3 @@
-// clang-format off
 /*
 * Copyright(c) 2019 Intel Corporation
 * SPDX - License - Identifier: BSD - 2 - Clause - Patent
@@ -58,4 +57,3 @@ static INLINE __m128i dc_sum_8(const uint16_t *const src) {
 }
 
 #endif // EbHighbdIntraPrediction_SSE2_h
-// clang-format on

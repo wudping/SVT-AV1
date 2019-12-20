@@ -1,4 +1,3 @@
-// clang-format off
 /*
 * Copyright(c) 2019 Intel Corporation
 * SPDX - License - Identifier: BSD - 2 - Clause - Patent
@@ -1184,4 +1183,3 @@ static INLINE void jnt_no_avg_round_store_64_avx512(const __m512i res[2],
 }
 
 #endif  // AOM_DSP_X86_CONVOLVE_AVX512_H_
-// clang-format on

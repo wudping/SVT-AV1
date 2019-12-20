@@ -1,4 +1,3 @@
-// clang-format off
 /*
 * Copyright(c) 2019 Intel Corporation
 * SPDX - License - Identifier: BSD - 2 - Clause - Patent
@@ -437,4 +436,3 @@ void av1_k_means_dim2_avx2(const int *data, int *centroids, uint8_t *indices,
     }
 }
 
-// clang-format on

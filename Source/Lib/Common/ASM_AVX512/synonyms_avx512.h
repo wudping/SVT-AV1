@@ -1,4 +1,3 @@
-// clang-format off
 /*
  * Copyright (c) 2018, Alliance for Open Media. All rights reserved
  *
@@ -49,4 +48,3 @@ static INLINE void zz_storeu_512(void *const a, const __m512i v) {
 }
 
 #endif  // AOM_DSP_X86_SYNONYMS_AVX512_H_
-// clang-format on

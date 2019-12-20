@@ -1,4 +1,3 @@
-// clang-format off
 /*
 * Copyright(c) 2019 Intel Corporation
 * SPDX - License - Identifier: BSD - 2 - Clause - Patent
@@ -5383,4 +5382,3 @@ void eb_av1_fwd_txfm2d_16x4_avx2(int16_t *input, int32_t *output, uint32_t strid
     }
     (void)bd;
 }
-// clang-format on

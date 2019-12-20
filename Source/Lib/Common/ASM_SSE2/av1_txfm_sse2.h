@@ -1,4 +1,3 @@
-// clang-format off
 /*
  * Copyright (c) 2018, Alliance for Open Media. All rights reserved
  *
@@ -298,4 +297,3 @@ extern "C" {
 }
 #endif  // __cplusplus
 #endif  // AV1_COMMON_X86_AV1_TXFM_SSE2_H_
-// clang-format on

@@ -1,4 +1,3 @@
-// clang-format off
 /*
  * Copyright (c) 2018, Alliance for Open Media. All rights reserved
  *
@@ -274,4 +273,3 @@ static INLINE __m256i wiener_convolve_v8x2_tap7(const __m256i coeffs[2],
 }
 
 #endif // !AOM_DSP_X86_WIENER_CONVOLVE_AVX2_H_
-// clang-format on

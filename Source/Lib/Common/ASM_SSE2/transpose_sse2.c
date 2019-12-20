@@ -1,4 +1,3 @@
-// clang-format off
 /*
  * Copyright(c) 2019 Intel Corporation
  * SPDX - License - Identifier: BSD - 2 - Clause - Patent
@@ -79,4 +78,3 @@ void transpose_32bit_8x4_reg128bit_instance_sse2(const __m128i *const in,
                                                  __m128i *const out) {
     transpose_32bit_8x4(in, out);
 }
-// clang-format on

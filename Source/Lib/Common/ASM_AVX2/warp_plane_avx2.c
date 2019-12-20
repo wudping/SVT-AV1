@@ -1,4 +1,3 @@
-// clang-format off
 /*
  * Copyright (c) 2019, Alliance for Open Media. All rights reserved
  *
@@ -1477,4 +1476,3 @@ void eb_av1_warp_affine_avx2(const int32_t *mat, const uint8_t *ref, int width,
         }
     }
 }
-// clang-format on
