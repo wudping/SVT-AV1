@@ -1,4 +1,3 @@
-// clang-format off
 /*
 * Copyright(c) 2019 Netflix, Inc.
 * SPDX - License - Identifier: BSD - 2 - Clause - Patent
@@ -231,4 +230,3 @@ typedef struct PartitionInfo {
 } PartitionInfo_t;
 
 #endif //EbDecBlock_h
-// clang-format on

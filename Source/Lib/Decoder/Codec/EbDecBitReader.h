@@ -1,4 +1,3 @@
-// clang-format off
 /*
 * Copyright(c) 2019 Intel Corporation
 * SPDX - License - Identifier: BSD - 2 - Clause - Patent
@@ -115,4 +114,3 @@ static INLINE int aom_read_ns_ae_(SvtReader   *r, int nsymbs ACCT_STR_PARAM) {
 }
 #endif
 #endif // EbDecBitReader_h
-// clang-format on

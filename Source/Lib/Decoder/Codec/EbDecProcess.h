@@ -1,4 +1,3 @@
-// clang-format off
 /*
 * Copyright(c) 2019 Netflix, Inc.
 * SPDX - License - Identifier: BSD - 2 - Clause - Patent
@@ -225,4 +224,3 @@ typedef struct DecMTFrameData {
 #endif
 
 #endif // EbDecProcess_h
-// clang-format on

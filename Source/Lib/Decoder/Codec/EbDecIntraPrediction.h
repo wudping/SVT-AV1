@@ -1,4 +1,3 @@
-// clang-format off
 /*
 * Copyright(c) 2019 Netflix, Inc.
 * SPDX - License - Identifier: BSD - 2 - Clause - Patent
@@ -39,4 +38,3 @@ void cfl_store_tx(PartitionInfo_t *xd, CflCtx *cfl_ctx, int row, int col, TxSize
     }
 #endif
 #endif // EbDecIntraPrediction_h
-// clang-format on

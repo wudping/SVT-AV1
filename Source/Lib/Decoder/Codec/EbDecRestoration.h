@@ -1,4 +1,3 @@
-// clang-format off
 /*
 * Copyright(c) 2019 Netflix, Inc.
 * SPDX - License - Identifier: BSD - 2 - Clause - Patent
@@ -23,4 +22,3 @@ void dec_av1_loop_restoration_filter_frame(EbDecHandle *dec_handle,
 #endif
 
 #endif
-// clang-format on

@@ -1,4 +1,3 @@
-// clang-format off
 /*
 * Copyright(c) 2019 Netflix, Inc.
 * SPDX - License - Identifier: BSD - 2 - Clause - Patent
@@ -86,4 +85,3 @@ uint32_t get_position(bitstrm_t *bs);
 uint8_t * get_bitsteam_buf(bitstrm_t *bs);
 
 #endif // EbDecBitstream_h
-// clang-format on

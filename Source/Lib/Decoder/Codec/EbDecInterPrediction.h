@@ -1,4 +1,3 @@
-// clang-format off
 /*
 * Copyright(c) 2019 Netflix, Inc.
 * SPDX - License - Identifier: BSD - 2 - Clause - Patent
@@ -25,4 +24,3 @@ void svtav1_predict_inter_block_plane(DecModCtxt *dec_mod_ctx,
     }
 #endif
 #endif // EbDecInterPrediction_h
-// clang-format on

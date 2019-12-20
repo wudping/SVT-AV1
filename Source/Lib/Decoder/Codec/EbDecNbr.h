@@ -1,4 +1,3 @@
-// clang-format off
 /*
 * Copyright(c) 2019 Netflix, Inc.
 * SPDX - License - Identifier: BSD - 2 - Clause - Patent
@@ -29,4 +28,3 @@ BlockModeInfo* get_top_mode_info(EbDecHandle *dec_handle,
     int mi_row, int mi_col, SBInfo *sb_info);
 
 #endif //EbDecNbr_h
-// clang-format on

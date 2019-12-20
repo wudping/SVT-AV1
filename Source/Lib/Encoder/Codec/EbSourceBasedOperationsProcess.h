@@ -1,4 +1,3 @@
-// clang-format off
 /*
 * Copyright(c) 2019 Intel Corporation
 * SPDX - License - Identifier: BSD - 2 - Clause - Patent
@@ -52,4 +51,3 @@ extern EbErrorType source_based_operations_context_ctor(
 extern void* source_based_operations_kernel(void *input_ptr);
 
 #endif // EbSourceBasedOperations_h
-// clang-format on

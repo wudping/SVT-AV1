@@ -1,4 +1,3 @@
-// clang-format off
 /*
  * Copyright (c) 2017, Alliance for Open Media. All rights reserved
  *
@@ -36,4 +35,3 @@ void dec_build_obmc_inter_predictors_sb(void *pv_dec_mod_ctx,
 
 #endif  // EbDecObmc_h
 
-// clang-format on
