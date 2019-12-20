@@ -70,4 +70,3 @@ extern "C" {
 #endif
 
 #endif  // AV1_TXFM_SSE4_H_
-// clang-format on
