@@ -1,4 +1,3 @@
-// clang-format off
 /*
 * Copyright(c) 2019 Netflix, Inc.
 * SPDX - License - Identifier: BSD - 2 - Clause - Patent
@@ -64,4 +63,3 @@ EbErrorType read_command_line(int32_t argc, char *const argv[], EbSvtAv1DecConfi
     CLInput *cli, ObuDecInputContext *obu_ctx);
 
 #endif
-// clang-format on

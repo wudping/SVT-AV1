@@ -1,4 +1,3 @@
-// clang-format off
 /*
 * Copyright(c) 2019 Netflix, Inc.
 * SPDX - License - Identifier: BSD - 2 - Clause - Patent
@@ -48,4 +47,3 @@ int64_t dec_timer_elapsed(struct EbDecTimer *t) {
     return ((int64_t)diff.tv_sec) * 1000000 + diff.tv_usec;
 #endif
 }
-// clang-format on

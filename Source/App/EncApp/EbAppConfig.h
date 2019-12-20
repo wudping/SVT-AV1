@@ -1,4 +1,3 @@
-// clang-format off
 /*
 * Copyright(c) 2019 Intel Corporation
 * SPDX - License - Identifier: BSD - 2 - Clause - Patent
@@ -491,4 +490,3 @@ extern uint32_t     get_help(int32_t argc, char *const argv[]);
 extern uint32_t        get_number_of_channels(int32_t argc, char *const argv[]);
 
 #endif //EbAppConfig_h
-// clang-format on

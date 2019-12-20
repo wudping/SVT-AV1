@@ -1,4 +1,3 @@
-// clang-format off
 /*
 * Copyright(c) 2019 Intel Corporation
 * SPDX - License - Identifier: BSD - 2 - Clause - Patent
@@ -62,4 +61,3 @@ typedef int (*eb_release_frame_buffer)(
 #endif // __cplusplus
 
 #endif // EbDecApi_h
-// clang-format on

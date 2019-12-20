@@ -1,4 +1,3 @@
-// clang-format off
 /*
 * Copyright(c) 2019 Netflix, Inc.
 * SPDX - License - Identifier: BSD - 2 - Clause - Patent
@@ -708,4 +707,3 @@ int read_ivf_frame(FILE *infile, uint8_t **buffer, size_t *bytes_read,
     }
     return 0;
 }
-// clang-format on

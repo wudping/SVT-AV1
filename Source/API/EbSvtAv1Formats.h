@@ -1,4 +1,3 @@
-// clang-format off
 /*
 * Copyright(c) 2019 Intel Corporation
 * SPDX - License - Identifier: BSD - 2 - Clause - Patent
@@ -134,4 +133,3 @@ typedef enum EbChromaSamplePosition {
 #endif // __cplusplus
 
 #endif // EbSvtAv1Formats_h
-// clang-format on

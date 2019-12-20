@@ -1,4 +1,3 @@
-// clang-format off
 /*
 * Copyright(c) 2019 Intel Corporation
 * SPDX - License - Identifier: BSD - 2 - Clause - Patent
@@ -146,4 +145,3 @@ void Injector(uint64_t processed_frame_count,
         }
     }
 }
-// clang-format on

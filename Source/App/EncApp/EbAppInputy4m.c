@@ -1,4 +1,3 @@
-// clang-format off
 /*
 * Copyright(c) 2019 Intel Corporation
 * SPDX - License - Identifier: BSD - 2 - Clause - Patent
@@ -281,4 +280,3 @@ EbBool check_if_y4m(EbConfig *cfg)
     buf[YUV4MPEG2_IND_SIZE] = 0;
     return (EB_STRCMP(buf, "YUV4MPEG2") == 0);
 }
-// clang-format on
