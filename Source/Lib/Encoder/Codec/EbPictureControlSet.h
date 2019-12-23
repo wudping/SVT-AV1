@@ -547,7 +547,6 @@ extern "C" {
     {
         uint16_t          edge_cu;
         uint16_t          similar_edge_count;
-        uint16_t          pm_similar_edge_count;
         uint32_t          grad;
     } CuStat;
 
@@ -578,7 +577,7 @@ extern "C" {
         EbPictureBufferDesc                *chroma_downsampled_picture_ptr; //if 422/444 input, down sample to 420 for MD
         EbBool                              is_chroma_downsampled_picture_ptr_owner;
         PredictionStructure                *pred_struct_ptr;          // need to check
-        struct SequenceControlSet          *sequence_control_set_ptr;
+        struct SequenceControlSet          *scs_ptr;
         EbObjectWrapper                    *p_pcs_wrapper_ptr;
         EbObjectWrapper                    *previous_picture_control_set_wrapper_ptr;
         EbObjectWrapper                    *output_stream_wrapper_ptr;
@@ -671,7 +670,6 @@ extern "C" {
         EbBool                                is_pan;
         EbBool                                is_tilt;
         uint8_t                              *sb_flat_noise_array;
-        EdgeLcuResults                     *edge_results_ptr;                // used by EncDecProcess()
         uint8_t                              *sharp_edge_sb_flag;
         EbBool                                logo_pic_flag;                    // used by EncDecProcess()
         uint16_t                              non_moving_index_average;            // used by ModeDecisionConfigurationProcess()
@@ -851,7 +849,7 @@ extern "C" {
         PictureControlSet                    *childPcs;
         Macroblock                           *av1x;
         int32_t                               film_grain_params_present; //todo (AN): Do we need this flag at picture level?
-        aom_denoise_and_model_t              *denoise_and_model;
+        AomDenoiseAndModel                   *denoise_and_model;
         RestUnitSearchInfo                   *rusi_picture[3];//for 3 planes
         int8_t                                cdef_filter_mode;
         int32_t                               cdef_frame_strength;
@@ -912,8 +910,8 @@ extern "C" {
         uint8_t                              pic_obmc_mode;
 #endif
 #if TWO_PASS
-        stat_struct_t*                       stat_struct_first_pass_ptr; // pointer to stat_struct in the first pass
-        struct stat_struct_t                 stat_struct; // stat_struct used in the second pass
+        StatStruct*                       stat_struct_first_pass_ptr; // pointer to stat_struct in the first pass
+        struct StatStruct                 stat_struct; // stat_struct used in the second pass
         uint64_t                             referenced_area_avg; // average referenced area per frame
         uint8_t                              referenced_area_has_non_zero;
 #endif

@@ -17,7 +17,7 @@
 #include "EbTransforms.h"
 
  // Sqrt2, Sqrt2^2, Sqrt2^3, Sqrt2^4, Sqrt2^5
-static int32_t NewSqrt2list[TX_SIZES] = { 5793, 2 * 4096, 2 * 5793, 4 * 4096,
+static int32_t new_sqrt2list[TX_SIZES] = { 5793, 2 * 4096, 2 * 5793, 4 * 4096,
                                           4 * 5793 };
 
 static INLINE void idct16_stage5_avx2(__m256i *x1, const int32_t *cospi,
@@ -1573,11 +1573,11 @@ static void idct64_low32_new_avx2(const __m256i *input, __m256i *output,
     idct64_stage11_avx2(output, x);
 }
 
-typedef void(*transform_1d_avx2)(const __m256i *input, __m256i *output,
+typedef void(*Transform1dAvx2)(const __m256i *input, __m256i *output,
     int8_t cos_bit);
 
 // 1D functions process 16 pixels at one time.
-static const transform_1d_avx2
+static const Transform1dAvx2
 lowbd_txfm_all_1d_zeros_w16_arr[TX_SIZES][ITX_TYPES_1D][4] = {
     {
         { NULL, NULL, NULL, NULL },
@@ -1630,9 +1630,9 @@ static INLINE void lowbd_inv_txfm2d_add_no_identity_avx2(
 
     const int fun_idx_x = lowbd_txfm_all_1d_zeros_idx[eobx];
     const int fun_idx_y = lowbd_txfm_all_1d_zeros_idx[eoby];
-    const transform_1d_avx2 row_txfm =
+    const Transform1dAvx2 row_txfm =
         lowbd_txfm_all_1d_zeros_w16_arr[txw_idx][hitx_1d_tab[tx_type]][fun_idx_x];
-    const transform_1d_avx2 col_txfm =
+    const Transform1dAvx2 col_txfm =
         lowbd_txfm_all_1d_zeros_w16_arr[txh_idx][vitx_1d_tab[tx_type]][fun_idx_y];
 
     assert(col_txfm != NULL);
@@ -1687,7 +1687,7 @@ static INLINE void lowbd_inv_txfm2d_add_no_identity_avx2(
 static INLINE void iidentity_row_16xn_avx2(__m256i *out, const int32_t *input,
     int stride, int shift, int height, int txw_idx, int rect_type) {
     const int32_t *input_row = input;
-    const __m256i scale = _mm256_set1_epi16(NewSqrt2list[txw_idx]);
+    const __m256i scale = _mm256_set1_epi16(new_sqrt2list[txw_idx]);
     const __m256i _r = _mm256_set1_epi16((1 << (NewSqrt2Bits - 1)) +
         (1 << (NewSqrt2Bits - shift - 1)));
     const __m256i one = _mm256_set1_epi16(1);
@@ -1707,7 +1707,7 @@ static INLINE void iidentity_row_16xn_avx2(__m256i *out, const int32_t *input,
     }
     else {
         const __m256i rect_scale =
-            _mm256_set1_epi16(NewInvSqrt2 << (15 - NewSqrt2Bits));
+            _mm256_set1_epi16(new_inv_sqrt2 << (15 - NewSqrt2Bits));
         for (int i = 0; i < height; ++i) {
             __m256i src = load_32bit_to_16bit_w16_avx2(input_row);
             src = _mm256_mulhrs_epi16(src, rect_scale);
@@ -1727,7 +1727,7 @@ static INLINE void iidentity_col_16xn_avx2(
     uint8_t *output_r, int32_t stride_r,
     uint8_t *output_w, int32_t stride_w,
     __m256i *buf, int shift, int height, int txh_idx) {
-    const __m256i scale = _mm256_set1_epi16(NewSqrt2list[txh_idx]);
+    const __m256i scale = _mm256_set1_epi16(new_sqrt2list[txh_idx]);
     const __m256i scale__r = _mm256_set1_epi16(1 << (NewSqrt2Bits - 1));
     const __m256i shift__r = _mm256_set1_epi32(1 << (-shift - 1));
     const __m256i one = _mm256_set1_epi16(1);
@@ -1791,7 +1791,7 @@ static INLINE void lowbd_inv_txfm2d_add_h_identity_avx2(
     const int rect_type = get_rect_tx_log_ratio(txfm_size_col, txfm_size_row);
 
     const int fun_idx_y = lowbd_txfm_all_1d_zeros_idx[eoby];
-    const transform_1d_avx2 col_txfm =
+    const Transform1dAvx2 col_txfm =
         lowbd_txfm_all_1d_zeros_w16_arr[txh_idx][vitx_1d_tab[tx_type]][fun_idx_y];
 
     assert(col_txfm != NULL);
@@ -1835,7 +1835,7 @@ static INLINE void lowbd_inv_txfm2d_add_v_identity_avx2(
     const int rect_type = get_rect_tx_log_ratio(txfm_size_col, txfm_size_row);
 
     const int fun_idx_x = lowbd_txfm_all_1d_zeros_idx[eobx];
-    const transform_1d_avx2 row_txfm =
+    const Transform1dAvx2 row_txfm =
         lowbd_txfm_all_1d_zeros_w16_arr[txw_idx][hitx_1d_tab[tx_type]][fun_idx_x];
 
     assert(row_txfm != NULL);

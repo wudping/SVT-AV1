@@ -226,7 +226,7 @@ static INLINE void load_buffer_16x16_avx512(const int16_t *input, __m512i *out,
 static void fidtx16x16_avx512(const __m512i *in, __m512i *out, const int8_t bit, const int32_t col_num) {
     (void)bit;
     const uint8_t bits = 12;       // NewSqrt2Bits = 12
-    const int32_t sqrt = 2 * 5793; // 2 * NewSqrt2
+    const int32_t sqrt = 2 * 5793; // 2 * new_sqrt2
     const __m512i newsqrt = _mm512_set1_epi32(sqrt);
     const __m512i rounding = _mm512_set1_epi32(1 << (bits - 1));
     __m512i temp;
@@ -1442,7 +1442,7 @@ void av1_fwd_txfm2d_32x32_avx512(int16_t *input, int32_t *output,
 
 static void fidtx64x64_avx512(const __m512i *input, __m512i *output) {
     const uint8_t bits = 12;       // NewSqrt2Bits = 12
-    const int32_t sqrt = 4 * 5793; // 4 * NewSqrt2
+    const int32_t sqrt = 4 * 5793; // 4 * new_sqrt2
     const int32_t col_num = 4;
     const __m512i newsqrt = _mm512_set1_epi32(sqrt);
     const __m512i rounding = _mm512_set1_epi32(1 << (bits - 1));

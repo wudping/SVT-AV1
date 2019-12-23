@@ -2,14 +2,14 @@
 * Copyright(c) 2019 Intel Corporation
 * SPDX - License - Identifier: BSD - 2 - Clause - Patent
 */
+#include "EbDefinitions.h"
+
+#ifndef NON_AVX512_SUPPORT
 
 #include <immintrin.h> /* AVX2 */
-
-#include "EbDefinitions.h"
 #include "synonyms.h"
 #include "synonyms_avx2.h"
 
-#ifndef NON_AVX512_SUPPORT
 static INLINE __m256i txb_init_levels_32_avx512(const TranLow *const coeff) {
     const __m512i idx =
         _mm512_setr_epi32(0, 4, 8, 12, 1, 5, 9, 13, 0, 0, 0, 0, 0, 0, 0, 0);

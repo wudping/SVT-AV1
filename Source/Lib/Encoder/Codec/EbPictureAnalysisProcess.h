@@ -29,7 +29,7 @@ void noise_extract_luma_weak_c(
     uint32_t               sb_origin_x);
 
 void DownsampleFilteringInputPicture(
-    PictureParentControlSet       *picture_control_set_ptr,
+    PictureParentControlSet       *pcs_ptr,
     EbPictureBufferDesc           *input_padded_picture_ptr,
     EbPictureBufferDesc           *quarter_picture_ptr,
     EbPictureBufferDesc *sixteenth_picture_ptr);

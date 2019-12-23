@@ -32,7 +32,7 @@ void dec_init_intra_predictors_12b_internal(void) {
 }
 
 /*TODO: Remove replication and harmonize with encoder after data str. harmonization */
-int32_t dec_get_filt_type(const PartitionInfo_t *part_info, int32_t plane) {
+int32_t dec_get_filt_type(const PartitionInfo *part_info, int32_t plane) {
     int ab_sm, le_sm;
 
     if (plane == 0) {
@@ -178,7 +178,7 @@ static INLINE cfl_subsample_lbd_fn cfl_subsampling_lbd(TxSize tx_size,
 //######...........Ending for CFL.................#####//
 
 //####...Wrapper funtion calling CFL leaf level functions...####//
-static INLINE CflAllowedType is_cfl_allowed_with_frame_header(const PartitionInfo_t *xd,
+static INLINE CflAllowedType is_cfl_allowed_with_frame_header(const PartitionInfo *xd,
                                               EbColorConfig *cc,
                                               FrameHeader *fh )
 
@@ -208,7 +208,7 @@ void cfl_compute_parameters(CflCtx *cfl_ctx, TxSize tx_size) {
     cfl_ctx->are_parameters_computed = 1;
 }
 
-void cfl_predict_block(PartitionInfo_t *xd, CflCtx *cfl_ctx, uint8_t *dst,
+void cfl_predict_block(PartitionInfo *xd, CflCtx *cfl_ctx, uint8_t *dst,
                        int32_t dst_stride, TxSize tx_size, int32_t plane,
                        EbColorConfig *cc, FrameHeader *fh)
 {
@@ -284,7 +284,7 @@ static void cfl_store(CflCtx *cfl_ctx, const uint8_t *input, int input_stride,
 
 // Adjust the row and column of blocks smaller than 8X8, as chroma-referenced
 // and non-chroma-referenced blocks are stored together in the CfL buffer.
-static INLINE void sub8x8_adjust_offset(PartitionInfo_t *xd, const CflCtx *cfl_ctx, int *row_out,
+static INLINE void sub8x8_adjust_offset(PartitionInfo *xd, const CflCtx *cfl_ctx, int *row_out,
                                         int *col_out)
 {
     // Increment row index for bottom: 8x4, 16x4 or both bottom 4x4s.
@@ -300,7 +300,7 @@ static INLINE void sub8x8_adjust_offset(PartitionInfo_t *xd, const CflCtx *cfl_c
     }
 }
 
-void cfl_store_tx(PartitionInfo_t *xd, CflCtx *cfl_ctx, int row, int col, TxSize tx_size,
+void cfl_store_tx(PartitionInfo *xd, CflCtx *cfl_ctx, int row, int col, TxSize tx_size,
                   BlockSize  bsize, EbColorConfig *cc, uint8_t *dst_buff,
                   uint32_t dst_stride)
 {
@@ -318,7 +318,7 @@ void cfl_store_tx(PartitionInfo_t *xd, CflCtx *cfl_ctx, int row, int col, TxSize
 
 /* TODO : Harmonize with Encoder! */
 static void decode_build_intra_predictors(
-    PartitionInfo_t *part_info,
+    PartitionInfo *part_info,
     uint8_t*   topNeighArray,
     uint8_t*   leftNeighArray, int32_t  ref_stride,
     uint8_t   *dst,  int32_t  dst_stride,
@@ -501,7 +501,7 @@ static void decode_build_intra_predictors(
 
 /* TODO : Harmonize with Encoder! */
 static void decode_build_intra_predictors_high(
-    PartitionInfo_t *part_info,
+    PartitionInfo *part_info,
     uint16_t* topNeighArray,
     uint16_t* leftNeighArray, int32_t ref_stride,
     uint16_t *dst,
@@ -689,7 +689,7 @@ static void decode_build_intra_predictors_high(
         pred_high[mode][tx_size](dst, dst_stride, above_row, left_col, bd);
 }
 
-void svtav1_predict_intra_block(PartitionInfo_t *xd, int32_t plane,
+void svtav1_predict_intra_block(PartitionInfo *xd, int32_t plane,
                                 TxSize tx_size, TileInfo *td,
                                 void *pv_pred_buf, int32_t pred_stride,
                                 void *topNeighArray,
@@ -791,7 +791,7 @@ void svtav1_predict_intra_block(PartitionInfo_t *xd, int32_t plane,
     }
 }
 
-void svt_av1_predict_intra(DecModCtxt *dec_mod_ctxt, PartitionInfo_t *part_info,
+void svt_av1_predict_intra(DecModCtxt *dec_mod_ctxt, PartitionInfo *part_info,
     int32_t plane, TxSize tx_size, TileInfo *td,
     void *pv_blk_recon_buf, int32_t recon_stride,
     EbBitDepthEnum bit_depth, int32_t blk_mi_col_off, int32_t blk_mi_row_off)

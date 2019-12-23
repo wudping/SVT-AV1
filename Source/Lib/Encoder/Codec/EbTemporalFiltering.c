@@ -31,7 +31,6 @@
 #include "EbPictureAnalysisProcess.h"
 #include "EbMcp.h"
 #include "av1me.h"
-#include "EbTemporalFiltering_sse4.h"
 #include "EbObject.h"
 #include "EbInterPrediction.h"
 #include "EbComputeVariance_C.h"
@@ -39,7 +38,7 @@
 #undef _MM_HINT_T2
 #define _MM_HINT_T2  1
 
-static EB_AV1_INTER_PREDICTION_FUNC_PTR   av1_inter_prediction_function_table[2] =
+static EbAv1InterPredictionFuncPtr   av1_inter_prediction_function_table[2] =
 {
     av1_inter_prediction,
     av1_inter_prediction_hbd
@@ -478,13 +477,13 @@ static void create_ME_context_and_picture_control(MotionEstimationContext_t *con
     // set the buffers with the original, quarter and sixteenth pixels version of the source frame
     EbPaReferenceObject *src_object = (EbPaReferenceObject*)picture_control_set_ptr_central->pa_reference_picture_wrapper_ptr->object_ptr;
     EbPictureBufferDesc *padded_pic_ptr = src_object->input_padded_picture_ptr;
-    SequenceControlSet *sequence_control_set_ptr = (SequenceControlSet*)picture_control_set_ptr_central->sequence_control_set_wrapper_ptr->object_ptr;
+    SequenceControlSet *scs_ptr = (SequenceControlSet*)picture_control_set_ptr_central->sequence_control_set_wrapper_ptr->object_ptr;
     // Set 1/4 and 1/16 ME reference buffer(s); filtered or decimated
-    EbPictureBufferDesc * quarter_pic_ptr = (sequence_control_set_ptr->down_sampling_method_me_search == ME_FILTERED_DOWNSAMPLED) ?
+    EbPictureBufferDesc * quarter_pic_ptr = (scs_ptr->down_sampling_method_me_search == ME_FILTERED_DOWNSAMPLED) ?
         src_object->quarter_filtered_picture_ptr :
         src_object->quarter_decimated_picture_ptr;
 
-    EbPictureBufferDesc *sixteenth_pic_ptr = (sequence_control_set_ptr->down_sampling_method_me_search == ME_FILTERED_DOWNSAMPLED) ?
+    EbPictureBufferDesc *sixteenth_pic_ptr = (scs_ptr->down_sampling_method_me_search == ME_FILTERED_DOWNSAMPLED) ?
         src_object->sixteenth_filtered_picture_ptr :
         src_object->sixteenth_decimated_picture_ptr;
     // Parts from MotionEstimationKernel()
@@ -1230,7 +1229,7 @@ static void apply_filtering_central_highbd(uint16_t **pred_16bit,
 
 uint32_t get_mds_idx(uint32_t  orgx, uint32_t  orgy, uint32_t  size, uint32_t use_128x128);
 
-static void tf_inter_prediction(PictureParentControlSet *picture_control_set_ptr,
+static void tf_inter_prediction(PictureParentControlSet *pcs_ptr,
                                 MeContext *context_ptr,
                                 EbPictureBufferDesc *pic_ptr_ref,
                                 EbByte *pred,
@@ -1340,14 +1339,14 @@ static void tf_inter_prediction(PictureParentControlSet *picture_control_set_ptr
                 uint16_t pu_origin_y = sb_origin_y + local_origin_y;
                 uint32_t mirow = pu_origin_y >> MI_SIZE_LOG2;
                 uint32_t micol = pu_origin_x >> MI_SIZE_LOG2;
-                cu_ptr.mds_idx = get_mds_idx(local_origin_x, local_origin_y, bsize, picture_control_set_ptr->sequence_control_set_ptr->seq_header.sb_size == BLOCK_128X128);
+                cu_ptr.mds_idx = get_mds_idx(local_origin_x, local_origin_y, bsize, pcs_ptr->scs_ptr->seq_header.sb_size == BLOCK_128X128);
 
                 const int32_t bw = mi_size_wide[BLOCK_16X16];
                 const int32_t bh = mi_size_high[BLOCK_16X16];
                 cu_ptr.av1xd->mb_to_top_edge = -(int32_t)((mirow * MI_SIZE) * 8);
-                cu_ptr.av1xd->mb_to_bottom_edge = ((picture_control_set_ptr->av1_cm->mi_rows - bw - mirow) * MI_SIZE) * 8;
+                cu_ptr.av1xd->mb_to_bottom_edge = ((pcs_ptr->av1_cm->mi_rows - bw - mirow) * MI_SIZE) * 8;
                 cu_ptr.av1xd->mb_to_left_edge = -(int32_t)((micol * MI_SIZE) * 8);
-                cu_ptr.av1xd->mb_to_right_edge = ((picture_control_set_ptr->av1_cm->mi_cols - bh - micol) * MI_SIZE) * 8;
+                cu_ptr.av1xd->mb_to_right_edge = ((pcs_ptr->av1_cm->mi_cols - bh - micol) * MI_SIZE) * 8;
 
                 uint32_t mv_index = tab16x16[pu_index];
                 mv_unit.mv->x = _MVXT(context_ptr->p_best_mv16x16[mv_index]);
@@ -1368,7 +1367,7 @@ static void tf_inter_prediction(PictureParentControlSet *picture_control_set_ptr
                         mv_unit.mv->y = mv_y + j;
 
                         av1_inter_prediction_function_table[is_highbd](
-                            NULL,  //picture_control_set_ptr,
+                            NULL,  //pcs_ptr,
                             (uint32_t)interp_filters,
                             &cu_ptr,
                             0,//ref_frame_type,
@@ -1434,7 +1433,7 @@ static void tf_inter_prediction(PictureParentControlSet *picture_control_set_ptr
                 mv_unit.mv->y = best_mv_y;
 
                 av1_inter_prediction_function_table[is_highbd](
-                    NULL,  //picture_control_set_ptr,
+                    NULL,  //pcs_ptr,
                     (uint32_t)interp_filters,
                     &cu_ptr,
                     0,//ref_frame_type,
@@ -1581,11 +1580,11 @@ static EbErrorType produce_temporally_filtered_pic(PictureParentControlSet **lis
     PictureParentControlSet *picture_control_set_ptr_central = list_picture_control_set_ptr[index_center];
     EbPictureBufferDesc *input_picture_ptr_central = list_input_picture_ptr[index_center];
 
-    int encoder_bit_depth = (int)picture_control_set_ptr_central->sequence_control_set_ptr->static_config.encoder_bit_depth;
+    int encoder_bit_depth = (int)picture_control_set_ptr_central->scs_ptr->static_config.encoder_bit_depth;
 
     // chroma subsampling
-    uint32_t ss_x = picture_control_set_ptr_central->sequence_control_set_ptr->subsampling_x;
-    uint32_t ss_y = picture_control_set_ptr_central->sequence_control_set_ptr->subsampling_y;
+    uint32_t ss_x = picture_control_set_ptr_central->scs_ptr->subsampling_x;
+    uint32_t ss_y = picture_control_set_ptr_central->scs_ptr->subsampling_y;
     uint16_t blk_width_ch = (uint16_t)BW >> ss_x;
     uint16_t blk_height_ch = (uint16_t)BH >> ss_y;
 
@@ -1942,7 +1941,7 @@ static void adjust_filter_strength(
         else
             noiselevel_adj = 1;
 #if TWO_PASS
-        if (picture_control_set_ptr_central->sequence_control_set_ptr->use_input_stat_file &&
+        if (picture_control_set_ptr_central->scs_ptr->use_input_stat_file &&
             picture_control_set_ptr_central->temporal_layer_index == 0 && picture_control_set_ptr_central->sc_content_detected == 0) {
             if (noiselevel_adj < 0) {
                 if ((picture_control_set_ptr_central->referenced_area_avg < 20 && picture_control_set_ptr_central->slice_type == 2) ||
@@ -2006,15 +2005,15 @@ static void pad_and_decimate_filtered_pic(PictureParentControlSet *picture_contr
         padded_pic_ptr->origin_y);
 
     // 1/4 & 1/16 input picture decimation
-    DownsampleDecimationInputPicture(
+    downsample_decimation_input_picture(
         picture_control_set_ptr_central,
         padded_pic_ptr,
         src_object->quarter_decimated_picture_ptr,
         src_object->sixteenth_decimated_picture_ptr);
 
     // 1/4 & 1/16 input picture downsampling through filtering
-    SequenceControlSet *sequence_control_set_ptr = (SequenceControlSet*)picture_control_set_ptr_central->sequence_control_set_wrapper_ptr->object_ptr;
-    if (sequence_control_set_ptr->down_sampling_method_me_search == ME_FILTERED_DOWNSAMPLED)
+    SequenceControlSet *scs_ptr = (SequenceControlSet*)picture_control_set_ptr_central->sequence_control_set_wrapper_ptr->object_ptr;
+    if (scs_ptr->down_sampling_method_me_search == ME_FILTERED_DOWNSAMPLED)
         DownsampleFilteringInputPicture(
             picture_control_set_ptr_central,
             padded_pic_ptr,
@@ -2124,12 +2123,12 @@ EbErrorType svt_av1_init_temporal_filtering(PictureParentControlSet **list_pictu
     // source central frame picture buffer
     central_picture_ptr = picture_control_set_ptr_central->enhanced_picture_ptr;
 
-    uint32_t encoder_bit_depth = picture_control_set_ptr_central->sequence_control_set_ptr->static_config.encoder_bit_depth;
+    uint32_t encoder_bit_depth = picture_control_set_ptr_central->scs_ptr->static_config.encoder_bit_depth;
     EbBool is_highbd = (encoder_bit_depth == 8) ? (uint8_t)EB_FALSE : (uint8_t)EB_TRUE;
 
     // chroma subsampling
-    uint32_t ss_x = picture_control_set_ptr_central->sequence_control_set_ptr->subsampling_x;
-    uint32_t ss_y = picture_control_set_ptr_central->sequence_control_set_ptr->subsampling_y;
+    uint32_t ss_x = picture_control_set_ptr_central->scs_ptr->subsampling_x;
+    uint32_t ss_y = picture_control_set_ptr_central->scs_ptr->subsampling_y;
 
     //only one performs any picture based prep
     eb_block_on_mutex(picture_control_set_ptr_central->temp_filt_mutex);
@@ -2188,7 +2187,7 @@ EbErrorType svt_av1_init_temporal_filtering(PictureParentControlSet **list_pictu
 
         // save original source picture (to be replaced by the temporally filtered pic)
         // if stat_report is enabled for PSNR computation
-        if(picture_control_set_ptr_central->sequence_control_set_ptr->static_config.stat_report){
+        if(picture_control_set_ptr_central->scs_ptr->static_config.stat_report){
             save_src_pic_buffers(picture_control_set_ptr_central,
                                  ss_y,
                                  is_highbd);

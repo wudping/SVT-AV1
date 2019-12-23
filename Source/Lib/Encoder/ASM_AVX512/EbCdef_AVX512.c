@@ -2,15 +2,15 @@
 * Copyright(c) 2019 Intel Corporation
 * SPDX - License - Identifier: BSD - 2 - Clause - Patent
 */
+#include "EbDefinitions.h"
+
+#ifndef NON_AVX512_SUPPORT
 
 #include <immintrin.h>
 #include "aom_dsp_rtcd.h"
 #include "EbCdef.h"
-#include "EbDefinitions.h"
 #include "EbMemory_AVX2.h"
 #include "synonyms_avx512.h"
-
-#ifndef NON_AVX512_SUPPORT
 
 uint64_t search_one_dual_avx512(int *lev0, int *lev1, int nb_strengths,
     uint64_t(**mse)[TOTAL_STRENGTHS], int sb_count,

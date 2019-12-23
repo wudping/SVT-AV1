@@ -21,9 +21,6 @@
 #include "aom_dsp_rtcd.h"
 #include "emmintrin.h"
 #include "EbTransforms.h"
-#include "highbd_txfm_utility_sse4.h"
-
-#include "av1_txfm_sse4.h"
 
 static const int8_t *fwd_txfm_shift_ls[TX_SIZES_ALL] = {
     fwd_shift_4x4, fwd_shift_8x8, fwd_shift_16x16, fwd_shift_32x32,
@@ -72,7 +69,7 @@ static INLINE void load_buffer_4x4(const int16_t *input, __m128i *in,
 
 static void fidtx4x4_sse4_1(__m128i *in, __m128i *out, int32_t bit, int32_t col_num) {
     (void)bit;
-    __m128i fact = _mm_set1_epi32(NewSqrt2);
+    __m128i fact = _mm_set1_epi32(new_sqrt2);
     __m128i offset = _mm_set1_epi32(1 << (NewSqrt2Bits - 1));
     __m128i a_low;
     __m128i v[4];

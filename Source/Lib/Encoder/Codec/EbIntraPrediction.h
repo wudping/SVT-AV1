@@ -169,7 +169,7 @@ void highbd_filter_intra_predictor(uint16_t *dst, ptrdiff_t stride,
     extern EbErrorType eb_av1_intra_prediction_cl(
         uint8_t                              hbd_mode_decision,
         struct ModeDecisionContext           *context_ptr,
-        PictureControlSet                    *picture_control_set_ptr,
+        PictureControlSet                    *pcs_ptr,
         ModeDecisionCandidateBuffer           *candidate_buffer_ptr);
 
     extern EbErrorType intra_open_loop_reference_samples_ctor(

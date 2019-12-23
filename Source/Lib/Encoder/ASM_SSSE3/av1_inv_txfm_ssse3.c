@@ -18,9 +18,7 @@
 #include "transpose_sse2.h"
 
 // TODO(binpengsmail@gmail.com): replace some for loop with do {} while
-
-    // Sqrt2, Sqrt2^2, Sqrt2^3, Sqrt2^4, Sqrt2^5
-static int32_t NewSqrt2list[TX_SIZES] = { 5793, 2 * 4096, 2 * 5793, 4 * 4096,
+static int32_t new_sqrt2list[TX_SIZES] = { 5793, 2 * 4096, 2 * 5793, 4 * 4096,
                                           4 * 5793 };
 
 static void idct4_new_sse2(const __m128i *input, __m128i *output,
@@ -2246,7 +2244,7 @@ static void iadst16_w4_new_sse2(const __m128i *input, __m128i *output,
 static void iidentity4_new_ssse3(const __m128i *input, __m128i *output,
     int8_t cos_bit) {
     (void)cos_bit;
-    const int16_t scale_fractional = (NewSqrt2 - (1 << NewSqrt2Bits));
+    const int16_t scale_fractional = (new_sqrt2 - (1 << NewSqrt2Bits));
     const __m128i scale = _mm_set1_epi16(scale_fractional << (15 - NewSqrt2Bits));
     for (int32_t i = 0; i < 4; ++i) {
         __m128i x = _mm_mulhrs_epi16(input[i], scale);
@@ -2264,7 +2262,7 @@ static void iidentity8_new_sse2(const __m128i *input, __m128i *output,
 static void iidentity16_new_ssse3(const __m128i *input, __m128i *output,
     int8_t cos_bit) {
     (void)cos_bit;
-    const int16_t scale_fractional = 2 * (NewSqrt2 - (1 << NewSqrt2Bits));
+    const int16_t scale_fractional = 2 * (new_sqrt2 - (1 << NewSqrt2Bits));
     const __m128i scale = _mm_set1_epi16(scale_fractional << (15 - NewSqrt2Bits));
     for (int32_t i = 0; i < 16; ++i) {
         __m128i x = _mm_mulhrs_epi16(input[i], scale);
@@ -2309,7 +2307,7 @@ static INLINE void lowbd_write_buffer_8xn_sse2(__m128i *in,
 }
 
 // 1D functions process process 8 pixels at one time.
-static const transform_1d_ssse3
+static const Transform1dSsse3
 lowbd_txfm_all_1d_w8_arr[TX_SIZES][ITX_TYPES_1D] = {
     { idct4_new_sse2, iadst4_new_sse2, iidentity4_new_ssse3 },
     { idct8_new_sse2, iadst8_new_sse2, iidentity8_new_sse2 },
@@ -2320,7 +2318,7 @@ lowbd_txfm_all_1d_w8_arr[TX_SIZES][ITX_TYPES_1D] = {
 
 // functions for blocks with eob at DC and within
 // topleft 8x8, 16x16, 32x32 corner
-static const transform_1d_ssse3
+static const Transform1dSsse3
 lowbd_txfm_all_1d_zeros_w8_arr[TX_SIZES][ITX_TYPES_1D][4] = {
     {
         { idct4_new_sse2, idct4_new_sse2, NULL, NULL },
@@ -2352,7 +2350,7 @@ lowbd_txfm_all_1d_zeros_w8_arr[TX_SIZES][ITX_TYPES_1D][4] = {
 
 // 1D functions process process 4 pixels at one time.
 // used in 4x4, 4x8, 4x16, 8x4, 16x4
-static const transform_1d_ssse3
+static const Transform1dSsse3
 lowbd_txfm_all_1d_w4_arr[TX_SIZES][ITX_TYPES_1D] = {
     { idct4_w4_new_sse2, iadst4_w4_new_sse2, iidentity4_new_ssse3 },
     { idct8_w4_new_sse2, iadst8_w4_new_sse2, iidentity8_new_sse2 },
@@ -2365,7 +2363,7 @@ static INLINE void iidentity_row_8xn_ssse3(__m128i *out, const int32_t *input,
     int32_t stride, int32_t shift, int32_t height,
     int32_t txw_idx, int32_t rect_type) {
     const int32_t *input_row = input;
-    const __m128i scale = _mm_set1_epi16(NewSqrt2list[txw_idx]);
+    const __m128i scale = _mm_set1_epi16(new_sqrt2list[txw_idx]);
     const __m128i rounding = _mm_set1_epi16((1 << (NewSqrt2Bits - 1)) +
         (1 << (NewSqrt2Bits - shift - 1)));
     const __m128i one = _mm_set1_epi16(1);
@@ -2385,7 +2383,7 @@ static INLINE void iidentity_row_8xn_ssse3(__m128i *out, const int32_t *input,
     }
     else {
         const __m128i rect_scale =
-            _mm_set1_epi16(NewInvSqrt2 << (15 - NewSqrt2Bits));
+            _mm_set1_epi16(new_inv_sqrt2 << (15 - NewSqrt2Bits));
         for (int32_t i = 0; i < height; ++i) {
             __m128i src = load_32bit_to_16bit(input_row);
             src = _mm_mulhrs_epi16(src, rect_scale);
@@ -2406,7 +2404,7 @@ static INLINE void iidentity_col_8xn_ssse3(
     uint8_t *output_w, int32_t stride_w,
     __m128i *buf, int32_t shift, int32_t height,
     int32_t txh_idx) {
-    const __m128i scale = _mm_set1_epi16(NewSqrt2list[txh_idx]);
+    const __m128i scale = _mm_set1_epi16(new_sqrt2list[txh_idx]);
     const __m128i scale_rounding = _mm_set1_epi16(1 << (NewSqrt2Bits - 1));
     const __m128i shift_rounding = _mm_set1_epi32(1 << (-shift - 1));
     const __m128i one = _mm_set1_epi16(1);
@@ -2475,9 +2473,9 @@ static void lowbd_inv_txfm2d_add_4x4_ssse3(const int32_t *input,
     const int32_t txfm_size_col = tx_size_wide[tx_size];
     const int32_t txfm_size_row = tx_size_high[tx_size];
 
-    const transform_1d_ssse3 row_txfm =
+    const Transform1dSsse3 row_txfm =
         lowbd_txfm_all_1d_w4_arr[txw_idx][hitx_1d_tab[tx_type]];
-    const transform_1d_ssse3 col_txfm =
+    const Transform1dSsse3 col_txfm =
         lowbd_txfm_all_1d_w4_arr[txh_idx][vitx_1d_tab[tx_type]];
 
     int32_t ud_flip, lr_flip;
@@ -2523,7 +2521,7 @@ static INLINE void lowbd_write_buffer_16xn_sse2(__m128i *in,
 
 static INLINE void round_shift_ssse3(const __m128i *input, __m128i *output,
     int32_t size) {
-    const __m128i scale = _mm_set1_epi16(NewInvSqrt2 * 8);
+    const __m128i scale = _mm_set1_epi16(new_inv_sqrt2 * 8);
     for (int32_t i = 0; i < size; ++i)
         output[i] = _mm_mulhrs_epi16(input[i], scale);
 }
@@ -2553,9 +2551,9 @@ static INLINE void lowbd_inv_txfm2d_add_no_identity_ssse3(
     ASSERT(eoby < 32);
     const int32_t fun_idx_x = lowbd_txfm_all_1d_zeros_idx[eobx];
     const int32_t fun_idx_y = lowbd_txfm_all_1d_zeros_idx[eoby];
-    const transform_1d_ssse3 row_txfm =
+    const Transform1dSsse3 row_txfm =
         lowbd_txfm_all_1d_zeros_w8_arr[txw_idx][hitx_1d_tab[tx_type]][fun_idx_x];
-    const transform_1d_ssse3 col_txfm =
+    const Transform1dSsse3 col_txfm =
         lowbd_txfm_all_1d_zeros_w8_arr[txh_idx][vitx_1d_tab[tx_type]][fun_idx_y];
 
     assert(col_txfm != NULL);
@@ -2626,7 +2624,7 @@ static INLINE void lowbd_inv_txfm2d_add_h_identity_ssse3(
 
     const int32_t fun_idx = lowbd_txfm_all_1d_zeros_idx[eoby];
     ASSERT(fun_idx < 4);
-    const transform_1d_ssse3 col_txfm =
+    const Transform1dSsse3 col_txfm =
         lowbd_txfm_all_1d_zeros_w8_arr[txh_idx][vitx_1d_tab[tx_type]][fun_idx];
 
     assert(col_txfm != NULL);
@@ -2675,7 +2673,7 @@ static INLINE void lowbd_inv_txfm2d_add_v_identity_ssse3(
     const int32_t rect_type = get_rect_tx_log_ratio(txfm_size_col, txfm_size_row);
 
     const int32_t fun_idx = lowbd_txfm_all_1d_zeros_idx[eobx];
-    const transform_1d_ssse3 row_txfm =
+    const Transform1dSsse3 row_txfm =
         lowbd_txfm_all_1d_zeros_w8_arr[txw_idx][hitx_1d_tab[tx_type]][fun_idx];
 
     assert(row_txfm != NULL);
@@ -2771,9 +2769,9 @@ static void lowbd_inv_txfm2d_add_4x8_ssse3(const int32_t *input,
     const int32_t txfm_size_col = tx_size_wide[tx_size];
     const int32_t txfm_size_row = tx_size_high[tx_size];
 
-    const transform_1d_ssse3 row_txfm =
+    const Transform1dSsse3 row_txfm =
         lowbd_txfm_all_1d_w8_arr[txw_idx][hitx_1d_tab[tx_type]];
-    const transform_1d_ssse3 col_txfm =
+    const Transform1dSsse3 col_txfm =
         lowbd_txfm_all_1d_w4_arr[txh_idx][vitx_1d_tab[tx_type]];
 
     int32_t ud_flip, lr_flip;
@@ -2813,9 +2811,9 @@ static void lowbd_inv_txfm2d_add_8x4_ssse3(const int32_t *input,
     const int32_t txfm_size_col = tx_size_wide[tx_size];
     const int32_t txfm_size_row = tx_size_high[tx_size];
 
-    const transform_1d_ssse3 row_txfm =
+    const Transform1dSsse3 row_txfm =
         lowbd_txfm_all_1d_w4_arr[txw_idx][hitx_1d_tab[tx_type]];
-    const transform_1d_ssse3 col_txfm =
+    const Transform1dSsse3 col_txfm =
         lowbd_txfm_all_1d_w8_arr[txh_idx][vitx_1d_tab[tx_type]];
 
     int32_t ud_flip, lr_flip;
@@ -2855,9 +2853,9 @@ static void lowbd_inv_txfm2d_add_4x16_ssse3(const int32_t *input,
     const int32_t txfm_size_col = tx_size_wide[tx_size];
     const int32_t txfm_size_row = tx_size_high[tx_size];
 
-    const transform_1d_ssse3 row_txfm =
+    const Transform1dSsse3 row_txfm =
         lowbd_txfm_all_1d_w8_arr[txw_idx][hitx_1d_tab[tx_type]];
-    const transform_1d_ssse3 col_txfm =
+    const Transform1dSsse3 col_txfm =
         lowbd_txfm_all_1d_w4_arr[txh_idx][vitx_1d_tab[tx_type]];
 
     int32_t ud_flip, lr_flip;
@@ -2903,9 +2901,9 @@ static void lowbd_inv_txfm2d_add_16x4_ssse3(const int32_t *input,
     const int32_t txfm_size_row = tx_size_high[tx_size];
     const int32_t buf_size_w_div8 = txfm_size_col >> 3;
 
-    const transform_1d_ssse3 row_txfm =
+    const Transform1dSsse3 row_txfm =
         lowbd_txfm_all_1d_w4_arr[txw_idx][hitx_1d_tab[tx_type]];
-    const transform_1d_ssse3 col_txfm =
+    const Transform1dSsse3 col_txfm =
         lowbd_txfm_all_1d_w8_arr[txh_idx][vitx_1d_tab[tx_type]];
 
     int32_t ud_flip, lr_flip;

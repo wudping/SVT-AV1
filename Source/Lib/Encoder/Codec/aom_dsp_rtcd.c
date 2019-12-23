@@ -1342,16 +1342,16 @@ void setup_rtcd_internal(CPU_FLAGS flags)
     eb_av1_fwd_txfm2d_4x4 = av1_transform_two_d_4x4_c;
     if (flags & HAS_SSE4_1) eb_av1_fwd_txfm2d_4x4 = eb_av1_fwd_txfm2d_4x4_sse4_1;
 
-    handle_transform16x64 = HandleTransform16x64_c;
-    if (flags & HAS_AVX2) handle_transform16x64 = HandleTransform16x64_avx2;
-    handle_transform32x64 = HandleTransform32x64_c;
-    if (flags & HAS_AVX2) handle_transform32x64 = HandleTransform32x64_avx2;
-    handle_transform64x16 = HandleTransform64x16_c;
-    if (flags & HAS_AVX2) handle_transform64x16 = HandleTransform64x16_avx2;
-    handle_transform64x32 = HandleTransform64x32_c;
-    if (flags & HAS_AVX2) handle_transform64x32 = HandleTransform64x32_avx2;
+    handle_transform16x64 = handle_transform16x64_c;
+    if (flags & HAS_AVX2) handle_transform16x64 = handle_transform16x64_avx2;
+    handle_transform32x64 = handle_transform32x64_c;
+    if (flags & HAS_AVX2) handle_transform32x64 = handle_transform32x64_avx2;
+    handle_transform64x16 = handle_transform64x16_c;
+    if (flags & HAS_AVX2) handle_transform64x16 = handle_transform64x16_avx2;
+    handle_transform64x32 = handle_transform64x32_c;
+    if (flags & HAS_AVX2) handle_transform64x32 = handle_transform64x32_avx2;
     handle_transform64x64 = handle_transform64x64_c;
-    if (flags & HAS_AVX2) handle_transform64x64 = HandleTransform64x64_avx2;
+    if (flags & HAS_AVX2) handle_transform64x64 = handle_transform64x64_avx2;
 
     // eb_aom_highbd_v_predictor
     eb_aom_highbd_v_predictor_16x16 = eb_aom_highbd_v_predictor_16x16_c;

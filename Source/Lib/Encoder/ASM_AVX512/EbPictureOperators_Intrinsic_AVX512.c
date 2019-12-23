@@ -2,15 +2,15 @@
 * Copyright(c) 2019 Intel Corporation
 * SPDX - License - Identifier: BSD - 2 - Clause - Patent
 */
-
 #include "EbDefinitions.h"
+
+#ifndef NON_AVX512_SUPPORT
+
 #include <immintrin.h>
 #include "EbPictureOperators_AVX2.h"
 #include "EbPictureOperators_Inline_AVX2.h"
 #include "EbPictureOperators_SSE2.h"
 #include "EbMemory_AVX2.h"
-
-#ifndef NON_AVX512_SUPPORT
 
 static INLINE void residual32x2_avx512(const uint8_t *input,
     const uint32_t input_stride, const uint8_t *pred,
@@ -333,7 +333,7 @@ uint64_t spatial_full_distortion_kernel_avx512(
                 const __m128i re1 = _mm_cvtsi32_si128(*(uint32_t *)(rec + recon_stride));
                 const __m256i in = _mm256_setr_m128i(in0, in1);
                 const __m256i re = _mm256_setr_m128i(re0, re1);
-                Distortion_AVX2_INTRIN(in, re, &sum);
+                distortion_avx2_intrin(in, re, &sum);
                 inp += 2 * input_stride;
                 rec += 2 * recon_stride;
                 h -= 2;
@@ -357,7 +357,7 @@ uint64_t spatial_full_distortion_kernel_avx512(
                 const __m128i re1 = _mm_loadl_epi64((__m128i *)(rec + recon_stride));
                 const __m256i in = _mm256_setr_m128i(in0, in1);
                 const __m256i re = _mm256_setr_m128i(re0, re1);
-                Distortion_AVX2_INTRIN(in, re, &sum);
+                distortion_avx2_intrin(in, re, &sum);
                 inp += 2 * input_stride;
                 rec += 2 * recon_stride;
                 h -= 2;
@@ -366,7 +366,7 @@ uint64_t spatial_full_distortion_kernel_avx512(
         else if (leftover <= 16) {
             h = area_height;
             do {
-                SpatialFullDistortionKernel16_AVX2_INTRIN(inp, rec, &sum);
+                spatial_full_distortion_kernel16_avx2_intrin(inp, rec, &sum);
                 inp += input_stride;
                 rec += recon_stride;
             } while (--h);
@@ -380,7 +380,7 @@ uint64_t spatial_full_distortion_kernel_avx512(
             __m256i sum1 = _mm256_setzero_si256();
             h = area_height;
             do {
-                SpatialFullDistortionKernel32Leftover_AVX2_INTRIN(inp, rec, &sum, &sum1);
+                spatial_full_distortion_kernel32_leftover_avx2_intrin(inp, rec, &sum, &sum1);
                 inp += input_stride;
                 rec += recon_stride;
             } while (--h);
@@ -414,7 +414,7 @@ uint64_t spatial_full_distortion_kernel_avx512(
 
         if (area_width == 32) {
             do {
-                SpatialFullDistortionKernel32_AVX2_INTRIN(inp, rec, &sum);
+                spatial_full_distortion_kernel32_avx2_intrin(inp, rec, &sum);
                 inp += input_stride;
                 rec += recon_stride;
             } while (--h);

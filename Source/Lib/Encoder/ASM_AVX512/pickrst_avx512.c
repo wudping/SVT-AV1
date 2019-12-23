@@ -4,6 +4,10 @@
 * SPDX - License - Identifier: BSD - 2 - Clause - Patent
 */
 
+#include "EbDefinitions.h"
+
+#ifndef NON_AVX512_SUPPORT
+
 #include <immintrin.h>  // AVX2
 #include "synonyms.h"
 #include "aom_dsp_rtcd.h"
@@ -14,8 +18,6 @@
 #include "synonyms_avx512.h"
 #include "transpose_sse2.h"
 #include "transpose_avx2.h"
-
-#ifndef NON_AVX512_SUPPORT
 
 static INLINE int32_t hadd32_avx512(const __m512i src) {
     const __m256i src_L = _mm512_extracti64x4_epi64(src, 0);

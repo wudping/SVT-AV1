@@ -81,9 +81,9 @@ extern "C" {
         int32_t grain_scale_shift;
 
         uint16_t random_seed;
-    } aom_film_grain_t;
+    } AomFilmGrain;
 
-    int32_t film_grain_params_equal(aom_film_grain_t *pars_a, aom_film_grain_t *pars_b);
+    int32_t film_grain_params_equal(AomFilmGrain *pars_a, AomFilmGrain *pars_b);
 
     /*!\brief Add film grain
      *
@@ -98,7 +98,7 @@ extern "C" {
      * \param[in]    luma_stride      luma plane stride
      * \param[in]    chroma_stride    chroma plane stride
      */
-    void eb_av1_add_film_grain_run(aom_film_grain_t *grain_params, uint8_t *luma,
+    void eb_av1_add_film_grain_run(AomFilmGrain *grain_params, uint8_t *luma,
         uint8_t *cb, uint8_t *cr, int32_t height, int32_t width,
         int32_t luma_stride, int32_t chroma_stride,
         int32_t use_high_bit_depth, int32_t chroma_subsamp_y,
@@ -113,13 +113,13 @@ extern "C" {
      * \param[in]    dst              Resulting image with grain
      */
 
-     //void eb_av1_add_film_grain(aom_film_grain_t *grain_params, EbPictureBufferDesc *src,
+     //void eb_av1_add_film_grain(AomFilmGrain *grain_params, EbPictureBufferDesc *src,
      //        EbPictureBufferDesc *dst);
 
-     //void av1_film_grain_write_updated(const aom_film_grain_t *pars,
+     //void av1_film_grain_write_updated(const AomFilmGrain *pars,
      //  int32_t monochrome, struct AomWriteBitBuffer *wb);
      //
-     //void av1_film_grain_read_updated(aom_film_grain_t *pars,
+     //void av1_film_grain_read_updated(AomFilmGrain *pars,
      //                                 int32_t monochrome, struct aom_read_bit_buffer *wb,
      //                                 struct aom_internal_error_info *error);
 

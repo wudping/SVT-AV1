@@ -300,7 +300,7 @@ void eb_aom_free(void *memblk) {
 */
 //--------------------------------------------------------------------
 
-static void init_arrays(aom_film_grain_t *params, int32_t luma_stride,
+static void init_arrays(AomFilmGrain *params, int32_t luma_stride,
     int32_t chroma_stride, int32_t ***pred_pos_luma_p,
     int32_t ***pred_pos_chroma_p, int32_t **luma_grain_block,
     int32_t **cb_grain_block, int32_t **cr_grain_block,
@@ -396,7 +396,7 @@ static void init_arrays(aom_film_grain_t *params, int32_t luma_stride,
         (int32_t *)malloc(sizeof(**cr_grain_block) * chroma_grain_samples);
 }
 
-static void dealloc_arrays(aom_film_grain_t *params, int32_t ***pred_pos_luma,
+static void dealloc_arrays(AomFilmGrain *params, int32_t ***pred_pos_luma,
     int32_t ***pred_pos_chroma, int32_t **luma_grain_block,
     int32_t **cb_grain_block, int32_t **cr_grain_block,
     int32_t **y_line_buf, int32_t **cb_line_buf,
@@ -458,7 +458,7 @@ static void init_random_generator(int32_t luma_line, uint16_t seed) {
 }
 
 static void generate_luma_grain_block(
-    aom_film_grain_t *params, int32_t **pred_pos_luma, int32_t *luma_grain_block,
+    AomFilmGrain *params, int32_t **pred_pos_luma, int32_t *luma_grain_block,
     int32_t luma_block_size_y, int32_t luma_block_size_x, int32_t luma_grain_stride,
     int32_t left_pad, int32_t top_pad, int32_t right_pad, int32_t bottom_pad) {
     if (params->num_y_points == 0) return;
@@ -493,7 +493,7 @@ static void generate_luma_grain_block(
 }
 
 static void generate_chroma_grain_blocks(
-    aom_film_grain_t *params,
+    AomFilmGrain *params,
     //                                  int32_t** pred_pos_luma,
     int32_t **pred_pos_chroma, int32_t *luma_grain_block, int32_t *cb_grain_block,
     int32_t *cr_grain_block, int32_t luma_grain_stride, int32_t chroma_block_size_y,
@@ -617,7 +617,7 @@ static int32_t scale_LUT(int32_t *scaling_lut, int32_t index, int32_t bit_depth)
             (bit_depth - 8));
 }
 
-static void add_noise_to_block(aom_film_grain_t *params, uint8_t *luma,
+static void add_noise_to_block(AomFilmGrain *params, uint8_t *luma,
     uint8_t *cb, uint8_t *cr, int32_t luma_stride,
     int32_t chroma_stride, int32_t *luma_grain,
     int32_t *cb_grain, int32_t *cr_grain,
@@ -726,7 +726,7 @@ static void add_noise_to_block(aom_film_grain_t *params, uint8_t *luma,
 }
 
 static void add_noise_to_block_hbd(
-    aom_film_grain_t *params, uint16_t *luma, uint16_t *cb, uint16_t *cr,
+    AomFilmGrain *params, uint16_t *luma, uint16_t *cb, uint16_t *cr,
     int32_t luma_stride, int32_t chroma_stride, int32_t *luma_grain, int32_t *cb_grain,
     int32_t *cr_grain, int32_t luma_grain_stride, int32_t chroma_grain_stride,
     int32_t half_luma_height, int32_t half_luma_width, int32_t bit_depth,
@@ -833,7 +833,7 @@ static void add_noise_to_block_hbd(
     }
 }
 
-int32_t film_grain_params_equal(aom_film_grain_t *pars_a, aom_film_grain_t *pars_b) {
+int32_t film_grain_params_equal(AomFilmGrain *pars_a, AomFilmGrain *pars_b) {
     if (pars_a->apply_grain != pars_b->apply_grain)
         return 0;
     if (pars_a->overlap_flag != pars_b->overlap_flag)
@@ -980,7 +980,7 @@ static void hor_boundary_overlap(int32_t *top_block, int32_t top_stride,
     }
 }
 
-void eb_av1_add_film_grain_run(aom_film_grain_t *params, uint8_t *luma,
+void eb_av1_add_film_grain_run(AomFilmGrain *params, uint8_t *luma,
     uint8_t *cb, uint8_t *cr, int32_t height, int32_t width,
     int32_t luma_stride, int32_t chroma_stride,
     int32_t use_high_bit_depth, int32_t chroma_subsamp_y,
@@ -1370,7 +1370,7 @@ void eb_av1_add_film_grain_run(aom_film_grain_t *params, uint8_t *luma,
 }
 
 /*
-void av1_film_grain_write_updated(const aom_film_grain_t *pars,
+void av1_film_grain_write_updated(const AomFilmGrain *pars,
                                   int32_t monochrome,
                                   struct AomWriteBitBuffer *wb) {
   eb_aom_wb_write_literal(wb, pars->num_y_points, 4);  // max 14
@@ -1441,7 +1441,7 @@ void av1_film_grain_write_updated(const aom_film_grain_t *pars,
 }
 */
 /*
-void av1_film_grain_read_updated(aom_film_grain_t *pars,
+void av1_film_grain_read_updated(AomFilmGrain *pars,
                                  int32_t monochrome,
                                  struct aom_read_bit_buffer *rb,
                                  struct aom_internal_error_info *error) {

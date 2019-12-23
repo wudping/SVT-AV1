@@ -19,8 +19,8 @@ extern "C" {
  *   predicts candidates (LCU)
  *******************************************/
 extern EbErrorType early_mode_decision_lcu(
-    SequenceControlSet                   *sequence_control_set_ptr,
-    PictureControlSet                    *picture_control_set_ptr,
+    SequenceControlSet                   *scs_ptr,
+    PictureControlSet                    *pcs_ptr,
     SuperBlock                           *sb_ptr,
     uint32_t                                  sb_index,
     ModeDecisionConfigurationContext     *context_ptr);
@@ -30,8 +30,8 @@ extern EbErrorType early_mode_decision_lcu(
 *   Derive Lcu For Each Leaf (LCU)
 *******************************************/
 extern EbErrorType derive_delta_qp_for_each_leaf_lcu(
-    SequenceControlSet                   *sequence_control_set_ptr,
-    PictureControlSet                    *picture_control_set_ptr,
+    SequenceControlSet                   *scs_ptr,
+    PictureControlSet                    *pcs_ptr,
     SuperBlock                           *sb_ptr,
     uint32_t                                  sb_index,
     int32_t                                  intra_min_distance,
@@ -42,7 +42,7 @@ extern EbErrorType derive_delta_qp_for_each_leaf_lcu(
 
 void qpm_derive_delta_qp_map_weights(
     ModeDecisionConfigurationContext    *context_ptr,
-    PictureControlSet                  *picture_control_set_ptr);
+    PictureControlSet                  *pcs_ptr);
 /**************************************
 * Function Ptrs Definitions
 **************************************/

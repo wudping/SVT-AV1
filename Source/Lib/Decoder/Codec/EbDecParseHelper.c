@@ -60,7 +60,7 @@ void set_segment_id(EbDecHandle *dec_handle, int mi_offset,
                 y * frm_header->mi_cols + x] = segment_id;
 }
 
-static INLINE int get_tx_size_context(const PartitionInfo_t *xd,
+static INLINE int get_tx_size_context(const PartitionInfo *xd,
                                       ParseCtxt *parse_ctxt)
 {
     const BlockModeInfo *mbmi = xd->mi;
@@ -101,7 +101,7 @@ static INLINE TxSize depth_to_tx_size(int depth, BlockSize bsize) {
     return tx_size;
 }
 
-void update_tx_context(ParseCtxt *parse_ctxt, PartitionInfo_t *pi,
+void update_tx_context(ParseCtxt *parse_ctxt, PartitionInfo *pi,
     BlockSize bsize, TxSize txSize,
     int blk_row, int blk_col)
 {
@@ -126,7 +126,7 @@ void update_tx_context(ParseCtxt *parse_ctxt, PartitionInfo_t *pi,
     memset(left_ctx, tx_high, bh);
 }
 
-TxSize read_selected_tx_size(PartitionInfo_t *xd, ParseCtxt *parse_ctxt) {
+TxSize read_selected_tx_size(PartitionInfo *xd, ParseCtxt *parse_ctxt) {
     SvtReader *r = &parse_ctxt->r;
     const BlockSize bsize = xd->mi->sb_type;
     const int32_t tx_size_cat = bsize_to_tx_size_cat(bsize);
@@ -141,7 +141,7 @@ TxSize read_selected_tx_size(PartitionInfo_t *xd, ParseCtxt *parse_ctxt) {
     return tx_size;
 }
 
-int get_intra_inter_context(PartitionInfo_t *xd) {
+int get_intra_inter_context(PartitionInfo *xd) {
     const BlockModeInfo *const above_mbmi = xd->above_mbmi;
     const BlockModeInfo *const left_mbmi = xd->left_mbmi;
     const int has_above = xd->up_available;
@@ -239,7 +239,7 @@ static INLINE int has_uni_comp_refs(const BlockModeInfo *mbmi) {
                                     (mbmi->ref_frame[1] >= BWDREF_FRAME)));
 }
 
-int get_comp_reference_type_context(const PartitionInfo_t *xd) {
+int get_comp_reference_type_context(const PartitionInfo *xd) {
     int pred_context;
     const BlockModeInfo *const above_mbmi = xd->above_mbmi;
     const BlockModeInfo *const left_mbmi = xd->left_mbmi;

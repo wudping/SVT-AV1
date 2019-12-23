@@ -4916,7 +4916,7 @@ static void half_pel_refinement_block(
  *   performs Half Pel refinement for the 85 PUs
  *******************************************/
 void half_pel_refinement_sb(
-    PictureParentControlSet *picture_control_set_ptr,
+    PictureParentControlSet *pcs_ptr,
     MeContext *context_ptr,  // input/output parameter, ME context Ptr, used to
                              // get/update ME results
     uint8_t *refBuffer, uint32_t ref_stride,
@@ -5085,7 +5085,7 @@ void half_pel_refinement_sb(
                                   &context_ptr->p_best_full_pel_mv8x8[idx],
                                   inetger_mv);
     }
-    if (picture_control_set_ptr->pic_depth_mode <= PIC_ALL_C_DEPTH_MODE) {
+    if (pcs_ptr->pic_depth_mode <= PIC_ALL_C_DEPTH_MODE) {
         // 64x32
         for (pu_index = 0; pu_index < 2; ++pu_index) {
             block_index_shift_x = 0;
@@ -5489,14 +5489,14 @@ void half_pel_refinement_sb(
  *******************************************/
 #if OPTIMISED_EX_SUBPEL
 static void open_loop_me_half_pel_search_sblock(
-    PictureParentControlSet *picture_control_set_ptr, MeContext *context_ptr,
+    PictureParentControlSet *pcs_ptr, MeContext *context_ptr,
     uint32_t list_index, uint32_t ref_pic_index, int16_t x_search_area_origin,
     int16_t y_search_area_origin, uint32_t search_area_width,
     uint32_t search_area_height)
 {
 
     half_pel_refinement_sb(
-        picture_control_set_ptr,
+        pcs_ptr,
         context_ptr,
 #if M0_HIGH_PRECISION_INTERPOLATION
         context_ptr->integer_buffer_ptr[list_index][ref_pic_index] +
@@ -5531,7 +5531,7 @@ static void open_loop_me_half_pel_search_sblock(
 }
 #else
 static void open_loop_me_half_pel_search_sblock(
-    PictureParentControlSet *picture_control_set_ptr, MeContext *context_ptr,
+    PictureParentControlSet *pcs_ptr, MeContext *context_ptr,
     uint32_t list_index, uint32_t ref_pic_index, int16_t x_search_area_origin,
     int16_t y_search_area_origin, uint32_t search_area_width,
     uint32_t search_area_height)
@@ -5547,7 +5547,7 @@ static void open_loop_me_half_pel_search_sblock(
             uint16_t inetger_mv2 = (((uint16_t)mvx << 2));
             uint32_t inetger_mv = inetger_mv1 | inetger_mv2;
             half_pel_refinement_sb(
-                picture_control_set_ptr,
+                pcs_ptr,
                 context_ptr,
 #if M0_HIGH_PRECISION_INTERPOLATION
                 context_ptr->integer_buffer_ptr[list_index][ref_pic_index] +
@@ -6121,7 +6121,7 @@ void interpolate_search_region_AVC_chroma(
  *******************************************/
 static void PU_HalfPelRefinement(
     SequenceControlSet
-        *sequence_control_set_ptr,  // input parameter, Sequence control set Ptr
+        *scs_ptr,  // input parameter, Sequence control set Ptr
     MeContext
         *context_ptr,  // input parameter, ME context Ptr, used to get SB Ptr
     uint8_t *refBuffer, uint32_t ref_stride, uint32_t *pBestSsd,
@@ -6145,7 +6145,7 @@ static void PU_HalfPelRefinement(
     uint8_t *psubPelDirection)
 {
     EncodeContext *encode_context_ptr =
-        sequence_control_set_ptr->encode_context_ptr;
+        scs_ptr->encode_context_ptr;
 
     int32_t searchRegionIndex;
     uint64_t bestHalfSad = 0;
@@ -6166,7 +6166,7 @@ static void PU_HalfPelRefinement(
     int16_t xSearchIndex = (x_mv >> 2) - x_search_area_origin;
     int16_t ySearchIndex = (y_mv >> 2) - y_search_area_origin;
 
-    (void)sequence_control_set_ptr;
+    (void)scs_ptr;
     (void)encode_context_ptr;
 
     // TODO : remove these, and update the MV by just shifts
@@ -6656,8 +6656,8 @@ static void PU_HalfPelRefinement(
  *******************************************/
 void HalfPelSearch_LCU(
     SequenceControlSet
-        *sequence_control_set_ptr,  // input parameter, Sequence control set Ptr
-    PictureParentControlSet *picture_control_set_ptr,
+        *scs_ptr,  // input parameter, Sequence control set Ptr
+    PictureParentControlSet *pcs_ptr,
     MeContext *context_ptr,  // input/output parameter, ME context Ptr, used to
                              // get/update ME results
     uint8_t *refBuffer, uint32_t ref_stride,
@@ -6686,7 +6686,7 @@ void HalfPelSearch_LCU(
     uint32_t posjBufferIndex;
 
     if (context_ptr->fractional_search64x64)
-        PU_HalfPelRefinement(sequence_control_set_ptr,
+        PU_HalfPelRefinement(scs_ptr,
                              context_ptr,
                              &(refBuffer[0]),
                              ref_stride,
@@ -6719,7 +6719,7 @@ void HalfPelSearch_LCU(
                               puShiftYIndex * context_ptr->interpolated_stride;
 
             PU_HalfPelRefinement(
-                sequence_control_set_ptr,
+                scs_ptr,
                 context_ptr,
                 &(refBuffer[puShiftYIndex * ref_stride + puShiftXIndex]),
                 ref_stride,
@@ -6755,7 +6755,7 @@ void HalfPelSearch_LCU(
                               puShiftYIndex * context_ptr->interpolated_stride;
 
             PU_HalfPelRefinement(
-                sequence_control_set_ptr,
+                scs_ptr,
                 context_ptr,
                 &(refBuffer[puShiftYIndex * ref_stride + puShiftXIndex]),
                 ref_stride,
@@ -6796,7 +6796,7 @@ void HalfPelSearch_LCU(
                     puShiftYIndex * context_ptr->interpolated_stride;
 
                 PU_HalfPelRefinement(
-                    sequence_control_set_ptr,
+                    scs_ptr,
                     context_ptr,
                     &(refBuffer[puShiftYIndex * ref_stride + puShiftXIndex]),
                     ref_stride,
@@ -6815,7 +6815,7 @@ void HalfPelSearch_LCU(
             }
         }
     }
-    if (picture_control_set_ptr->pic_depth_mode <= PIC_ALL_C_DEPTH_MODE) {
+    if (pcs_ptr->pic_depth_mode <= PIC_ALL_C_DEPTH_MODE) {
         // 64x32
         for (pu_index = 0; pu_index < 2; ++pu_index) {
             puShiftXIndex = 0;
@@ -6832,7 +6832,7 @@ void HalfPelSearch_LCU(
                               puShiftYIndex * context_ptr->interpolated_stride;
 
             PU_HalfPelRefinement(
-                sequence_control_set_ptr,
+                scs_ptr,
                 context_ptr,
                 &(refBuffer[puShiftYIndex * ref_stride + puShiftXIndex]),
                 ref_stride,
@@ -6868,7 +6868,7 @@ void HalfPelSearch_LCU(
                               puShiftYIndex * context_ptr->interpolated_stride;
 
             PU_HalfPelRefinement(
-                sequence_control_set_ptr,
+                scs_ptr,
                 context_ptr,
                 &(refBuffer[puShiftYIndex * ref_stride + puShiftXIndex]),
                 ref_stride,
@@ -6904,7 +6904,7 @@ void HalfPelSearch_LCU(
                               puShiftYIndex * context_ptr->interpolated_stride;
 
             PU_HalfPelRefinement(
-                sequence_control_set_ptr,
+                scs_ptr,
                 context_ptr,
                 &(refBuffer[puShiftYIndex * ref_stride + puShiftXIndex]),
                 ref_stride,
@@ -6938,7 +6938,7 @@ void HalfPelSearch_LCU(
                               puShiftYIndex * context_ptr->interpolated_stride;
 
             PU_HalfPelRefinement(
-                sequence_control_set_ptr,
+                scs_ptr,
                 context_ptr,
                 &(refBuffer[puShiftYIndex * ref_stride + puShiftXIndex]),
                 ref_stride,
@@ -6974,7 +6974,7 @@ void HalfPelSearch_LCU(
                               puShiftYIndex * context_ptr->interpolated_stride;
 
             PU_HalfPelRefinement(
-                sequence_control_set_ptr,
+                scs_ptr,
                 context_ptr,
                 &(refBuffer[puShiftYIndex * ref_stride + puShiftXIndex]),
                 ref_stride,
@@ -7010,7 +7010,7 @@ void HalfPelSearch_LCU(
                               puShiftYIndex * context_ptr->interpolated_stride;
 
             PU_HalfPelRefinement(
-                sequence_control_set_ptr,
+                scs_ptr,
                 context_ptr,
                 &(refBuffer[puShiftYIndex * ref_stride + puShiftXIndex]),
                 ref_stride,
@@ -7046,7 +7046,7 @@ void HalfPelSearch_LCU(
                               puShiftYIndex * context_ptr->interpolated_stride;
 
             PU_HalfPelRefinement(
-                sequence_control_set_ptr,
+                scs_ptr,
                 context_ptr,
                 &(refBuffer[puShiftYIndex * ref_stride + puShiftXIndex]),
                 ref_stride,
@@ -7080,7 +7080,7 @@ void HalfPelSearch_LCU(
                               puShiftYIndex * context_ptr->interpolated_stride;
 
             PU_HalfPelRefinement(
-                sequence_control_set_ptr,
+                scs_ptr,
                 context_ptr,
                 &(refBuffer[puShiftYIndex * ref_stride + puShiftXIndex]),
                 ref_stride,
@@ -7114,7 +7114,7 @@ void HalfPelSearch_LCU(
                               puShiftYIndex * context_ptr->interpolated_stride;
 
             PU_HalfPelRefinement(
-                sequence_control_set_ptr,
+                scs_ptr,
                 context_ptr,
                 &(refBuffer[puShiftYIndex * ref_stride + puShiftXIndex]),
                 ref_stride,
@@ -7148,7 +7148,7 @@ void HalfPelSearch_LCU(
                               puShiftYIndex * context_ptr->interpolated_stride;
 
             PU_HalfPelRefinement(
-                sequence_control_set_ptr,
+                scs_ptr,
                 context_ptr,
                 &(refBuffer[puShiftYIndex * ref_stride + puShiftXIndex]),
                 ref_stride,
@@ -10664,7 +10664,7 @@ void quarter_pel_refinement_sb(
     return;
 }
 void HmeOneQuadrantLevel0(
-    PictureParentControlSet *picture_control_set_ptr,
+    PictureParentControlSet *pcs_ptr,
     MeContext *context_ptr,  // input/output parameter, ME context Ptr, used to
                              // get/update ME results
     int16_t origin_x,        // input parameter, SB position in the horizontal
@@ -10702,7 +10702,7 @@ void HmeOneQuadrantLevel0(
     int16_t padWidth;
     int16_t padHeight;
 
-    (void)picture_control_set_ptr;
+    (void)pcs_ptr;
     // Round up x_HME_L0 to be a multiple of 16
     int16_t search_area_width =
         (int16_t)((((((context_ptr->hme_level0_total_search_area_width *
@@ -10878,7 +10878,7 @@ void HmeOneQuadrantLevel0(
 }
 
 void HmeLevel0(
-    PictureParentControlSet *picture_control_set_ptr,
+    PictureParentControlSet *pcs_ptr,
     MeContext *context_ptr,  // input/output parameter, ME context Ptr, used to
                              // get/update ME results
     int16_t origin_x,        // input parameter, SB position in the horizontal
@@ -10921,7 +10921,7 @@ void HmeLevel0(
     int16_t padHeight;
 
     // Adjust SR size based on the searchAreaShift
-    (void)picture_control_set_ptr;
+    (void)pcs_ptr;
     // Round up x_HME_L0 to be a multiple of 16
     int16_t search_area_width =
         (int16_t)((((((context_ptr->hme_level0_search_area_in_width_array
@@ -11306,7 +11306,7 @@ void HmeLevel1(
 
 void HmeLevel2(
     PictureParentControlSet
-        *picture_control_set_ptr,  // input parameter, Picture control set Ptr
+        *pcs_ptr,  // input parameter, Picture control set Ptr
     MeContext *context_ptr,  // input/output parameter, ME context Ptr, used to
                              // get/update ME results
     int16_t
@@ -11342,7 +11342,7 @@ void HmeLevel2(
     // round the search region width to nearest multiple of 8 if it is less than
     // 8 or non multiple of 8 SAD calculation performance is the same for
     // searchregion width from 1 to 8
-    (void)picture_control_set_ptr;
+    (void)pcs_ptr;
     int16_t hmeLevel2SearchAreaInWidth =
         (int16_t)context_ptr
             ->hme_level2_search_area_in_width_array[searchRegionNumberInWidth];
@@ -12188,11 +12188,11 @@ EbErrorType BiPredictionCompensation(MeContext *context_ptr, uint32_t pu_index,
 }
 
 uint8_t skip_bi_pred(
-    PictureParentControlSet *picture_control_set_ptr,
+    PictureParentControlSet *pcs_ptr,
     uint8_t ref_type,
     uint8_t ref_type_table[7]) {
 
-    if (!picture_control_set_ptr->prune_unipred_at_me)
+    if (!pcs_ptr->prune_unipred_at_me)
         return 1;
 
     uint8_t allow_cand = 0;
@@ -12210,18 +12210,18 @@ uint8_t skip_bi_pred(
  *******************************************/
 // This function enables all 16 Bipred candidates when MRP is ON
 EbErrorType BiPredictionSearch(
-    SequenceControlSet *sequence_control_set_ptr,
+    SequenceControlSet *scs_ptr,
     MeContext *context_ptr, uint32_t pu_index, uint8_t candidateIndex,
     uint32_t activeRefPicFirstLisNum, uint32_t activeRefPicSecondLisNum,
     uint8_t *total_me_candidate_index,
     uint8_t ref_type_table[7],
-    PictureParentControlSet *picture_control_set_ptr) {
+    PictureParentControlSet *pcs_ptr) {
     EbErrorType return_error = EB_ErrorNone;
 
     uint32_t firstListRefPictdx;
     uint32_t secondListRefPictdx;
 
-    (void)picture_control_set_ptr;
+    (void)pcs_ptr;
 
     uint32_t nIndex;
 
@@ -12263,11 +12263,11 @@ EbErrorType BiPredictionSearch(
                      uint8_t to_inject_ref_type_0 = svt_get_ref_frame_type(REF_LIST_0, firstListRefPictdx);
                      uint8_t to_inject_ref_type_1 = svt_get_ref_frame_type(REF_LIST_1, secondListRefPictdx);
                      uint8_t add_bi = skip_bi_pred(
-                         picture_control_set_ptr,
+                         pcs_ptr,
                          to_inject_ref_type_0,
                          ref_type_table);
                      add_bi += skip_bi_pred(
-                         picture_control_set_ptr,
+                         pcs_ptr,
                          to_inject_ref_type_1,
                          ref_type_table);
 
@@ -12291,7 +12291,7 @@ EbErrorType BiPredictionSearch(
         }
     }
 
-    if (sequence_control_set_ptr->mrp_mode == 0)
+    if (scs_ptr->mrp_mode == 0)
     {
         // NM: Within list 0    bipred: (LAST,LAST2)    (LAST,LAST3) (LAST,GOLD)
         for (firstListRefPictdx = 1;
@@ -12299,7 +12299,7 @@ EbErrorType BiPredictionSearch(
              firstListRefPictdx++) {
             uint8_t to_inject_ref_type_0 = svt_get_ref_frame_type(REF_LIST_0, firstListRefPictdx);
             uint8_t add_bi = skip_bi_pred(
-                picture_control_set_ptr,
+                pcs_ptr,
                 to_inject_ref_type_0,
                 ref_type_table);
             if (add_bi) {
@@ -12324,7 +12324,7 @@ EbErrorType BiPredictionSearch(
              secondListRefPictdx++) {
             uint8_t to_inject_ref_type_0 = svt_get_ref_frame_type(REF_LIST_0, firstListRefPictdx);
             uint8_t add_bi = skip_bi_pred(
-                picture_control_set_ptr,
+                pcs_ptr,
                 to_inject_ref_type_0,
                 ref_type_table);
             if (add_bi) {
@@ -12485,7 +12485,7 @@ EbErrorType CheckZeroZeroCenter(EbPictureBufferDesc *refPicPtr,
 }
 
 EbErrorType suPelEnable(MeContext *context_ptr,
-                        PictureParentControlSet *picture_control_set_ptr,
+                        PictureParentControlSet *pcs_ptr,
                         uint32_t listIndex, uint32_t refPicIndex,
                         EbBool *enableHalfPel32x32, EbBool *enableHalfPel16x16,
                         EbBool *enableHalfPel8x8) {
@@ -13029,7 +13029,7 @@ EbErrorType suPelEnable(MeContext *context_ptr,
              ->p_sb_best_sad[listIndex][refPicIndex][ME_TIER_ZERO_PU_8x8_63]) >>
         6;
 
-    if (picture_control_set_ptr->temporal_layer_index == 0) {
+    if (pcs_ptr->temporal_layer_index == 0) {
         // 32x32
         if ((mvMag32x32 < SQR(48)) && (avgSad32x32 < 32 * 32 * 6))
             *enableHalfPel32x32 = EB_TRUE;  // CLASS_0
@@ -13059,7 +13059,7 @@ EbErrorType suPelEnable(MeContext *context_ptr,
             *enableHalfPel8x8 = EB_TRUE;  // CLASS_3
     }
 
-    else if (picture_control_set_ptr->temporal_layer_index == 1) {
+    else if (pcs_ptr->temporal_layer_index == 1) {
         // 32x32
         if ((mvMag32x32 < SQR(32)) && (avgSad32x32 < 32 * 32 * 6))
             *enableHalfPel32x32 = EB_TRUE;  // CLASS_0
@@ -13087,7 +13087,7 @@ EbErrorType suPelEnable(MeContext *context_ptr,
             *enableHalfPel8x8 = EB_FALSE;  // CLASS_2
         else
             *enableHalfPel8x8 = EB_TRUE;  // CLASS_3
-    } else if (picture_control_set_ptr->temporal_layer_index == 2) {
+    } else if (pcs_ptr->temporal_layer_index == 2) {
         // 32x32
         if ((mvMag32x32 < SQR(80)) && (avgSad32x32 < 32 * 32 * 6))
             *enableHalfPel32x32 = EB_TRUE;  // CLASS_0
@@ -13477,7 +13477,7 @@ void SwapMeCandidate(MePredUnit *a, MePredUnit *b) {
  *   performs ME (LCU)
  *******************************************/
 EbErrorType motion_estimate_lcu(
-        PictureParentControlSet   *picture_control_set_ptr,  // input parameter, Picture Control Set Ptr
+        PictureParentControlSet   *pcs_ptr,  // input parameter, Picture Control Set Ptr
         uint32_t                   sb_index,              // input parameter, SB Index
         uint32_t                   sb_origin_x,            // input parameter, SB Origin X
         uint32_t                   sb_origin_y,            // input parameter, SB Origin X
@@ -13487,8 +13487,8 @@ EbErrorType motion_estimate_lcu(
 {
     EbErrorType return_error = EB_ErrorNone;
 
-    SequenceControlSet *sequence_control_set_ptr =
-        (SequenceControlSet *)picture_control_set_ptr
+    SequenceControlSet *scs_ptr =
+        (SequenceControlSet *)pcs_ptr
             ->sequence_control_set_wrapper_ptr->object_ptr;
 
     int16_t xTopLeftSearchRegion;
@@ -13496,11 +13496,11 @@ EbErrorType motion_estimate_lcu(
     uint32_t searchRegionIndex;
 
     int16_t picture_width =
-        (int16_t)((SequenceControlSet *)picture_control_set_ptr
+        (int16_t)((SequenceControlSet *)pcs_ptr
                       ->sequence_control_set_wrapper_ptr->object_ptr)
             ->seq_header.max_frame_width;
     int16_t picture_height =
-        (int16_t)((SequenceControlSet *)picture_control_set_ptr
+        (int16_t)((SequenceControlSet *)pcs_ptr
                       ->sequence_control_set_wrapper_ptr->object_ptr)
             ->seq_header.max_frame_height;
     uint32_t sb_width = (input_ptr->width - sb_origin_x) < BLOCK_SIZE_64
@@ -13555,7 +13555,7 @@ EbErrorType motion_estimate_lcu(
     uint32_t pu_index;
 
     uint32_t max_number_of_pus_per_sb =
-        picture_control_set_ptr->max_number_of_pus_per_sb;
+        pcs_ptr->max_number_of_pus_per_sb;
 
     uint32_t numOfListToSearch;
     uint32_t listIndex;
@@ -13605,32 +13605,32 @@ EbErrorType motion_estimate_lcu(
     EbBool oneQuadrantHME = EB_FALSE;
 
     oneQuadrantHME =
-        sequence_control_set_ptr->input_resolution < INPUT_SIZE_4K_RANGE
+        scs_ptr->input_resolution < INPUT_SIZE_4K_RANGE
             ? 0
             : oneQuadrantHME;
 
-    numOfListToSearch = (picture_control_set_ptr->slice_type == P_SLICE)
+    numOfListToSearch = (pcs_ptr->slice_type == P_SLICE)
                             ? (uint32_t)REF_LIST_0
                             : (uint32_t)REF_LIST_1;
 
     EbBool is_nsq_table_used =
-        (picture_control_set_ptr->pic_depth_mode <= PIC_ALL_C_DEPTH_MODE &&
-         picture_control_set_ptr->nsq_search_level >= NSQ_SEARCH_LEVEL1 &&
-         picture_control_set_ptr->nsq_search_level < NSQ_SEARCH_FULL)
+        (pcs_ptr->pic_depth_mode <= PIC_ALL_C_DEPTH_MODE &&
+         pcs_ptr->nsq_search_level >= NSQ_SEARCH_LEVEL1 &&
+         pcs_ptr->nsq_search_level < NSQ_SEARCH_FULL)
             ? EB_TRUE
             : EB_FALSE;
 
 #if MULTI_PASS_PD
-    is_nsq_table_used = (picture_control_set_ptr->enc_mode == ENC_M0                         ||
-                         picture_control_set_ptr->pic_depth_mode == PIC_MULTI_PASS_PD_MODE_0 ||
-                         picture_control_set_ptr->pic_depth_mode == PIC_MULTI_PASS_PD_MODE_1 ||
-                         picture_control_set_ptr->pic_depth_mode == PIC_MULTI_PASS_PD_MODE_2 ||
-                         picture_control_set_ptr->pic_depth_mode == PIC_MULTI_PASS_PD_MODE_3 )? EB_FALSE : is_nsq_table_used;
+    is_nsq_table_used = (pcs_ptr->enc_mode == ENC_M0                         ||
+                         pcs_ptr->pic_depth_mode == PIC_MULTI_PASS_PD_MODE_0 ||
+                         pcs_ptr->pic_depth_mode == PIC_MULTI_PASS_PD_MODE_1 ||
+                         pcs_ptr->pic_depth_mode == PIC_MULTI_PASS_PD_MODE_2 ||
+                         pcs_ptr->pic_depth_mode == PIC_MULTI_PASS_PD_MODE_3 )? EB_FALSE : is_nsq_table_used;
 #else
-    if (sequence_control_set_ptr->static_config.nsq_table == DEFAULT)
-        is_nsq_table_used = picture_control_set_ptr->enc_mode == ENC_M0 ?  EB_FALSE : is_nsq_table_used;
+    if (scs_ptr->static_config.nsq_table == DEFAULT)
+        is_nsq_table_used = pcs_ptr->enc_mode == ENC_M0 ?  EB_FALSE : is_nsq_table_used;
     else
-        is_nsq_table_used = sequence_control_set_ptr->static_config.nsq_table;
+        is_nsq_table_used = scs_ptr->static_config.nsq_table;
 #endif
 
     if (context_ptr->me_alt_ref == EB_TRUE)
@@ -13644,16 +13644,16 @@ EbErrorType motion_estimate_lcu(
             num_of_ref_pic_to_search = 1;
         } else {
             num_of_ref_pic_to_search =
-                (picture_control_set_ptr->slice_type == P_SLICE)
-                    ? picture_control_set_ptr->ref_list0_count
+                (pcs_ptr->slice_type == P_SLICE)
+                    ? pcs_ptr->ref_list0_count
                     : (listIndex == REF_LIST_0)
-                          ? picture_control_set_ptr->ref_list0_count
-                          : picture_control_set_ptr->ref_list1_count;
+                          ? pcs_ptr->ref_list0_count
+                          : pcs_ptr->ref_list1_count;
 
-            referenceObject = (EbPaReferenceObject *)picture_control_set_ptr
+            referenceObject = (EbPaReferenceObject *)pcs_ptr
                                   ->ref_pa_pic_ptr_array[0][0]
                                   ->object_ptr;
-            ref0Poc = picture_control_set_ptr->ref_pic_poc_array[0][0];
+            ref0Poc = pcs_ptr->ref_pic_poc_array[0][0];
         }
 
         // Ref Picture Loop
@@ -13666,28 +13666,28 @@ EbErrorType motion_estimate_lcu(
             } else {
                 if (numOfListToSearch) {
                     referenceObject =
-                        (EbPaReferenceObject *)picture_control_set_ptr
+                        (EbPaReferenceObject *)pcs_ptr
                             ->ref_pa_pic_ptr_array[1][0]
                             ->object_ptr;
-                    ref1Poc = picture_control_set_ptr->ref_pic_poc_array[1][0];
+                    ref1Poc = pcs_ptr->ref_pic_poc_array[1][0];
                 }
 
                 referenceObject =
-                    (EbPaReferenceObject *)picture_control_set_ptr
+                    (EbPaReferenceObject *)pcs_ptr
                         ->ref_pa_pic_ptr_array[listIndex][ref_pic_index]
                         ->object_ptr;
             }
 
             refPicPtr = (EbPictureBufferDesc*)referenceObject->input_padded_picture_ptr;
             // Set 1/4 and 1/16 ME reference buffer(s); filtered or decimated
-            quarterRefPicPtr = (sequence_control_set_ptr->down_sampling_method_me_search == ME_FILTERED_DOWNSAMPLED) ?
+            quarterRefPicPtr = (scs_ptr->down_sampling_method_me_search == ME_FILTERED_DOWNSAMPLED) ?
                 (EbPictureBufferDesc*)referenceObject->quarter_filtered_picture_ptr :
                 (EbPictureBufferDesc*)referenceObject->quarter_decimated_picture_ptr;
 
-            sixteenthRefPicPtr = (sequence_control_set_ptr->down_sampling_method_me_search == ME_FILTERED_DOWNSAMPLED) ?
+            sixteenthRefPicPtr = (scs_ptr->down_sampling_method_me_search == ME_FILTERED_DOWNSAMPLED) ?
                 (EbPictureBufferDesc*)referenceObject->sixteenth_filtered_picture_ptr:
                 (EbPictureBufferDesc*)referenceObject->sixteenth_decimated_picture_ptr;
-            if (picture_control_set_ptr->temporal_layer_index > 0 ||
+            if (pcs_ptr->temporal_layer_index > 0 ||
                 listIndex == 0) {
                 // A - The MV center for Tier0 search could be either (0,0), or
                 // HME A - Set HME MV Center
@@ -13712,7 +13712,7 @@ EbErrorType motion_estimate_lcu(
 
                     /*B*/ sb_height ==
                         BLOCK_SIZE_64) {  //(searchCenterSad >
-                                          // sequence_control_set_ptr->static_config.skipTier0HmeTh))
+                                          // scs_ptr->static_config.skipTier0HmeTh))
                                           //{
                     while (searchRegionNumberInHeight <
                            context_ptr->number_hme_search_region_in_height) {
@@ -13754,7 +13754,7 @@ EbErrorType motion_estimate_lcu(
                             searchRegionNumberInWidth = 0;
 
                             HmeOneQuadrantLevel0(
-                                picture_control_set_ptr,
+                                pcs_ptr,
                                 context_ptr,
                                 origin_x >> 2,
                                 origin_y >> 2,
@@ -13772,14 +13772,14 @@ EbErrorType motion_estimate_lcu(
                                       [searchRegionNumberInWidth]
                                       [searchRegionNumberInHeight]),
                                 hme_level_0_search_area_multiplier_x
-                                    [picture_control_set_ptr
+                                    [pcs_ptr
                                          ->hierarchical_levels]
-                                    [picture_control_set_ptr
+                                    [pcs_ptr
                                          ->temporal_layer_index],
                                 hme_level_0_search_area_multiplier_y
-                                    [picture_control_set_ptr
+                                    [pcs_ptr
                                          ->hierarchical_levels]
-                                    [picture_control_set_ptr
+                                    [pcs_ptr
                                          ->temporal_layer_index]);
                         } else {
                             searchRegionNumberInHeight = 0;
@@ -13794,7 +13794,7 @@ EbErrorType motion_estimate_lcu(
                                         context_ptr
                                             ->number_hme_search_region_in_width) {
                                         HmeLevel0(
-                                            picture_control_set_ptr,
+                                            pcs_ptr,
                                             context_ptr,
                                             origin_x >> 2,
                                             origin_y >> 2,
@@ -13815,14 +13815,14 @@ EbErrorType motion_estimate_lcu(
                                                   [searchRegionNumberInWidth]
                                                   [searchRegionNumberInHeight]),
                                             hme_level_0_search_area_multiplier_x
-                                                [picture_control_set_ptr
+                                                [pcs_ptr
                                                      ->hierarchical_levels]
-                                                [picture_control_set_ptr
+                                                [pcs_ptr
                                                      ->temporal_layer_index],
                                             hme_level_0_search_area_multiplier_y
-                                                [picture_control_set_ptr
+                                                [pcs_ptr
                                                      ->hierarchical_levels]
-                                                [picture_control_set_ptr
+                                                [pcs_ptr
                                                      ->temporal_layer_index]);
 
                                         searchRegionNumberInWidth++;
@@ -13909,7 +13909,7 @@ EbErrorType motion_estimate_lcu(
                                     context_ptr
                                         ->number_hme_search_region_in_width) {
                                     HmeLevel2(
-                                        picture_control_set_ptr,
+                                        pcs_ptr,
                                         context_ptr,
                                         origin_x,
                                         origin_y,
@@ -14181,7 +14181,7 @@ EbErrorType motion_estimate_lcu(
             search_area_width = (context_ptr->search_area_width + 7) & ~0x07;
             search_area_height = context_ptr->search_area_height;
             if ((x_search_center != 0 || y_search_center != 0) &&
-                (picture_control_set_ptr->is_used_as_reference_flag ==
+                (pcs_ptr->is_used_as_reference_flag ==
                  EB_TRUE)) {
                 CheckZeroZeroCenter(refPicPtr,
                                     context_ptr,
@@ -14195,10 +14195,10 @@ EbErrorType motion_estimate_lcu(
             x_search_area_origin = x_search_center - (search_area_width >> 1);
             y_search_area_origin = y_search_center - (search_area_height >> 1);
 
-            if(sequence_control_set_ptr->static_config.unrestricted_motion_vector == 0)
+            if(scs_ptr->static_config.unrestricted_motion_vector == 0)
             {
-                int tile_start_x = sequence_control_set_ptr->sb_params_array[sb_index].tile_start_x;
-                int tile_end_x   = sequence_control_set_ptr->sb_params_array[sb_index].tile_end_x;
+                int tile_start_x = scs_ptr->sb_params_array[sb_index].tile_start_x;
+                int tile_end_x   = scs_ptr->sb_params_array[sb_index].tile_end_x;
 
                 // Correct the left edge of the Search Area if it is not on the
                 // reference Picture
@@ -14269,10 +14269,10 @@ EbErrorType motion_estimate_lcu(
                                     : search_area_width & ~0x07;
             }
 
-            if(sequence_control_set_ptr->static_config.unrestricted_motion_vector == 0)
+            if(scs_ptr->static_config.unrestricted_motion_vector == 0)
             {
-                int tile_start_y = sequence_control_set_ptr->sb_params_array[sb_index].tile_start_y;
-                int tile_end_y   = sequence_control_set_ptr->sb_params_array[sb_index].tile_end_y;
+                int tile_start_y = scs_ptr->sb_params_array[sb_index].tile_start_y;
+                int tile_end_y   = scs_ptr->sb_params_array[sb_index].tile_end_y;
 
                 // Correct the top edge of the Search Area if it is not on the
                 // reference Picture
@@ -14363,7 +14363,7 @@ EbErrorType motion_estimate_lcu(
 
             {
                 {
-                    if (picture_control_set_ptr->pic_depth_mode <=
+                    if (pcs_ptr->pic_depth_mode <=
                         PIC_ALL_C_DEPTH_MODE) {
                         initialize_buffer_32bits(
                             context_ptr
@@ -14630,7 +14630,7 @@ EbErrorType motion_estimate_lcu(
                                       [ME_TIER_ZERO_PU_16x64_0]);
                             // half-Pel search
                             open_loop_me_half_pel_search_sblock(
-                                picture_control_set_ptr,
+                                pcs_ptr,
                                 context_ptr,
                                 listIndex,
                                 ref_pic_index,
@@ -14727,7 +14727,7 @@ EbErrorType motion_estimate_lcu(
                     enableQuarterPel = EB_TRUE;
                 } else if (context_ptr->fractional_search_model == 1) {
                     suPelEnable(context_ptr,
-                                picture_control_set_ptr,
+                                pcs_ptr,
                                 listIndex,
                                 0,
                                 &enableHalfPel32x32,
@@ -14742,7 +14742,7 @@ EbErrorType motion_estimate_lcu(
                 }
                 if (enableHalfPel32x32 || enableHalfPel16x16 ||
                     enableHalfPel8x8 || enableQuarterPel) {
-                    // if((picture_control_set_ptr->is_used_as_reference_flag ==
+                    // if((pcs_ptr->is_used_as_reference_flag ==
                     // EB_TRUE)) {
                     // Move to the top left of the search region
                     xTopLeftSearchRegion =
@@ -14780,8 +14780,8 @@ EbErrorType motion_estimate_lcu(
 
                         // Half-Pel Refinement [8 search positions]
                         HalfPelSearch_LCU(
-                            sequence_control_set_ptr,
-                            picture_control_set_ptr,
+                            scs_ptr,
+                            pcs_ptr,
                             context_ptr,
 #if M0_HIGH_PRECISION_INTERPOLATION
                             context_ptr->integer_buffer_ptr[listIndex]
@@ -14820,7 +14820,7 @@ EbErrorType motion_estimate_lcu(
                                   ->pos_j_buffer[listIndex][ref_pic_index][0]),
                             x_search_area_origin,
                             y_search_area_origin,
-                            picture_control_set_ptr->cu8x8_mode ==
+                            pcs_ptr->cu8x8_mode ==
                                 CU_8x8_MODE_1,
                             enableHalfPel32x32,
                             enableHalfPel16x16,
@@ -14881,13 +14881,13 @@ EbErrorType motion_estimate_lcu(
                                                        // of the figure above
                             x_search_area_origin,
                             y_search_area_origin,
-                            picture_control_set_ptr->cu8x8_mode ==
+                            pcs_ptr->cu8x8_mode ==
                                 CU_8x8_MODE_1,
                             enableHalfPel32x32,
                             enableHalfPel16x16,
                             enableHalfPel8x8,
                             enableQuarterPel,
-                            picture_control_set_ptr->pic_depth_mode <=
+                            pcs_ptr->pic_depth_mode <=
                                 PIC_ALL_C_DEPTH_MODE);
                     }
                 }
@@ -14945,11 +14945,11 @@ if (context_ptr->me_alt_ref == EB_FALSE) {
         for (listIndex = REF_LIST_0; listIndex <= numOfListToSearch;
              ++listIndex) {
             num_of_ref_pic_to_search =
-                (picture_control_set_ptr->slice_type == P_SLICE)
-                    ? picture_control_set_ptr->ref_list0_count
+                (pcs_ptr->slice_type == P_SLICE)
+                    ? pcs_ptr->ref_list0_count
                     : (listIndex == REF_LIST_0)
-                          ? picture_control_set_ptr->ref_list0_count
-                          : picture_control_set_ptr->ref_list1_count;
+                          ? pcs_ptr->ref_list0_count
+                          : pcs_ptr->ref_list1_count;
 
             // Ref Picture Loop
             for (ref_pic_index = 0; ref_pic_index < num_of_ref_pic_to_search;
@@ -14968,7 +14968,7 @@ if (context_ptr->me_alt_ref == EB_FALSE) {
 
         total_me_candidate_index = candidateIndex;
         uint8_t ref_type_table[7];
-        if (picture_control_set_ptr->prune_unipred_at_me) {
+        if (pcs_ptr->prune_unipred_at_me) {
             // Sorting of the ME candidates
             for (candidate_index = 0;
                 candidate_index < total_me_candidate_index - 1;
@@ -15005,20 +15005,20 @@ if (context_ptr->me_alt_ref == EB_FALSE) {
             }
         }
         if (numOfListToSearch) {
-            if (picture_control_set_ptr->cu8x8_mode == CU_8x8_MODE_0 ||
+            if (pcs_ptr->cu8x8_mode == CU_8x8_MODE_0 ||
                 pu_index < 21 ||
-                (picture_control_set_ptr->pic_depth_mode <=
+                (pcs_ptr->pic_depth_mode <=
                  PIC_ALL_C_DEPTH_MODE)) {
                 BiPredictionSearch(
-                    sequence_control_set_ptr,
+                    scs_ptr,
                     context_ptr,
                     pu_index,
                     candidateIndex,
-                    picture_control_set_ptr->ref_list0_count,
-                    picture_control_set_ptr->ref_list1_count,
+                    pcs_ptr->ref_list0_count,
+                    pcs_ptr->ref_list1_count,
                     &total_me_candidate_index,
                     ref_type_table,
-                    picture_control_set_ptr);
+                    pcs_ptr);
             }
         }
 
@@ -15045,7 +15045,7 @@ if (context_ptr->me_alt_ref == EB_FALSE) {
         }
 
         MeLcuResults *mePuResult =
-            picture_control_set_ptr->me_results[sb_index];
+            pcs_ptr->me_results[sb_index];
         mePuResult->total_me_candidate_index[pu_index] =
             total_me_candidate_index;
 
@@ -15063,22 +15063,22 @@ if (context_ptr->me_alt_ref == EB_FALSE) {
              ++candidateIndex) {
             me_candidate =
                 &(context_ptr->me_candidate[candidateIndex].pu[pu_index]);
-            picture_control_set_ptr->me_results[sb_index]
+            pcs_ptr->me_results[sb_index]
                 ->me_candidate[pu_index][candidateIndex]
                 .distortion = me_candidate->distortion;
-            picture_control_set_ptr->me_results[sb_index]
+            pcs_ptr->me_results[sb_index]
                 ->me_candidate[pu_index][candidateIndex]
                 .direction = me_candidate->prediction_direction;
-            picture_control_set_ptr->me_results[sb_index]
+            pcs_ptr->me_results[sb_index]
                 ->me_candidate[pu_index][candidateIndex]
                 .ref_idx_l0 = me_candidate->ref_index[0];
-            picture_control_set_ptr->me_results[sb_index]
+            pcs_ptr->me_results[sb_index]
                 ->me_candidate[pu_index][candidateIndex]
                 .ref_idx_l1 = me_candidate->ref_index[1];
-            picture_control_set_ptr->me_results[sb_index]
+            pcs_ptr->me_results[sb_index]
                 ->me_candidate[pu_index][candidateIndex]
                 .ref0_list = me_candidate->ref0_list;
-            picture_control_set_ptr->me_results[sb_index]
+            pcs_ptr->me_results[sb_index]
                 ->me_candidate[pu_index][candidateIndex]
                 .ref1_list = me_candidate->ref1_list;
         }
@@ -15086,28 +15086,28 @@ if (context_ptr->me_alt_ref == EB_FALSE) {
         for (listIndex = REF_LIST_0; listIndex <= numOfListToSearch;
              ++listIndex) {
             num_of_ref_pic_to_search =
-                (picture_control_set_ptr->slice_type == P_SLICE)
-                    ? picture_control_set_ptr->ref_list0_count
+                (pcs_ptr->slice_type == P_SLICE)
+                    ? pcs_ptr->ref_list0_count
                     : (listIndex == REF_LIST_0)
-                          ? picture_control_set_ptr->ref_list0_count
-                          : picture_control_set_ptr->ref_list1_count;
+                          ? pcs_ptr->ref_list0_count
+                          : pcs_ptr->ref_list1_count;
 
             // Ref Picture Loop
             for (ref_pic_index = 0; ref_pic_index < num_of_ref_pic_to_search;
                  ++ref_pic_index) {
-                picture_control_set_ptr->me_results[sb_index]
+                pcs_ptr->me_results[sb_index]
                     ->me_mv_array[pu_index]
                                  [((listIndex &&
-                                    sequence_control_set_ptr->mrp_mode == 0)
+                                    scs_ptr->mrp_mode == 0)
                                        ? 4
                                        : listIndex ? 2 : 0) +
                                   ref_pic_index]
                     .x_mv = _MVXT(
                     context_ptr->p_sb_best_mv[listIndex][ref_pic_index][nIdx]);
-                picture_control_set_ptr->me_results[sb_index]
+                pcs_ptr->me_results[sb_index]
                     ->me_mv_array[pu_index]
                                  [((listIndex &&
-                                    sequence_control_set_ptr->mrp_mode == 0)
+                                    scs_ptr->mrp_mode == 0)
                                        ? 4
                                        : listIndex ? 2 : 0) +
                                   ref_pic_index]
@@ -15119,10 +15119,10 @@ if (context_ptr->me_alt_ref == EB_FALSE) {
     {
         // Compute the sum of the distortion of all 16 16x16 (best) blocks
         // in the LCU
-        picture_control_set_ptr->rc_me_distortion[sb_index] = 0;
+        pcs_ptr->rc_me_distortion[sb_index] = 0;
         for (i = 0; i < 16; i++)
-            picture_control_set_ptr->rc_me_distortion[sb_index] +=
-                picture_control_set_ptr->me_results[sb_index]
+            pcs_ptr->rc_me_distortion[sb_index] +=
+                pcs_ptr->me_results[sb_index]
                     ->me_candidate[5 + i][0]
                     .distortion;
     }
@@ -15405,20 +15405,20 @@ EbBool IsComplexLcu(PictureParentControlSet *previousParentPcs,
 }
 
 EbErrorType open_loop_intra_search_sb(
-    PictureParentControlSet *picture_control_set_ptr, uint32_t sb_index,
+    PictureParentControlSet *pcs_ptr, uint32_t sb_index,
     MotionEstimationContext_t *context_ptr, EbPictureBufferDesc *input_ptr)
 {
     EbErrorType return_error = EB_ErrorNone;
-    SequenceControlSet *sequence_control_set_ptr =
-        (SequenceControlSet *)picture_control_set_ptr
+    SequenceControlSet *scs_ptr =
+        (SequenceControlSet *)pcs_ptr
             ->sequence_control_set_wrapper_ptr->object_ptr;
 
     uint32_t cu_origin_x;
     uint32_t cu_origin_y;
     uint32_t pa_blk_index = 0;
-    SbParams *sb_params = &sequence_control_set_ptr->sb_params_array[sb_index];
+    SbParams *sb_params = &scs_ptr->sb_params_array[sb_index];
     OisSbResults *ois_sb_results_ptr =
-        picture_control_set_ptr->ois_sb_results[sb_index];
+        pcs_ptr->ois_sb_results[sb_index];
     uint8_t *above_row;
     uint8_t *left_col;
 
@@ -15461,37 +15461,37 @@ EbErrorType open_loop_intra_search_sb(
             EbBool use_angle_delta = (bsize >= 8);
             uint8_t angle_delta_candidate_count = use_angle_delta ? 7 : 1;
             uint8_t disable_angular_prediction = 0;
-            if (picture_control_set_ptr->intra_pred_mode == 5) {
+            if (pcs_ptr->intra_pred_mode == 5) {
                 intra_mode_end =
-                    (picture_control_set_ptr->is_used_as_reference_flag == 0)
+                    (pcs_ptr->is_used_as_reference_flag == 0)
                         ? DC_PRED
                         : intra_mode_end;
                 disable_angular_prediction =
-                    picture_control_set_ptr->temporal_layer_index > 0
+                    pcs_ptr->temporal_layer_index > 0
                         ? 1
                         : (bsize > 16) ? 1 : 0;
                 angle_delta_candidate_count =
                     disable_angular_prediction ? 1 : use_angle_delta ? 5 : 1;
                 angle_delta_shift = 1;
             }
-            else if (picture_control_set_ptr->intra_pred_mode == 6) {
+            else if (pcs_ptr->intra_pred_mode == 6) {
                 intra_mode_end =
-                    (picture_control_set_ptr->is_used_as_reference_flag == 0)
+                    (pcs_ptr->is_used_as_reference_flag == 0)
                         ? DC_PRED
                         : intra_mode_end;
                 disable_angular_prediction =
-                    picture_control_set_ptr->temporal_layer_index > 0
+                    pcs_ptr->temporal_layer_index > 0
                         ? 1
                         : (bsize > 16) ? 1 : 0;
                 angle_delta_candidate_count = 1;
                 angle_delta_shift = 1;
             } else {
-                if (picture_control_set_ptr->slice_type == I_SLICE) {
+                if (pcs_ptr->slice_type == I_SLICE) {
                     intra_mode_end = /*is_16_bit ? SMOOTH_H_PRED :*/ PAETH_PRED;
                     angle_delta_candidate_count = use_angle_delta ? 5 : 1;
                     disable_angular_prediction = 0;
                     angle_delta_shift = 1;
-                } else if (picture_control_set_ptr->temporal_layer_index == 0) {
+                } else if (pcs_ptr->temporal_layer_index == 0) {
                     intra_mode_end = /*is_16_bit ? SMOOTH_H_PRED :*/ PAETH_PRED;
                     angle_delta_candidate_count =
                         (bsize > 16) ? 1 : use_angle_delta ? 2 : 1;

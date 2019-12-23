@@ -95,12 +95,9 @@ extern "C" {
         uint8_t                                 min_intra_size;
         EbBool                                  intra4x4_flag;
         // Rate Control
-        uint32_t                                rate_control_mode;
         uint32_t                                target_bitrate;
         uint32_t                                available_bandwidth;
 
-        // Quantization
-       /* uint32_t                                qp;*/
         // Picture Analysis
         uint32_t                                picture_analysis_number_of_regions_per_width;
         uint32_t                                picture_analysis_number_of_regions_per_height;
@@ -166,7 +163,6 @@ extern "C" {
 
         EbInputResolution                       input_resolution;
         EbScdMode                               scd_mode;
-        EbPmMode                                pm_mode;
 
         /* MRP (mm-signal; 0: MRP mode 0, 1: MRP mode 1)
         *
@@ -188,7 +184,6 @@ extern "C" {
         * Default is 0. */
         uint8_t                                 down_sampling_method_me_search;
         uint8_t                                 mfmv_enabled; // 1:Enabled  0:Disabled
-        uint8_t                                 trans_coeff_shape_array[2][8][4];    // [componantTypeIndex][resolutionIndex][levelIndex][tuSizeIndex]
         EbBlockMeanPrec                         block_mean_calc_prec;
         BitstreamLevel                          level[MAX_NUM_OPERATING_POINTS];
         int32_t                                 film_grain_denoise_strength;
@@ -226,7 +221,7 @@ extern "C" {
     {
         EbDctor                  dctor;
         EncodeContext            *encode_context_ptr;
-        SequenceControlSet       *sequence_control_set_ptr;
+        SequenceControlSet       *scs_ptr;
         EbHandle                    config_mutex;
     } EbSequenceControlSetInstance;
 
@@ -249,13 +244,13 @@ extern "C" {
         EbSequenceControlSetInstance *object_dbl_ptr);
 
     extern EbErrorType sb_params_init(
-        SequenceControlSet *sequence_control_set_ptr);
+        SequenceControlSet *scs_ptr);
 
     extern EbErrorType derive_input_resolution(
-        SequenceControlSet *sequence_control_set_ptr,
+        SequenceControlSet *scs_ptr,
         uint32_t              input_size);
 
-    EbErrorType sb_geom_init(SequenceControlSet *sequence_control_set_ptr);
+    EbErrorType sb_geom_init(SequenceControlSet *scs_ptr);
 
 #ifdef __cplusplus
 }

@@ -20,8 +20,8 @@ extern "C" {
      *   performs CL (LCU)
      *******************************************/
     extern EbErrorType mode_decision_sb(
-        SequenceControlSet                *sequence_control_set_ptr,
-        PictureControlSet                 *picture_control_set_ptr,
+        SequenceControlSet                *scs_ptr,
+        PictureControlSet                 *pcs_ptr,
         const MdcLcuData * const           mdcResultTbPtr,
         SuperBlock                        *sb_ptr,
         uint16_t                             sb_origin_x,
@@ -36,8 +36,8 @@ extern "C" {
         uint64_t                 weight);
 
     extern void av1_encode_pass(
-        SequenceControlSet    *sequence_control_set_ptr,
-        PictureControlSet     *picture_control_set_ptr,
+        SequenceControlSet    *scs_ptr,
+        PictureControlSet     *pcs_ptr,
         SuperBlock            *sb_ptr,
         uint32_t                   tbAddr,
         uint32_t                   sb_origin_x,
@@ -46,8 +46,8 @@ extern "C" {
 
 #if NO_ENCDEC
     void no_enc_dec_pass(
-        SequenceControlSet    *sequence_control_set_ptr,
-        PictureControlSet     *picture_control_set_ptr,
+        SequenceControlSet    *scs_ptr,
+        PictureControlSet     *pcs_ptr,
         SuperBlock            *sb_ptr,
         uint32_t                   tbAddr,
         uint32_t                   sb_origin_x,
@@ -58,7 +58,7 @@ extern "C" {
 
     void store16bit_input_src(
         EbPictureBufferDesc     *input_sample16bit_buffer,
-        PictureControlSet       *picture_control_set_ptr,
+        PictureControlSet       *pcs_ptr,
         uint32_t                 lcuX,
         uint32_t                 lcuY,
         uint32_t                 lcuW,

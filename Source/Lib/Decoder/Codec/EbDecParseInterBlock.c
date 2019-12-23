@@ -47,7 +47,7 @@ static uint16_t compound_mode_ctx_map[3][COMP_NEWMV_CTXS] = {
     { 4, 4, 5, 6, 7 },
 };
 
-static INLINE void svt_collect_neighbors_ref_counts(PartitionInfo_t *pi) {
+static INLINE void svt_collect_neighbors_ref_counts(PartitionInfo *pi) {
 
     ZERO_ARRAY(&pi->neighbors_ref_counts[0],
         sizeof(pi->neighbors_ref_counts[0])*REF_FRAMES);
@@ -79,7 +79,7 @@ static INLINE int is_inside(TileInfo *tile, int mi_col, int mi_row) {
         mi_row >= tile->mi_row_start && mi_row < tile->mi_row_end);
 }
 
-static int get_reference_mode_context(const PartitionInfo_t *xd) {
+static int get_reference_mode_context(const PartitionInfo *xd) {
     int ctx;
     const BlockModeInfo *const above_mbmi = xd->above_mbmi;
     const BlockModeInfo *const left_mbmi = xd->left_mbmi;
@@ -123,7 +123,7 @@ static int get_reference_mode_context(const PartitionInfo_t *xd) {
     return ctx;
 }
 
-static int32_t get_pred_context_comp_ref_p(PartitionInfo_t *pi) {
+static int32_t get_pred_context_comp_ref_p(PartitionInfo *pi) {
     const uint8_t *const ref_counts = &pi->neighbors_ref_counts[0];
 
     // Count of LAST + LAST2
@@ -139,7 +139,7 @@ static int32_t get_pred_context_comp_ref_p(PartitionInfo_t *pi) {
     return pred_context;
 }
 
-static int32_t get_pred_context_comp_bwdref_p(PartitionInfo_t *pi) {
+static int32_t get_pred_context_comp_bwdref_p(PartitionInfo *pi) {
     const uint8_t *const ref_counts = &pi->neighbors_ref_counts[0];
 
     // Counts of BWDREF, ALTREF2, or ALTREF frames (B, A2, or A)
@@ -154,7 +154,7 @@ static int32_t get_pred_context_comp_bwdref_p(PartitionInfo_t *pi) {
     return pred_context;
 }
 
-static int32_t get_pred_context_comp_bwdref_p1(PartitionInfo_t *pi) {
+static int32_t get_pred_context_comp_bwdref_p1(PartitionInfo *pi) {
     const uint8_t *const ref_counts = &pi->neighbors_ref_counts[0];
 
     // Count of BWDREF frames (B)
@@ -169,7 +169,7 @@ static int32_t get_pred_context_comp_bwdref_p1(PartitionInfo_t *pi) {
     return pred_context;
 }
 
-static int get_pred_context_uni_comp_ref_p2(PartitionInfo_t *pi) {
+static int get_pred_context_uni_comp_ref_p2(PartitionInfo *pi) {
     const uint8_t *const ref_counts = &pi->neighbors_ref_counts[0];
 
     // Count of LAST3
@@ -184,7 +184,7 @@ static int get_pred_context_uni_comp_ref_p2(PartitionInfo_t *pi) {
     return pred_context;
 }
 
-static int get_pred_context_uni_comp_ref_p1(PartitionInfo_t *pi) {
+static int get_pred_context_uni_comp_ref_p1(PartitionInfo *pi) {
     const uint8_t *const ref_counts = &pi->neighbors_ref_counts[0];
 
     // Count of LAST2
@@ -201,7 +201,7 @@ static int get_pred_context_uni_comp_ref_p1(PartitionInfo_t *pi) {
     return pred_context;
 }
 
-static int get_pred_context_uni_comp_ref_p(PartitionInfo_t *pi) {
+static int get_pred_context_uni_comp_ref_p(PartitionInfo *pi) {
     const uint8_t *const ref_counts = &pi->neighbors_ref_counts[0];
 
     // Count of forward references (L, L2, L3, or G)
@@ -218,7 +218,7 @@ static int get_pred_context_uni_comp_ref_p(PartitionInfo_t *pi) {
     return pred_context;
 }
 
-static int32_t get_pred_context_single_ref_p1(PartitionInfo_t *pi) {
+static int32_t get_pred_context_single_ref_p1(PartitionInfo *pi) {
     const uint8_t *const ref_counts = &pi->neighbors_ref_counts[0];
 
     // Count of forward reference frames
@@ -235,7 +235,7 @@ static int32_t get_pred_context_single_ref_p1(PartitionInfo_t *pi) {
     return pred_context;
 }
 
-static int32_t get_pred_context_single_ref_p4(PartitionInfo_t *pi) {
+static int32_t get_pred_context_single_ref_p4(PartitionInfo *pi) {
     const uint8_t *const ref_counts = &pi->neighbors_ref_counts[0];
 
     // Count of LAST
@@ -250,7 +250,7 @@ static int32_t get_pred_context_single_ref_p4(PartitionInfo_t *pi) {
     return pred_context;
 }
 
-static int32_t get_pred_context_last3_or_gld(PartitionInfo_t *pi) {
+static int32_t get_pred_context_last3_or_gld(PartitionInfo *pi) {
     const uint8_t *const ref_counts = &pi->neighbors_ref_counts[0];
 
     // Count of LAST3
@@ -265,7 +265,7 @@ static int32_t get_pred_context_last3_or_gld(PartitionInfo_t *pi) {
     return pred_context;
 }
 
-static void read_ref_frames(ParseCtxt *parse_ctxt, PartitionInfo_t *const pi) {
+static void read_ref_frames(ParseCtxt *parse_ctxt, PartitionInfo *const pi) {
     SvtReader *r = &parse_ctxt->r;
     int segment_id = pi->mi->segment_id;
     MvReferenceFrame *ref_frame = pi->mi->ref_frame;
@@ -505,7 +505,7 @@ static void add_ref_mv_candidate(EbDecHandle *dec_handle,
 }
 
 static void scan_row_mbmi(EbDecHandle *dec_handle, ParseCtxt *parse_ctx,
-    PartitionInfo_t *pi, int delta_row, const MvReferenceFrame rf[2],
+    PartitionInfo *pi, int delta_row, const MvReferenceFrame rf[2],
     CandidateMv *ref_mv_stack, uint8_t *num_mv_found, uint8_t *found_match,
     uint8_t *newmv_count, IntMv *gm_mv_candidates, int max_row_offset,
     int *processed_rows)
@@ -556,7 +556,7 @@ static void scan_row_mbmi(EbDecHandle *dec_handle, ParseCtxt *parse_ctx,
 }
 
 static void scan_col_mbmi(EbDecHandle *dec_handle, ParseCtxt *parse_ctx,
-    PartitionInfo_t *pi, int delta_col, const MvReferenceFrame rf[2],
+    PartitionInfo *pi, int delta_col, const MvReferenceFrame rf[2],
     CandidateMv *ref_mv_stack, uint8_t *num_mv_found, uint8_t *found_match,
     uint8_t *newmv_count, IntMv *gm_mv_candidates, int max_col_offset,
     int *processed_cols)
@@ -606,7 +606,7 @@ static void scan_col_mbmi(EbDecHandle *dec_handle, ParseCtxt *parse_ctx,
 }
 
 static void scan_blk_mbmi(EbDecHandle *dec_handle, ParseCtxt *parse_ctx,
-    PartitionInfo_t *pi, int delta_row, int delta_col, const MvReferenceFrame rf[2],
+    PartitionInfo *pi, int delta_row, int delta_col, const MvReferenceFrame rf[2],
     CandidateMv *ref_mv_stack, uint8_t *found_match, uint8_t *newmv_count,
     IntMv *gm_mv_candidates, uint8_t num_mv_found[MODE_CTX_REF_FRAMES])
 {
@@ -624,7 +624,7 @@ static void scan_blk_mbmi(EbDecHandle *dec_handle, ParseCtxt *parse_ctx,
 }
 
 /* TODO: Harmonize with Encoder. */
-static int has_top_right(EbDecHandle *dec_handle, PartitionInfo_t *pi, int bs)
+static int has_top_right(EbDecHandle *dec_handle, PartitionInfo *pi, int bs)
 {
     int n4_w = mi_size_wide[pi->mi->sb_type];
     int n4_h = mi_size_high[pi->mi->sb_type];
@@ -832,7 +832,7 @@ static void process_single_ref_mv_candidate(BlockModeInfo * candidate,
     }
 }
 
-static INLINE void clamp_mv_ref(MV *mv, int bw, int bh, PartitionInfo_t *pi) {
+static INLINE void clamp_mv_ref(MV *mv, int bw, int bh, PartitionInfo *pi) {
     clamp_mv(mv, pi->mb_to_left_edge - bw * 8 - MV_BORDER,
         pi->mb_to_right_edge + bw * 8 + MV_BORDER,
         pi->mb_to_top_edge - bh * 8 - MV_BORDER,
@@ -840,7 +840,7 @@ static INLINE void clamp_mv_ref(MV *mv, int bw, int bh, PartitionInfo_t *pi) {
 }
 
 static void dec_setup_ref_mv_list(EbDecHandle *dec_handle,
-    ParseCtxt *parse_ctx, PartitionInfo_t *pi, MvReferenceFrame ref_frame,
+    ParseCtxt *parse_ctx, PartitionInfo *pi, MvReferenceFrame ref_frame,
     CandidateMv ref_mv_stack[][MAX_REF_MV_STACK_SIZE],
     IntMv mv_ref_list[][MAX_MV_REF_CANDIDATES], IntMv *gm_mv_candidates,
     int16_t *mode_context, MvCount *mv_cnt)
@@ -1199,7 +1199,7 @@ static INLINE int16_t svt_mode_context_analyzer(
     return comp_ctx;
 }
 
-void av1_find_mv_refs(EbDecHandle *dec_handle, PartitionInfo_t *pi, ParseCtxt *parse_ctx,
+void av1_find_mv_refs(EbDecHandle *dec_handle, PartitionInfo *pi, ParseCtxt *parse_ctx,
     MvReferenceFrame ref_frame, CandidateMv ref_mv_stack[][MAX_REF_MV_STACK_SIZE],
     IntMv mv_ref_list[][MAX_MV_REF_CANDIDATES], IntMv global_mvs[2],
     int16_t *mode_context, MvCount *mv_cnt)
@@ -1257,7 +1257,7 @@ static INLINE uint8_t get_drl_ctx(const CandidateMv *ref_mv_stack, int ref_idx) 
     return 0;
 }
 
-static void read_drl_idx(ParseCtxt *parse_ctxt, PartitionInfo_t *pi,
+static void read_drl_idx(ParseCtxt *parse_ctxt, PartitionInfo *pi,
     BlockModeInfo *mbmi, int num_mv_found)
 {
     SvtReader *r = &parse_ctxt->r;
@@ -1350,7 +1350,7 @@ static INLINE void read_mv(SvtReader *r, MV *mv, MV *ref,
     mv->col = ref->col + diff.col;
 }
 
-static INLINE int assign_mv(ParseCtxt *parse_ctxt, PartitionInfo_t *pi,
+static INLINE int assign_mv(ParseCtxt *parse_ctxt, PartitionInfo *pi,
     IntMv mv[2], IntMv *global_mvs, IntMv ref_mv[2],
     IntMv nearest_mv[2], IntMv near_mv[2],
     int is_compound, int allow_hp)
@@ -1443,7 +1443,7 @@ static INLINE int assign_mv(ParseCtxt *parse_ctxt, PartitionInfo_t *pi,
 }
 
 static INLINE int is_dv_valid(MV dv, ParseCtxt *parse_ctx,
-    PartitionInfo_t *pi)
+    PartitionInfo *pi)
 {
     int mi_row = pi->mi_row;
     int mi_col = pi->mi_col;
@@ -1506,7 +1506,7 @@ static INLINE int is_dv_valid(MV dv, ParseCtxt *parse_ctx,
     return 1;
 }
 
-int dec_assign_dv(ParseCtxt *parse_ctxt, PartitionInfo_t *pi,
+int dec_assign_dv(ParseCtxt *parse_ctxt, PartitionInfo *pi,
     IntMv *mv, IntMv *ref_mv)
 {
     SvtReader *r = &parse_ctxt->r;
@@ -1524,7 +1524,7 @@ int dec_assign_dv(ParseCtxt *parse_ctxt, PartitionInfo_t *pi,
 
 void assign_intrabc_mv(ParseCtxt *parse_ctxt,
     IntMv ref_mvs[INTRA_FRAME + 1][MAX_MV_REF_CANDIDATES],
-    PartitionInfo_t *pi)
+    PartitionInfo *pi)
 {
     BlockModeInfo *mbmi = pi->mi;
     IntMv nearestmv, nearmv;
@@ -1587,7 +1587,7 @@ static INLINE void add_samples(BlockModeInfo *mbmi, int *pts, int *pts_inref,
     pts_inref[1] = (y * 8) + mbmi->mv[0].as_mv.row;
 }
 
-int find_warp_samples(EbDecHandle *dec_handle, TileInfo *tile, PartitionInfo_t *pi,
+int find_warp_samples(EbDecHandle *dec_handle, TileInfo *tile, PartitionInfo *pi,
     int *pts, int *pts_inref)
 {
     int mi_row = pi->mi_row;
@@ -1729,7 +1729,7 @@ int find_warp_samples(EbDecHandle *dec_handle, TileInfo *tile, PartitionInfo_t *
 }
 
 int has_overlappable_cand(EbDecHandle *dec_handle, ParseCtxt *parse_ctx,
-    PartitionInfo_t *pi)
+    PartitionInfo *pi)
 {
     int mi_row = pi->mi_row;
     int mi_col = pi->mi_col;
@@ -1763,7 +1763,7 @@ int has_overlappable_cand(EbDecHandle *dec_handle, ParseCtxt *parse_ctx,
 }
 
 static INLINE MotionMode is_motion_mode_allowed(EbDecHandle *dec_handle,
-    ParseCtxt *parse_ctx, GlobalMotionParams *gm_params, PartitionInfo_t *pi,
+    ParseCtxt *parse_ctx, GlobalMotionParams *gm_params, PartitionInfo *pi,
     int allow_warped_motion)
 {
     BlockModeInfo *mbmi = pi->mi;
@@ -1795,7 +1795,7 @@ static INLINE MotionMode is_motion_mode_allowed(EbDecHandle *dec_handle,
 }
 
 MotionMode read_motion_mode(EbDecHandle *dec_handle, ParseCtxt *parse_ctxt,
-    PartitionInfo_t *pi)
+    PartitionInfo *pi)
 {
     SvtReader *r = &parse_ctxt->r;
     FRAME_CONTEXT *frm_ctx = &parse_ctxt->cur_tile_ctx;
@@ -1828,7 +1828,7 @@ MotionMode read_motion_mode(EbDecHandle *dec_handle, ParseCtxt *parse_ctxt,
 }
 
 static INLINE int get_comp_group_idx_context(ParseCtxt *parse_ctxt,
-    const PartitionInfo_t *xd)
+    const PartitionInfo *xd)
 {
     const BlockModeInfo *const above_mi = xd->above_mbmi;
     const BlockModeInfo *const left_mi = xd->left_mbmi;
@@ -1855,7 +1855,7 @@ static INLINE int get_comp_group_idx_context(ParseCtxt *parse_ctxt,
     return AOMMIN(5, above_ctx + left_ctx);
 }
 
-int get_comp_index_context(EbDecHandle *dec_handle, PartitionInfo_t *pi) {
+int get_comp_index_context(EbDecHandle *dec_handle, PartitionInfo *pi) {
     BlockModeInfo *mbmi = pi->mi;
     SeqHeader *seq_params = &dec_handle->seq_header;
     FrameHeader *frm_header = &dec_handle->frame_header;
@@ -1897,7 +1897,7 @@ int get_comp_index_context(EbDecHandle *dec_handle, PartitionInfo_t *pi) {
     return above_ctx + left_ctx + 3 * offset;
 }
 
-void update_compound_ctx(ParseCtxt *parse_ctxt, PartitionInfo_t *pi,
+void update_compound_ctx(ParseCtxt *parse_ctxt, PartitionInfo *pi,
     uint32_t blk_row, uint32_t blk_col, uint32_t comp_grp_idx)
 {
     ParseAboveNbr4x4Ctxt *above_parse_ctx = parse_ctxt->parse_above_nbr4x4_ctxt;
@@ -1916,7 +1916,7 @@ void update_compound_ctx(ParseCtxt *parse_ctxt, PartitionInfo_t *pi,
 }
 
 void read_compound_type(EbDecHandle *dec_handle, ParseCtxt *parse_ctxt,
-    PartitionInfo_t *pi)
+    PartitionInfo *pi)
 {
     SvtReader *r = &parse_ctxt->r;
     BlockModeInfo *mbmi = pi->mi;
@@ -1983,7 +1983,7 @@ void read_compound_type(EbDecHandle *dec_handle, ParseCtxt *parse_ctxt,
     update_compound_ctx(parse_ctxt, pi, pi->mi_row, pi->mi_col, comp_group_idx);
 }
 
-static INLINE int is_nontrans_global_motion(PartitionInfo_t *pi,
+static INLINE int is_nontrans_global_motion(PartitionInfo *pi,
     GlobalMotionParams *gm_params)
 {
     int ref;
@@ -2001,7 +2001,7 @@ static INLINE int is_nontrans_global_motion(PartitionInfo_t *pi,
     return 1;
 }
 
-static INLINE int av1_is_interp_needed(PartitionInfo_t *pi,
+static INLINE int av1_is_interp_needed(PartitionInfo *pi,
     GlobalMotionParams *gm_params)
 {
     BlockModeInfo * mbmi = pi->mi;
@@ -2020,7 +2020,7 @@ static InterpFilter get_ref_filter_type(const BlockModeInfo *ref_mbmi,
         : SWITCHABLE_FILTERS);
 }
 
-int get_context_interp(PartitionInfo_t *pi, int dir) {
+int get_context_interp(PartitionInfo *pi, int dir) {
     const BlockModeInfo *const mbmi = pi->mi;
     const int ctx_offset =
         (mbmi->ref_frame[1] > INTRA_FRAME) * INTER_FILTER_COMP_OFFSET;
@@ -2057,7 +2057,7 @@ int get_context_interp(PartitionInfo_t *pi, int dir) {
 }
 
 void inter_block_mode_info(EbDecHandle *dec_handle, ParseCtxt *parse_ctxt,
-    PartitionInfo_t* pi)
+    PartitionInfo* pi)
 {
     BlockModeInfo *mbmi = pi->mi;
     SvtReader *r = &parse_ctxt->r;
@@ -2304,7 +2304,7 @@ int get_palette_color_context(
 
 
 void palette_tokens(EbDecHandle *dec_handle, ParseCtxt *parse_ctx,
-    PartitionInfo_t *pi)
+    PartitionInfo *pi)
 {
     int mi_row = pi->mi_row;
     int mi_col = pi->mi_col;

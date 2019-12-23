@@ -57,7 +57,7 @@ static const ITX_TYPE_1D hitx_1d_tab[TX_TYPES] = {
 //    2, 3, 4, 5, 6, 3, 2, 4, 3, 5, 4, 6, 5, 4, 2, 5, 3, 6, 4,
 //};
 
-typedef void(*transform_1d_sse4_1)(__m128i *in, __m128i *out, int32_t bit,
+typedef void(*Transform1dSse41)(__m128i *in, __m128i *out, int32_t bit,
     int32_t do_cols, int32_t bd, int32_t out_shift);
 
 static INLINE void load_buffer_4x4(const int32_t *coeff, __m128i *in) {
@@ -2547,7 +2547,7 @@ static void iidentity4_sse4_1(__m128i *in, __m128i *out, int32_t bit, int32_t do
     (void)bit;
     (void)out_shift;
     __m128i v[4];
-    __m128i fact = _mm_set1_epi32(NewSqrt2);
+    __m128i fact = _mm_set1_epi32(new_sqrt2);
     __m128i offset = _mm_set1_epi32(1 << (NewSqrt2Bits - 1));
     __m128i a0, a1;
 
@@ -2621,7 +2621,7 @@ static void iidentity16_sse4_1(__m128i *in, __m128i *out, int32_t bit, int32_t d
     const __m128i clamp_lo = _mm_set1_epi32(-(1 << (log_range - 1)));
     const __m128i clamp_hi = _mm_set1_epi32((1 << (log_range - 1)) - 1);
     __m128i v[16];
-    __m128i fact = _mm_set1_epi32(2 * NewSqrt2);
+    __m128i fact = _mm_set1_epi32(2 * new_sqrt2);
     __m128i offset = _mm_set1_epi32(1 << (NewSqrt2Bits - 1));
     __m128i a0, a1, a2, a3;
 
@@ -4415,7 +4415,7 @@ static INLINE void highbd_write_buffer_4xn_sse4_1(__m128i *in,
     }
 }
 
-static const transform_1d_sse4_1
+static const Transform1dSse41
 highbd_txfm_all_1d_zeros_w8_arr[TX_SIZES][ITX_TYPES_1D][4] = {
     {
         { idct4x4_sse4_1, NULL, NULL, NULL },
@@ -4451,9 +4451,9 @@ void eb_av1_inv_txfm2d_add_4x8_sse4_1(const int32_t *input,
     const int32_t txh_idx = get_txh_idx(tx_size);
     const int32_t txfm_size_col = tx_size_wide[tx_size];
     const int32_t txfm_size_row = tx_size_high[tx_size];
-    const transform_1d_sse4_1 row_txfm =
+    const Transform1dSse41 row_txfm =
         highbd_txfm_all_1d_zeros_w8_arr[txw_idx][hitx_1d_tab[tx_type]][0];
-    const transform_1d_sse4_1 col_txfm =
+    const Transform1dSse41 col_txfm =
         highbd_txfm_all_1d_zeros_w8_arr[txh_idx][vitx_1d_tab[tx_type]][1];
     const int32_t input_stride = AOMMIN(32, txfm_size_col);
 
@@ -4468,7 +4468,7 @@ void eb_av1_inv_txfm2d_add_4x8_sse4_1(const int32_t *input,
     __m128i *buf0_cur = buf0;
     load_buffer_32bit_input(input_row, input_stride, buf0_cur, txfm_size_row);
     av1_round_shift_rect_array_32_sse4_1(buf0, buf0, txfm_size_row, 0,
-        NewInvSqrt2);
+        new_inv_sqrt2);
     row_txfm(buf0, buf0, inv_cos_bit_row[txw_idx][txh_idx], 0, bd, -shift[0]);
     row_txfm(buf0 + 4, buf0 + 4, inv_cos_bit_row[txw_idx][txh_idx], 0, bd,
         -shift[0]);
@@ -4538,9 +4538,9 @@ void eb_av1_inv_txfm2d_add_8x4_sse4_1(const int32_t *input,
     const int32_t txh_idx = get_txh_idx(tx_size);
     const int32_t txfm_size_col = tx_size_wide[tx_size];
     const int32_t txfm_size_row = tx_size_high[tx_size];
-    const transform_1d_sse4_1 row_txfm =
+    const Transform1dSse41 row_txfm =
         highbd_txfm_all_1d_zeros_w8_arr[txw_idx][hitx_1d_tab[tx_type]][1];
-    const transform_1d_sse4_1 col_txfm =
+    const Transform1dSse41 col_txfm =
         highbd_txfm_all_1d_zeros_w8_arr[txh_idx][vitx_1d_tab[tx_type]][0];
 
     assert(col_txfm != NULL);
@@ -4559,7 +4559,7 @@ void eb_av1_inv_txfm2d_add_8x4_sse4_1(const int32_t *input,
         buf1[7]);
 
     av1_round_shift_rect_array_32_sse4_1(buf1, buf0, txfm_size_col, 0,
-        NewInvSqrt2);
+        new_inv_sqrt2);
     row_txfm(buf0, buf0, inv_cos_bit_row[txw_idx][txh_idx], 0, bd, -shift[0]);
 
     __m128i *buf1_ptr;
@@ -4592,9 +4592,9 @@ void eb_av1_inv_txfm2d_add_4x16_sse4_1(const int32_t *input,
     const int32_t txfm_size_col = tx_size_wide[tx_size];
     const int32_t txfm_size_row = tx_size_high[tx_size];
     const int32_t buf_size_h_div8 = txfm_size_row >> 2;
-    const transform_1d_sse4_1 row_txfm =
+    const Transform1dSse41 row_txfm =
         highbd_txfm_all_1d_zeros_w8_arr[txw_idx][hitx_1d_tab[tx_type]][0];
-    const transform_1d_sse4_1 col_txfm =
+    const Transform1dSse41 col_txfm =
         highbd_txfm_all_1d_zeros_w8_arr[txh_idx][vitx_1d_tab[tx_type]][2];
     const int32_t input_stride = AOMMIN(32, txfm_size_col);
 
@@ -4652,9 +4652,9 @@ void eb_av1_inv_txfm2d_add_16x4_sse4_1(const int32_t *input,
     const int32_t txfm_size_col = tx_size_wide[tx_size];
     const int32_t txfm_size_row = tx_size_high[tx_size];
     const int32_t buf_size_w_div8 = txfm_size_col >> 2;
-    const transform_1d_sse4_1 row_txfm =
+    const Transform1dSse41 row_txfm =
         highbd_txfm_all_1d_zeros_w8_arr[txw_idx][hitx_1d_tab[tx_type]][2];
-    const transform_1d_sse4_1 col_txfm =
+    const Transform1dSse41 col_txfm =
         highbd_txfm_all_1d_zeros_w8_arr[txh_idx][vitx_1d_tab[tx_type]][0];
 
     assert(col_txfm != NULL);

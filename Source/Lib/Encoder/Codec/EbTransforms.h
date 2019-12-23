@@ -149,18 +149,6 @@ extern "C" {
         { 0, 0, 12, 11, 10 }
     };
 
-    typedef struct TransformParam
-    {
-        // for both forward and inverse transforms
-        TxType transform_type;
-        TxSize transform_size;
-        //int32_t lossless;
-        uint8_t bit_depth;
-        TxSetType transformSetType;
-        // for inverse transforms only
-        int32_t eob;
-    } TransformParam;
-
     // Utility function that returns the log of the ratio of the col and row
     // sizes.
     typedef enum TxfmType
@@ -3917,9 +3905,9 @@ extern "C" {
 
     static const int32_t NewSqrt2Bits = 12;
     // 2^12 * sqrt(2)
-    static const int32_t NewSqrt2 = 5793;
+    static const int32_t new_sqrt2 = 5793;
     // 2^12 / sqrt(2)
-    static const int32_t NewInvSqrt2 = 2896;
+    static const int32_t new_inv_sqrt2 = 2896;
 
     static INLINE const int32_t *cospi_arr(int32_t n) {
         return eb_av1_cospi_arr_data[n - cos_bit_min];
@@ -3996,8 +3984,9 @@ extern "C" {
         TxType               transform_type,
         PlaneType           component_type,
         EB_TRANS_COEFF_SHAPE trans_coeff_shape);
+
     extern int32_t av1_quantize_inv_quantize(
-        PictureControlSet             *picture_control_set_ptr,
+        PictureControlSet             *pcs_ptr,
         ModeDecisionContext           *md_context,
         int32_t                       *coeff,
         const uint32_t                 coeff_stride,
@@ -4019,18 +4008,6 @@ extern "C" {
         PredictionMode                 pred_mode,
         EbBool                         is_intra_bc,
         EbBool                         is_encode_pass);
-
-    extern EbErrorType av1_estimate_inv_transform(
-        int32_t  *coeff_buffer,
-        uint32_t  coeff_stride,
-        int32_t  *recon_buffer,
-        uint32_t  recon_stride,
-        TxSize    transform_size,
-        int16_t  *transform_inner_array_ptr,
-        uint32_t  bit_increment,
-        TxType    transform_type,
-        uint32_t  eob,
-        uint32_t  partial_frequency_n2_flag);
 
     EbErrorType av1_inv_transform_recon(
         int32_t    *coeff_buffer,//1D buffer
@@ -4056,73 +4033,6 @@ extern "C" {
         PlaneType  component_type,
         uint32_t    eob,
         uint8_t     lossless);
-
-    extern uint8_t map_chroma_qp(
-        uint8_t qp
-    );
-
-    /*****************************
-    * Function pointer Typedef
-    *****************************/
-    typedef void(*EbQiqType)(
-        int16_t        *coeff,
-        const uint32_t  coeff_stride,
-        int16_t        *quant_coeff,
-        int16_t        *recon_coeff,
-        const uint32_t  q_func,
-        const uint32_t  q_offset,
-        const int32_t   shifted_q_bits,
-        const int32_t   shifted_f_func,
-        const int32_t   iq_offset,
-        const int32_t   shift_num,
-        const uint32_t  area_size,
-        uint32_t       *nonzerocoeff);
-
-    typedef void(*EbMatMulType)(
-        int16_t        *coeff,
-        const uint32_t  coeff_stride,
-        const uint16_t *masking_matrix,
-        const uint32_t  masking_matrix_stride,
-        const uint32_t  compute_size,
-        const int32_t   offset,
-        const int32_t   shift_num,
-        uint32_t       *nonzerocoeff);
-
-    extern void mat_mult(
-        int16_t        *coeff,
-        const uint32_t  coeff_stride,
-        const uint16_t *masking_matrix,
-        const uint32_t  masking_matrix_stride,
-        const uint32_t  compute_size,
-        const int32_t   offset,
-        const int32_t   shift_num,
-        uint32_t       *nonzerocoeff);
-
-    typedef void(*EbMatOutMulType)(
-        int16_t        *coeff,
-        const uint32_t  coeff_stride,
-        int16_t*        coeff_out,
-        const uint32_t  coeff_out_stride,
-        const uint16_t *masking_matrix,
-        const uint32_t  masking_matrix_stride,
-        const uint32_t  compute_size,
-        const int32_t   offset,
-        const int32_t   shift_num,
-        uint32_t       *nonzerocoeff);
-
-    void mat_mult_out(
-        int16_t        *coeff,
-        const uint32_t  coeff_stride,
-        int16_t*        coeff_out,
-        const uint32_t  coeff_out_stride,
-        const uint16_t *masking_matrix,
-        const uint32_t  masking_matrix_stride,
-        const uint32_t  compute_size,
-        const int32_t   offset,
-        const int32_t   shift_num,
-        uint32_t       *nonzerocoeff);
-
-    void construct_pm_trans_coeff_shaping(SequenceControlSet  *sequence_control_set_ptr);
 
 #ifdef __cplusplus
 }

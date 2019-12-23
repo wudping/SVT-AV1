@@ -3,13 +3,15 @@
 * SPDX - License - Identifier: BSD - 2 - Clause - Patent
 */
 
+#include "EbDefinitions.h"
+
+#ifndef NON_AVX512_SUPPORT
+
 #include "immintrin.h"
 #include "EbCombinedAveragingSAD_Inline_AVX2.h"
 #include "EbCombinedAveragingSAD_Intrinsic_AVX2.h"
 #include "EbMemory_AVX2.h"
 #include "EbMemory_SSE4_1.h"
-
-#ifndef NON_AVX512_SUPPORT
 
 static INLINE void ssd32_avx512(const uint8_t *const src,
     const uint8_t *const ref1,

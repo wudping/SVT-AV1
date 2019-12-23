@@ -46,7 +46,7 @@ extern "C" {
         __m128i *output,
         const int32_t size,
         const int32_t bit) {
-        const __m128i sqrt2 = _mm_set1_epi32(NewSqrt2);
+        const __m128i sqrt2 = _mm_set1_epi32(new_sqrt2);
         if (bit > 0) {
             int32_t i;
             for (i = 0; i < size; i++) {

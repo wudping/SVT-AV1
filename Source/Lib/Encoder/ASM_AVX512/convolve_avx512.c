@@ -2,9 +2,11 @@
 * Copyright(c) 2019 Intel Corporation
 * SPDX - License - Identifier: BSD - 2 - Clause - Patent
 */
+#include "EbDefinitions.h"
+
+#ifndef NON_AVX512_SUPPORT
 
 #include <immintrin.h>
-#include "EbDefinitions.h"
 #include "aom_dsp_rtcd.h"
 #include "convolve.h"
 #include "convolve_avx2.h"
@@ -12,8 +14,6 @@
 #include "EbInterPrediction.h"
 #include "EbMemory_AVX2.h"
 #include "synonyms.h"
-
-#ifndef NON_AVX512_SUPPORT
 
 static INLINE __m512i sr_x_round_avx512(const __m512i src) {
     const __m512i round = _mm512_set1_epi16(34);

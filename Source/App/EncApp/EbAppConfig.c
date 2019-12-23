@@ -408,7 +408,7 @@ static void SetMDS2_PRUNE_S_TH(const char *value, EbConfig *cfg) {
 
 static void set_enable_auto_max_partition           (const char *value, EbConfig *cfg) { cfg->enable_auto_max_partition = (uint8_t)strtol(value, NULL, 0); };
 
-enum cfg_type{
+enum CfgType{
     SINGLE_INPUT,   // Configuration parameters that have only 1 value input
     ARRAY_INPUT     // Configuration parameters that have multiple values as input
 };
@@ -417,7 +417,7 @@ enum cfg_type{
  * Config Entry Struct
  **********************************/
 typedef struct config_entry_s {
-    enum  cfg_type type;
+    enum  CfgType type;
     const char *token;
     const char *name;
     void (*scf)(const char *, EbConfig *);

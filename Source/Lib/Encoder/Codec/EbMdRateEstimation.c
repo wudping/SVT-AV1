@@ -312,14 +312,14 @@ void eb_av1_build_nmv_cost_table(int32_t *mvjoint, int32_t *mvcost[2],
 * based on the frame CDF
 ***************************************************************************/
 void av1_estimate_mv_rate(
-    PictureControlSet     *picture_control_set_ptr,
+    PictureControlSet     *pcs_ptr,
     MdRateEstimationContext  *md_rate_estimation_array,
     FRAME_CONTEXT            *fc)
 
 {
     int32_t *nmvcost[2];
     int32_t *nmvcost_hp[2];
-    FrameHeader *frm_hdr = &picture_control_set_ptr->parent_pcs_ptr->frm_hdr;
+    FrameHeader *frm_hdr = &pcs_ptr->parent_pcs_ptr->frm_hdr;
 
     nmvcost[0] = &md_rate_estimation_array->nmv_costs[0][MV_MAX];
     nmvcost[1] = &md_rate_estimation_array->nmv_costs[1][MV_MAX];
@@ -789,7 +789,7 @@ static AOM_INLINE void update_palette_cdf(MacroBlockD *xd,
  * Updates all the Intra stats/CDF for the current block
  ******************************************************************************/
 static AOM_INLINE void sum_intra_stats(
-    PictureControlSet  *picture_control_set_ptr,
+    PictureControlSet  *pcs_ptr,
     CodingUnit         *cu_ptr,
     const MbModeInfo    *above_mi,
     const MbModeInfo    *left_mi,
@@ -810,7 +810,7 @@ static AOM_INLINE void sum_intra_stats(
         update_cdf(fc->y_mode_cdf[size_group_lookup[bsize]], y_mode, INTRA_MODES);
     }
     if (xd->use_intrabc == 0 && av1_filter_intra_allowed(
-        picture_control_set_ptr->parent_pcs_ptr->sequence_control_set_ptr->seq_header.enable_filter_intra,
+        pcs_ptr->parent_pcs_ptr->scs_ptr->seq_header.enable_filter_intra,
         bsize, cu_ptr->palette_info.pmi.palette_size[0], y_mode)) {
         const int use_filter_intra_mode =
             cu_ptr->filter_intra_mode != FILTER_INTRA_MODES;
@@ -855,7 +855,7 @@ static AOM_INLINE void sum_intra_stats(
             mbmi->block_mi.angle_delta[PLANE_TYPE_UV] + MAX_ANGLE_DELTA,
             2 * MAX_ANGLE_DELTA + 1);
     }
-    if (av1_allow_palette(picture_control_set_ptr->parent_pcs_ptr->frm_hdr.allow_screen_content_tools, bsize)) {
+    if (av1_allow_palette(pcs_ptr->parent_pcs_ptr->frm_hdr.allow_screen_content_tools, bsize)) {
         update_palette_cdf(xd, mbmi, cu_ptr, mi_row, mi_col);
     }
 }
@@ -863,21 +863,21 @@ static AOM_INLINE void sum_intra_stats(
  * Updates all the syntax stats/CDF for the current block
  ******************************************************************************/
 void update_stats(
-    PictureControlSet  *picture_control_set_ptr,
+    PictureControlSet  *pcs_ptr,
     CodingUnit         *cu_ptr,
     int                 mi_row,
     int                 mi_col) {
-    const AV1_COMMON *const cm = picture_control_set_ptr->parent_pcs_ptr->av1_cm;
+    const AV1_COMMON *const cm = pcs_ptr->parent_pcs_ptr->av1_cm;
     MacroBlockD *xd = cu_ptr->av1xd;
     const MbModeInfo *const mbmi = &xd->mi[0]->mbmi;
 
     const BlockGeom          *blk_geom = get_blk_geom_mds(cu_ptr->mds_idx);
     BlockSize bsize = blk_geom->bsize;
     FRAME_CONTEXT *fc = xd->tile_ctx;
-    const int seg_ref_active = picture_control_set_ptr->parent_pcs_ptr->frm_hdr.segmentation_params.segmentation_enabled &&
-        picture_control_set_ptr->parent_pcs_ptr->frm_hdr.segmentation_params.seg_id_pre_skip;
+    const int seg_ref_active = pcs_ptr->parent_pcs_ptr->frm_hdr.segmentation_params.segmentation_enabled &&
+        pcs_ptr->parent_pcs_ptr->frm_hdr.segmentation_params.seg_id_pre_skip;
 
-    if (picture_control_set_ptr->parent_pcs_ptr->skip_mode_flag && !seg_ref_active &&
+    if (pcs_ptr->parent_pcs_ptr->skip_mode_flag && !seg_ref_active &&
         is_comp_ref_allowed(bsize)) {
         const int skip_mode_ctx = av1_get_skip_mode_context(xd);
         update_cdf(fc->skip_mode_cdfs[skip_mode_ctx], mbmi->block_mi.skip_mode, 2);
@@ -889,18 +889,18 @@ void update_stats(
     }
     if (!is_inter_block(&mbmi->block_mi)) {
         sum_intra_stats(
-            picture_control_set_ptr,
+            pcs_ptr,
             cu_ptr,
             xd->above_mbmi,
             xd->left_mbmi,
-            frame_is_intra_only(picture_control_set_ptr->parent_pcs_ptr),
+            frame_is_intra_only(pcs_ptr->parent_pcs_ptr),
             mi_row,
             mi_col);
     }
     if (av1_allow_intrabc(cm))
         update_cdf(fc->intrabc_cdf, is_intrabc_block(&mbmi->block_mi), 2);
 
-    if (frame_is_intra_only(picture_control_set_ptr->parent_pcs_ptr) || mbmi->block_mi.skip_mode) return;
+    if (frame_is_intra_only(pcs_ptr->parent_pcs_ptr) || mbmi->block_mi.skip_mode) return;
     const int inter_block = is_inter_block(&mbmi->block_mi);
     if (!seg_ref_active) {
         update_cdf(fc->intra_inter_cdf[av1_get_intra_inter_context(xd)],
@@ -911,7 +911,7 @@ void update_stats(
         if (inter_block) {
             const MvReferenceFrame ref0 = mbmi->block_mi.ref_frame[0];
             const MvReferenceFrame ref1 = mbmi->block_mi.ref_frame[1];
-            if (picture_control_set_ptr->parent_pcs_ptr->frm_hdr.reference_mode == REFERENCE_MODE_SELECT) {
+            if (pcs_ptr->parent_pcs_ptr->frm_hdr.reference_mode == REFERENCE_MODE_SELECT) {
                 if (is_comp_ref_allowed(bsize)) {
                     update_cdf(av1_get_reference_mode_cdf(xd), has_second_ref(mbmi), 2);
                 }
@@ -980,7 +980,7 @@ void update_stats(
                     }
                 }
             }
-            if (picture_control_set_ptr->parent_pcs_ptr->sequence_control_set_ptr->seq_header.enable_interintra_compound &&
+            if (pcs_ptr->parent_pcs_ptr->scs_ptr->seq_header.enable_interintra_compound &&
                 is_interintra_allowed(mbmi)) {
                 const int bsize_group = size_group_lookup[bsize];
                 if (cu_ptr->is_interintra_used){
@@ -1002,8 +1002,8 @@ void update_stats(
             }
 
             const MotionMode motion_allowed =
-                picture_control_set_ptr->parent_pcs_ptr->frm_hdr.is_motion_mode_switchable
-                ? motion_mode_allowed(picture_control_set_ptr,
+                pcs_ptr->parent_pcs_ptr->frm_hdr.is_motion_mode_switchable
+                ? motion_mode_allowed(pcs_ptr,
                     cu_ptr,
                     bsize,
                     mbmi->block_mi.ref_frame[0],
@@ -1022,7 +1022,7 @@ void update_stats(
 
             if (has_second_ref(mbmi)) {
                 const int masked_compound_used = is_any_masked_compound_used(bsize) &&
-                    picture_control_set_ptr->parent_pcs_ptr->sequence_control_set_ptr->seq_header.enable_masked_compound;
+                    pcs_ptr->parent_pcs_ptr->scs_ptr->seq_header.enable_masked_compound;
                 if (masked_compound_used) {
                     const int comp_group_idx_ctx = get_comp_group_idx_context_enc(xd);
                     update_cdf(fc->comp_group_idx_cdf[comp_group_idx_ctx],
@@ -1031,10 +1031,10 @@ void update_stats(
 
                 if (mbmi->comp_group_idx == 0) {
                     const int comp_index_ctx = get_comp_index_context_enc(
-                        picture_control_set_ptr->parent_pcs_ptr,
-                        picture_control_set_ptr->parent_pcs_ptr->cur_order_hint,// cur_frame_index,
-                        picture_control_set_ptr->parent_pcs_ptr->ref_order_hint[mbmi->block_mi.ref_frame[0] - 1],// bck_frame_index,
-                        picture_control_set_ptr->parent_pcs_ptr->ref_order_hint[mbmi->block_mi.ref_frame[1] - 1],// fwd_frame_index,
+                        pcs_ptr->parent_pcs_ptr,
+                        pcs_ptr->parent_pcs_ptr->cur_order_hint,// cur_frame_index,
+                        pcs_ptr->parent_pcs_ptr->ref_order_hint[mbmi->block_mi.ref_frame[0] - 1],// bck_frame_index,
+                        pcs_ptr->parent_pcs_ptr->ref_order_hint[mbmi->block_mi.ref_frame[1] - 1],// fwd_frame_index,
                         cu_ptr->av1xd);
                     update_cdf(fc->compound_index_cdf[comp_index_ctx], mbmi->block_mi.compound_idx,
                         2);
@@ -1057,9 +1057,9 @@ void update_stats(
         }
     }
 
-    if (inter_block && picture_control_set_ptr->parent_pcs_ptr->av1_cm->interp_filter == SWITCHABLE &&
+    if (inter_block && pcs_ptr->parent_pcs_ptr->av1_cm->interp_filter == SWITCHABLE &&
         mbmi->block_mi.motion_mode != WARPED_CAUSAL &&
-        !is_nontrans_global_motion_EC(mbmi->block_mi.ref_frame[0], mbmi->block_mi.ref_frame[1], cu_ptr, bsize, picture_control_set_ptr->parent_pcs_ptr)) {
+        !is_nontrans_global_motion_EC(mbmi->block_mi.ref_frame[0], mbmi->block_mi.ref_frame[1], cu_ptr, bsize, pcs_ptr->parent_pcs_ptr)) {
         update_filter_type_cdf(xd, mbmi);
     }
     if (inter_block &&
@@ -1102,9 +1102,9 @@ void update_stats(
             }
         }
         if (have_newmv_in_inter_mode(mbmi->block_mi.mode)) {
-            const int allow_hp = picture_control_set_ptr->parent_pcs_ptr->frm_hdr.force_integer_mv
+            const int allow_hp = pcs_ptr->parent_pcs_ptr->frm_hdr.force_integer_mv
                 ? MV_SUBPEL_NONE
-                : picture_control_set_ptr->parent_pcs_ptr->frm_hdr.allow_high_precision_mv;
+                : pcs_ptr->parent_pcs_ptr->frm_hdr.allow_high_precision_mv;
             if (new_mv) {
                 IntMv ref_mv;
                 for (int ref = 0; ref < 1 + has_second_ref(mbmi); ++ref) {
@@ -1137,12 +1137,12 @@ void update_stats(
  * Updates the partition stats/CDF for the current block
  ******************************************************************************/
 void update_part_stats(
-    PictureControlSet  *picture_control_set_ptr,
+    PictureControlSet  *pcs_ptr,
     CodingUnit         *cu_ptr,
     int                 mi_row,
     int                 mi_col) {
 
-    const AV1_COMMON *const cm = picture_control_set_ptr->parent_pcs_ptr->av1_cm;
+    const AV1_COMMON *const cm = pcs_ptr->parent_pcs_ptr->av1_cm;
     MacroBlockD *xd = cu_ptr->av1xd;
     const BlockGeom          *blk_geom = get_blk_geom_mds(cu_ptr->mds_idx);
     BlockSize bsize = blk_geom->bsize;
@@ -1155,7 +1155,7 @@ void update_part_stats(
         const PartitionType partition = cu_ptr->part;
         int ctx;
 
-        NeighborArrayUnit    *partition_context_neighbor_array = picture_control_set_ptr->ep_partition_context_neighbor_array;
+        NeighborArrayUnit    *partition_context_neighbor_array = pcs_ptr->ep_partition_context_neighbor_array;
         uint32_t partition_context_left_neighbor_index = get_neighbor_array_unit_left_index(
             partition_context_neighbor_array,
             (mi_row << MI_SIZE_LOG2));
@@ -1180,7 +1180,7 @@ void update_part_stats(
         const int has_cols = (mi_col + hbs) < cm->mi_cols;
 
         if (has_rows && has_cols) {
-            if (picture_control_set_ptr->update_cdf) {
+            if (pcs_ptr->update_cdf) {
                 update_cdf(fc->partition_cdf[ctx], partition,
                     partition_cdf_length(bsize));
 

@@ -31,7 +31,7 @@ typedef struct EbReferenceObject
     EbBool                          is_scene_change;
     uint16_t                        pic_avg_variance;
     uint8_t                         average_intensity;
-    aom_film_grain_t                film_grain_params; //Film grain parameters for a reference frame
+    AomFilmGrain                film_grain_params; //Film grain parameters for a reference frame
     uint32_t                        cdef_frame_strength;
     int8_t                          sg_frame_ep;
     FRAME_CONTEXT                   frame_context;
@@ -41,7 +41,7 @@ typedef struct EbReferenceObject
     uint32_t                        order_hint;
     uint32_t                        ref_order_hint[7];
 #if TWO_PASS
-    stat_struct_t                   stat_struct;
+    StatStruct                   stat_struct;
     EbHandle                        referenced_area_mutex;
     uint64_t                        referenced_area_avg;
 #endif

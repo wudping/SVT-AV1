@@ -49,7 +49,7 @@ extern "C" {
     extern EbErrorType write_sb(
         struct EntropyCodingContext   *context_ptr,
         SuperBlock            *tb_ptr,
-        PictureControlSet     *picture_control_set_ptr,
+        PictureControlSet     *pcs_ptr,
         EntropyCoder          *entropy_coder_ptr,
         EbPictureBufferDesc   *coeff_ptr);
 
@@ -69,7 +69,7 @@ extern "C" {
         struct ModeDecisionContext         *md_context,
         uint8_t                             allow_update_cdf,
         FRAME_CONTEXT                      *ec_ctx,
-        PictureControlSet                  *picture_control_set_ptr,
+        PictureControlSet                  *pcs_ptr,
         struct ModeDecisionCandidateBuffer *candidate_buffer_ptr,
         uint32_t                            tu_origin_index,
         uint32_t                            tu_chroma_origin_index,
@@ -237,7 +237,7 @@ extern "C" {
     }
 
     void get_txb_ctx(
-        SequenceControlSet *sequence_control_set_ptr,
+        SequenceControlSet *scs_ptr,
         const int32_t               plane,
         NeighborArrayUnit     *dc_sign_level_coeff_neighbor_array,
         uint32_t                  cu_origin_x,
@@ -337,7 +337,7 @@ extern "C" {
     //*******************************************************************************************//
 
     MotionMode motion_mode_allowed(
-        const PictureControlSet       *picture_control_set_ptr,
+        const PictureControlSet       *pcs_ptr,
         const CodingUnit              *cu_ptr,
         const BlockSize                 bsize,
         MvReferenceFrame                rf0,

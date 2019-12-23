@@ -482,7 +482,7 @@ static int32_t has_top_right(const Av1Common *cm, const MacroBlockD *xd,
     int32_t mi_row, int32_t mi_col, int32_t bs) {
     (void)xd;
     (void)cm;
-    const int32_t sb_mi_size = mi_size_wide[cm->p_pcs_ptr->sequence_control_set_ptr->seq_header.sb_size];
+    const int32_t sb_mi_size = mi_size_wide[cm->p_pcs_ptr->scs_ptr->seq_header.sb_size];
     const int32_t mask_row = mi_row & (sb_mi_size - 1);
     const int32_t mask_col = mi_col & (sb_mi_size - 1);
 
@@ -558,7 +558,7 @@ static INLINE int get_relative_dist(const OrderHintInfo *oh, int a, int b) {
     diff = (diff & (m - 1)) - (diff & m);
     return diff;
 }
-static int add_tpl_ref_mv(const Av1Common *cm, PictureControlSet *picture_control_set_ptr, const MacroBlockD *xd,
+static int add_tpl_ref_mv(const Av1Common *cm, PictureControlSet *pcs_ptr, const MacroBlockD *xd,
     int mi_row, int mi_col, MvReferenceFrame ref_frame,
     int blk_row, int blk_col, IntMv *gm_mv_candidates,
     uint8_t *const refmv_count,
@@ -571,7 +571,7 @@ static int add_tpl_ref_mv(const Av1Common *cm, PictureControlSet *picture_contro
     if (!is_inside(&xd->tile, mi_col, mi_row, xd->tile.mi_row_end, &mi_pos)) return 0;
 
     const TPL_MV_REF *prev_frame_mvs =
-        picture_control_set_ptr->tpl_mvs + ((mi_row + mi_pos.row) >> 1) * (cm->mi_stride >> 1) +
+        pcs_ptr->tpl_mvs + ((mi_row + mi_pos.row) >> 1) * (cm->mi_stride >> 1) +
         ((mi_col + mi_pos.col) >> 1);
     if (prev_frame_mvs->mfmv0.as_int == INVALID_MV) return 0;
 
@@ -591,18 +591,18 @@ static int add_tpl_ref_mv(const Av1Common *cm, PictureControlSet *picture_contro
     }
 
     const uint16_t weight_unit = 1;
-    const int cur_frame_index = picture_control_set_ptr->parent_pcs_ptr->cur_order_hint;
-    EbReferenceObject *buf_0 = (EbReferenceObject*)picture_control_set_ptr->ref_pic_ptr_array[list_idx0][ref_idx_l0]->object_ptr;
+    const int cur_frame_index = pcs_ptr->parent_pcs_ptr->cur_order_hint;
+    EbReferenceObject *buf_0 = (EbReferenceObject*)pcs_ptr->ref_pic_ptr_array[list_idx0][ref_idx_l0]->object_ptr;
 
     const int frame0_index = buf_0->order_hint;
-    const int cur_offset_0 = get_relative_dist(&picture_control_set_ptr->parent_pcs_ptr->sequence_control_set_ptr->seq_header.order_hint_info,
+    const int cur_offset_0 = get_relative_dist(&pcs_ptr->parent_pcs_ptr->scs_ptr->seq_header.order_hint_info,
         cur_frame_index, frame0_index);
     int idx;
 
     IntMv this_refmv;
     get_mv_projection(&this_refmv.as_mv, prev_frame_mvs->mfmv0.as_mv,
         cur_offset_0, prev_frame_mvs->ref_frame_offset);
-    lower_mv_precision(&this_refmv.as_mv, picture_control_set_ptr->parent_pcs_ptr->frm_hdr.allow_high_precision_mv, 0);
+    lower_mv_precision(&this_refmv.as_mv, pcs_ptr->parent_pcs_ptr->frm_hdr.allow_high_precision_mv, 0);
     if (rf[1] == NONE_FRAME) {
         if (blk_row == 0 && blk_col == 0) {
             if (abs(this_refmv.as_mv.row - gm_mv_candidates[0].as_mv.row) >= 16 ||
@@ -623,15 +623,15 @@ static int add_tpl_ref_mv(const Av1Common *cm, PictureControlSet *picture_contro
     }
     else {
         // Process compound inter mode
-        EbReferenceObject *buf_1 = (EbReferenceObject*)picture_control_set_ptr->ref_pic_ptr_array[list_idx1][ref_idx_l1]->object_ptr;
+        EbReferenceObject *buf_1 = (EbReferenceObject*)pcs_ptr->ref_pic_ptr_array[list_idx1][ref_idx_l1]->object_ptr;
 
         const int frame1_index = buf_1->order_hint;
-        const int cur_offset_1 = get_relative_dist(&picture_control_set_ptr->parent_pcs_ptr->sequence_control_set_ptr->seq_header.order_hint_info,
+        const int cur_offset_1 = get_relative_dist(&pcs_ptr->parent_pcs_ptr->scs_ptr->seq_header.order_hint_info,
             cur_frame_index, frame1_index);
         IntMv comp_refmv;
         get_mv_projection(&comp_refmv.as_mv, prev_frame_mvs->mfmv0.as_mv,
             cur_offset_1, prev_frame_mvs->ref_frame_offset);
-        lower_mv_precision(&comp_refmv.as_mv, picture_control_set_ptr->parent_pcs_ptr->frm_hdr.allow_high_precision_mv, 0);
+        lower_mv_precision(&comp_refmv.as_mv, pcs_ptr->parent_pcs_ptr->frm_hdr.allow_high_precision_mv, 0);
         if (blk_row == 0 && blk_col == 0) {
             if (abs(this_refmv.as_mv.row - gm_mv_candidates[0].as_mv.row) >= 16 ||
                 abs(this_refmv.as_mv.col - gm_mv_candidates[0].as_mv.col) >= 16 ||
@@ -661,7 +661,7 @@ static int add_tpl_ref_mv(const Av1Common *cm, PictureControlSet *picture_contro
 
 
 void setup_ref_mv_list(
-    PictureControlSet *picture_control_set_ptr,
+    PictureControlSet *pcs_ptr,
     const Av1Common *cm, const MacroBlockD *xd, MvReferenceFrame ref_frame,
     uint8_t refmv_count[MODE_CTX_REF_FRAMES],
     CandidateMv ref_mv_stack[][MAX_REF_MV_STACK_SIZE],
@@ -753,7 +753,7 @@ void setup_ref_mv_list(
         ref_mv_stack[ref_frame][idx].weight += REF_CAT_LEVEL;
 
     //CHKN  MFMV - get canididates from reference frames- orderHint has to be on, in order to scale the vectors.
-    if (picture_control_set_ptr->parent_pcs_ptr->frm_hdr.use_ref_frame_mvs)
+    if (pcs_ptr->parent_pcs_ptr->frm_hdr.use_ref_frame_mvs)
     {
 
         int is_available = 0;
@@ -781,7 +781,7 @@ void setup_ref_mv_list(
 
         for (int blk_row = 0; blk_row < blk_row_end; blk_row += step_h) {
             for (int blk_col = 0; blk_col < blk_col_end; blk_col += step_w) {
-                int ret = add_tpl_ref_mv(cm, picture_control_set_ptr, xd, mi_row, mi_col, ref_frame, blk_row,
+                int ret = add_tpl_ref_mv(cm, pcs_ptr, xd, mi_row, mi_col, ref_frame, blk_row,
                     blk_col, gm_mv_candidates, &refmv_count[ref_frame],
                     ref_mv_stack[ref_frame], mode_context);
                 if (blk_row == 0 && blk_col == 0) is_available = ret;
@@ -795,7 +795,7 @@ void setup_ref_mv_list(
             const int blk_col = tpl_sample_pos[i][1];
 
             if (!check_sb_border(mi_row, mi_col, blk_row, blk_col)) continue;
-            add_tpl_ref_mv(cm, picture_control_set_ptr, xd, mi_row, mi_col, ref_frame, blk_row, blk_col,
+            add_tpl_ref_mv(cm, pcs_ptr, xd, mi_row, mi_col, ref_frame, blk_row, blk_col,
                 gm_mv_candidates, &refmv_count[ref_frame], ref_mv_stack[ref_frame], mode_context);
         }
     }
@@ -1205,14 +1205,14 @@ IntMv gm_get_motion_vector_enc(
 }
 #if MULTI_PASS_PD
 void mvp_bypass_init(
-    PictureControlSet   *picture_control_set_ptr,
+    PictureControlSet   *pcs_ptr,
     ModeDecisionContext *context_ptr)
 {
     TileInfo *tile = &context_ptr->sb_ptr->tile_info;
 
     int32_t mi_row = context_ptr->cu_origin_y >> MI_SIZE_LOG2;
     int32_t mi_col = context_ptr->cu_origin_x >> MI_SIZE_LOG2;
-    Av1Common  *cm = picture_control_set_ptr->parent_pcs_ptr->av1_cm;
+    Av1Common  *cm = pcs_ptr->parent_pcs_ptr->av1_cm;
     MacroBlockD  *xd = context_ptr->cu_ptr->av1xd;
     BlockSize bsize = context_ptr->blk_geom->bsize;
     const int32_t bw = mi_size_wide[bsize];
@@ -1249,9 +1249,9 @@ void mvp_bypass_init(
     xd->tile.mi_row_start = tile->mi_row_start;
     xd->tile.mi_row_end = tile->mi_row_end;
 
-    xd->mi_stride = picture_control_set_ptr->mi_stride;
+    xd->mi_stride = pcs_ptr->mi_stride;
     const int32_t offset = mi_row * xd->mi_stride + mi_col;
-    xd->mi = picture_control_set_ptr->mi_grid_base + offset;
+    xd->mi = pcs_ptr->mi_grid_base + offset;
 
     xd->mi[0]->mbmi.block_mi.partition = from_shape_to_part[context_ptr->blk_geom->shape];
 
@@ -1273,12 +1273,12 @@ void generate_av1_mvp_table(
     uint16_t                          cu_origin_y,
     MvReferenceFrame                 *ref_frames,
     uint32_t                          tot_refs,
-    PictureControlSet              *picture_control_set_ptr)
+    PictureControlSet              *pcs_ptr)
 {
     int32_t mi_row = cu_origin_y >> MI_SIZE_LOG2;
     int32_t mi_col = cu_origin_x >> MI_SIZE_LOG2;
-    Av1Common  *cm = picture_control_set_ptr->parent_pcs_ptr->av1_cm;
-    FrameHeader *frm_hdr = &picture_control_set_ptr->parent_pcs_ptr->frm_hdr;
+    Av1Common  *cm = pcs_ptr->parent_pcs_ptr->av1_cm;
+    FrameHeader *frm_hdr = &pcs_ptr->parent_pcs_ptr->frm_hdr;
     MacroBlockD  *xd = cu_ptr->av1xd;
     xd->n8_w = blk_geom->bwidth >> MI_SIZE_LOG2;
     xd->n8_h = blk_geom->bheight >> MI_SIZE_LOG2;
@@ -1317,9 +1317,9 @@ void generate_av1_mvp_table(
     xd->tile.mi_row_start = tile->mi_row_start;
     xd->tile.mi_row_end = tile->mi_row_end;
 
-    xd->mi_stride = picture_control_set_ptr->mi_stride;
+    xd->mi_stride = pcs_ptr->mi_stride;
     const int32_t offset = mi_row * xd->mi_stride + mi_col;
-    xd->mi = picture_control_set_ptr->mi_grid_base + offset;
+    xd->mi = pcs_ptr->mi_grid_base + offset;
 
     xd->mi[0]->mbmi.block_mi.partition = from_shape_to_part[blk_geom->shape];
 
@@ -1337,30 +1337,30 @@ void generate_av1_mvp_table(
         } else {
           if (ref_frame < REF_FRAMES) {
             gm_mv[0] = gm_get_motion_vector_enc(
-                &picture_control_set_ptr->parent_pcs_ptr->global_motion[ref_frame], frm_hdr->allow_high_precision_mv, bsize,
+                &pcs_ptr->parent_pcs_ptr->global_motion[ref_frame], frm_hdr->allow_high_precision_mv, bsize,
                 mi_col, mi_row, frm_hdr->force_integer_mv);
             gm_mv[1].as_int = 0;
           } else {
             MvReferenceFrame rf[2];
             av1_set_ref_frame(rf, ref_frame);
             gm_mv[0] = gm_get_motion_vector_enc(
-                &picture_control_set_ptr->parent_pcs_ptr->global_motion[rf[0]], frm_hdr->allow_high_precision_mv, bsize, mi_col,
+                &pcs_ptr->parent_pcs_ptr->global_motion[rf[0]], frm_hdr->allow_high_precision_mv, bsize, mi_col,
                 mi_row, frm_hdr->force_integer_mv);
             gm_mv[1] = gm_get_motion_vector_enc(
-                &picture_control_set_ptr->parent_pcs_ptr->global_motion[rf[1]], frm_hdr->allow_high_precision_mv, bsize, mi_col,
+                &pcs_ptr->parent_pcs_ptr->global_motion[rf[1]], frm_hdr->allow_high_precision_mv, bsize, mi_col,
                 mi_row, frm_hdr->force_integer_mv);
           }
         }
 
         setup_ref_mv_list(
-            picture_control_set_ptr,
+            pcs_ptr,
             cm,
             xd,
             ref_frame,
             xd->ref_mv_count,
             context_ptr->md_local_cu_unit[blk_geom->blkidx_mds].ed_ref_mv_stack,
             cu_ptr->ref_mvs,
-            gm_mv, picture_control_set_ptr->parent_pcs_ptr->global_motion,
+            gm_mv, pcs_ptr->parent_pcs_ptr->global_motion,
             mi_row,
             mi_col,
             cu_ptr->inter_mode_ctx);
@@ -1432,7 +1432,7 @@ void enc_pass_av1_mv_pred(
     const BlockGeom                  *blk_geom,
     uint16_t                          cu_origin_x,
     uint16_t                          cu_origin_y,
-    PictureControlSet              *picture_control_set_ptr,
+    PictureControlSet              *pcs_ptr,
     MvReferenceFrame                  ref_frame,
     uint8_t                           is_compound,
     PredictionMode                    mode,
@@ -1451,7 +1451,7 @@ void enc_pass_av1_mv_pred(
         cu_origin_y,
         &ref_frame,
         1,
-        picture_control_set_ptr);
+        pcs_ptr);
 
     get_av1_mv_pred_drl(
         md_context_ptr,
@@ -1470,14 +1470,14 @@ void update_av1_mi_map(
     uint32_t                        cu_origin_x,
     uint32_t                        cu_origin_y,
     const BlockGeom                *blk_geom,
-    PictureControlSet            *picture_control_set_ptr)
+    PictureControlSet            *pcs_ptr)
 {
-    uint32_t mi_stride = picture_control_set_ptr->mi_stride;
+    uint32_t mi_stride = pcs_ptr->mi_stride;
     int32_t mi_row = cu_origin_y >> MI_SIZE_LOG2;
     int32_t mi_col = cu_origin_x >> MI_SIZE_LOG2;
 
     const int32_t offset = mi_row * mi_stride + mi_col;
-    ModeInfo *miPtr = *(picture_control_set_ptr->mi_grid_base + offset);
+    ModeInfo *miPtr = *(pcs_ptr->mi_grid_base + offset);
     MvReferenceFrame rf[2];
     av1_set_ref_frame(rf, cu_ptr->prediction_unit_array->ref_frame_type);
     uint8_t  miX, miY;
@@ -1560,15 +1560,15 @@ void update_mi_map(
     uint32_t                        cu_origin_y,
     const BlockGeom                *blk_geom,
     const CodedUnitStats         *cu_stats,
-    PictureControlSet            *picture_control_set_ptr)
+    PictureControlSet            *pcs_ptr)
 {
     UNUSED(cu_stats);
-    uint32_t mi_stride = picture_control_set_ptr->mi_stride;
+    uint32_t mi_stride = pcs_ptr->mi_stride;
     int32_t mi_row = cu_origin_y >> MI_SIZE_LOG2;
     int32_t mi_col = cu_origin_x >> MI_SIZE_LOG2;
 
     const int32_t offset = mi_row * mi_stride + mi_col;
-    ModeInfo *miPtr = *(picture_control_set_ptr->mi_grid_base + offset);
+    ModeInfo *miPtr = *(pcs_ptr->mi_grid_base + offset);
     MvReferenceFrame rf[2];
     av1_set_ref_frame(rf, cu_ptr->prediction_unit_array->ref_frame_type);
 
@@ -1878,10 +1878,10 @@ void wm_count_samples(
     uint16_t                            cu_origin_x,
     uint16_t                            cu_origin_y,
     uint8_t                             ref_frame_type,
-    PictureControlSet                *picture_control_set_ptr,
+    PictureControlSet                *pcs_ptr,
     uint16_t                           *num_samples)
 {
-    Av1Common  *cm = picture_control_set_ptr->parent_pcs_ptr->av1_cm;
+    Av1Common  *cm = pcs_ptr->parent_pcs_ptr->av1_cm;
     MacroBlockD  *xd = cu_ptr->av1xd;
 
     int32_t mi_row = cu_origin_y >> MI_SIZE_LOG2;
@@ -2016,11 +2016,11 @@ uint16_t wm_find_samples(
     uint16_t                            cu_origin_x,
     uint16_t                            cu_origin_y,
     MvReferenceFrame                    rf0,
-    PictureControlSet                *picture_control_set_ptr,
+    PictureControlSet                *pcs_ptr,
     int32_t                            *pts,
     int32_t                            *pts_inref)
 {
-    Av1Common  *cm = picture_control_set_ptr->parent_pcs_ptr->av1_cm;
+    Av1Common  *cm = pcs_ptr->parent_pcs_ptr->av1_cm;
     MacroBlockD  *xd = cu_ptr->av1xd;
 
     int32_t mi_row = cu_origin_y >> MI_SIZE_LOG2;
@@ -2033,7 +2033,7 @@ uint16_t wm_find_samples(
 }
 
 EbBool warped_motion_parameters(
-    PictureControlSet              *picture_control_set_ptr,
+    PictureControlSet              *pcs_ptr,
     CodingUnit                     *cu_ptr,
     MvUnit                         *mv_unit,
     const BlockGeom                  *blk_geom,
@@ -2066,7 +2066,7 @@ EbBool warped_motion_parameters(
         cu_origin_x,
         cu_origin_y,
         rf[0],
-        picture_control_set_ptr,
+        pcs_ptr,
         pts,
         pts_inref);
 
@@ -2170,13 +2170,13 @@ int count_overlappable_nb_left(
 }
 
 void eb_av1_count_overlappable_neighbors(
-    const PictureControlSet        *picture_control_set_ptr,
+    const PictureControlSet        *pcs_ptr,
     CodingUnit                     *cu_ptr,
     const BlockSize                   bsize,
     int32_t                           mi_row,
     int32_t                           mi_col)
 {
-    Av1Common  *cm  = picture_control_set_ptr->parent_pcs_ptr->av1_cm;
+    Av1Common  *cm  = pcs_ptr->parent_pcs_ptr->av1_cm;
     MacroBlockD *xd = cu_ptr->av1xd;
     cu_ptr->prediction_unit_array[0].overlappable_neighbors[0] = 0;
     cu_ptr->prediction_unit_array[0].overlappable_neighbors[1] = 0;

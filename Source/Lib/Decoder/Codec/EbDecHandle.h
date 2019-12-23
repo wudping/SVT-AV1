@@ -73,7 +73,7 @@ typedef struct EbDecPicBuf {
 
     /* order hint */
     /* film grain */
-    aom_film_grain_t    film_grain_params;
+    AomFilmGrain    film_grain_params;
 
 } EbDecPicBuf;
 

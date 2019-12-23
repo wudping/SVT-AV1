@@ -107,7 +107,7 @@ extern "C" {
         uint64_t                               luma_distortion,
         uint64_t                               chroma_distortion,
         uint64_t                               lambda,
-        PictureControlSet                   *picture_control_set_ptr);
+        PictureControlSet                   *pcs_ptr);
     extern EbErrorType  merge_skip_full_cost(
         SuperBlock                  *sb_ptr,
         CodingUnit                  *cu_ptr,
@@ -125,7 +125,7 @@ extern "C" {
         uint64_t                      *cr_coeff_bits,
         uint32_t                       transform_size,
         uint32_t                       transform_chroma_size,
-        PictureControlSet           *picture_control_set_ptr);
+        PictureControlSet           *pcs_ptr);
     extern EbErrorType split_flag_rate(
         ModeDecisionContext     *context_ptr,
         CodingUnit              *cu_ptr,
@@ -142,7 +142,7 @@ extern "C" {
    ((D) * (1 << RDDIV_BITS)))
 
     extern EbErrorType av1_split_flag_rate(
-        SequenceControlSet      *sequence_control_set_ptr,
+        SequenceControlSet      *scs_ptr,
         ModeDecisionContext     *context_ptr,
         CodingUnit              *cu_ptr,
         uint32_t                   leaf_index,
@@ -167,7 +167,7 @@ extern "C" {
         uint64_t                 chroma_distortion,
         uint64_t                 lambda,
         EbBool                   use_ssd,
-        PictureControlSet     *picture_control_set_ptr,
+        PictureControlSet     *pcs_ptr,
         CandidateMv             *ref_mv_stack,
         const BlockGeom         *blk_geom,
         uint32_t                 miRow,
@@ -188,7 +188,7 @@ extern "C" {
         uint64_t                 chroma_distortion,
         uint64_t                 lambda,
         EbBool                   use_ssd,
-        PictureControlSet     *picture_control_set_ptr,
+        PictureControlSet     *pcs_ptr,
         CandidateMv             *ref_mv_stack,
         const BlockGeom         *blk_geom,
         uint32_t                 miRow,
@@ -208,13 +208,13 @@ extern "C" {
         uint64_t                 luma_distortion,
         uint64_t                 lambda,
         EbBool                   use_ssd,
-        PictureControlSet       *picture_control_set_ptr,
+        PictureControlSet       *pcs_ptr,
         CandidateMv             *ref_mv_stack,
         const BlockGeom         *blk_geom);
 #endif
 
     extern EbErrorType av1_intra_full_cost(
-        PictureControlSet                    *picture_control_set_ptr,
+        PictureControlSet                    *pcs_ptr,
         ModeDecisionContext                  *context_ptr,
         struct ModeDecisionCandidateBuffer   *candidate_buffer_ptr,
         CodingUnit                           *cu_ptr,
@@ -228,7 +228,7 @@ extern "C" {
         BlockSize                              bsize);
 
     extern EbErrorType av1_inter_full_cost(
-        PictureControlSet                    *picture_control_set_ptr,
+        PictureControlSet                    *pcs_ptr,
         ModeDecisionContext                  *context_ptr,
         struct ModeDecisionCandidateBuffer   *candidate_buffer_ptr,
         CodingUnit                           *cu_ptr,
@@ -254,7 +254,7 @@ extern "C" {
     extern uint64_t get_tx_size_bits(
         ModeDecisionCandidateBuffer          *candidateBuffer,
         ModeDecisionContext                  *context_ptr,
-        PictureControlSet                    *picture_control_set_ptr,
+        PictureControlSet                    *pcs_ptr,
         uint8_t                               tx_depth,
         EbBool                                block_has_coeff);
 #ifdef __cplusplus

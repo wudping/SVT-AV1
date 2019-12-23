@@ -99,7 +99,7 @@ extern "C" {
         } while (y);
     }
 
-    static INLINE void Distortion_AVX2_INTRIN(const __m256i input,
+    static INLINE void distortion_avx2_intrin(const __m256i input,
         const __m256i recon, __m256i *const sum) {
         const __m256i in = _mm256_unpacklo_epi8(input, _mm256_setzero_si256());
         const __m256i re = _mm256_unpacklo_epi8(recon, _mm256_setzero_si256());
@@ -108,7 +108,7 @@ extern "C" {
         *sum = _mm256_add_epi32(*sum, dist);
     }
 
-    static INLINE void SpatialFullDistortionKernel16_AVX2_INTRIN(
+    static INLINE void spatial_full_distortion_kernel16_avx2_intrin(
         const uint8_t *const input, const uint8_t *const recon,
         __m256i *const sum)
     {
@@ -121,7 +121,7 @@ extern "C" {
         *sum = _mm256_add_epi32(*sum, dist);
     }
 
-    static INLINE void FullDistortionKernel4_AVX2_INTRIN(
+    static INLINE void full_distortion_kernel4_avx2_intrin(
         const uint16_t* const input, const uint16_t* const recon,
         __m256i* const sum)
     {
@@ -136,7 +136,7 @@ extern "C" {
         *sum = _mm256_add_epi32(*sum, zero);
     }
 
-    static INLINE void FullDistortionKernel16_AVX2_INTRIN(
+    static INLINE void full_distortion_kernel16_avx2_intrin(
         __m256i in, __m256i re, __m256i* const sum)
     {
         __m256i max = _mm256_max_epu16(in, re);
@@ -147,14 +147,14 @@ extern "C" {
         *sum = _mm256_add_epi32(*sum, diff);
     }
 
-    static INLINE void Sum32To64(__m256i* const sum32, __m256i* const sum64) {
+    static INLINE void sum32_to64(__m256i* const sum32, __m256i* const sum64) {
         //Save partial sum into large 64bit register instead of 32 bit (which could overflow)
         *sum64 = _mm256_add_epi64(*sum64, _mm256_unpacklo_epi32(*sum32, _mm256_setzero_si256()));
         *sum64 = _mm256_add_epi64(*sum64, _mm256_unpackhi_epi32(*sum32, _mm256_setzero_si256()));
         *sum32 = _mm256_setzero_si256();
     }
 
-    static INLINE void SpatialFullDistortionKernel32Leftover_AVX2_INTRIN(
+    static INLINE void spatial_full_distortion_kernel32_leftover_avx2_intrin(
         const uint8_t *const input, const uint8_t *const recon, __m256i *const sum0,
         __m256i *const sum1)
     {
@@ -171,7 +171,7 @@ extern "C" {
         *sum1 = _mm256_add_epi32(*sum1, dist_H);
     }
 
-    static INLINE void SpatialFullDistortionKernel32_AVX2_INTRIN(
+    static INLINE void spatial_full_distortion_kernel32_avx2_intrin(
         const uint8_t *const input, const uint8_t *const recon, __m256i *const sum)
     {
         const __m256i in = _mm256_loadu_si256((__m256i *)input);

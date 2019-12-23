@@ -259,12 +259,12 @@ uint64_t ComputeNxMSatd8x8Units_U8(
     uint64_t *dc_value)
 {
     uint64_t satd = 0;
-    uint32_t blockIndexInWidth;
-    uint32_t blockIndexInHeight;
+    uint32_t block_index_in_width;
+    uint32_t block_index_in_height;
 
-    for (blockIndexInHeight = 0; blockIndexInHeight < height >> 3; ++blockIndexInHeight) {
-        for (blockIndexInWidth = 0; blockIndexInWidth < width >> 3; ++blockIndexInWidth)
-            satd += compute8x8_satd_u8(&(src[(blockIndexInWidth << 3) + (blockIndexInHeight << 3) * src_stride]), dc_value, src_stride);
+    for (block_index_in_height = 0; block_index_in_height < height >> 3; ++block_index_in_height) {
+        for (block_index_in_width = 0; block_index_in_width < width >> 3; ++block_index_in_width)
+            satd += compute8x8_satd_u8(&(src[(block_index_in_width << 3) + (block_index_in_height << 3) * src_stride]), dc_value, src_stride);
     }
 
     return satd;
@@ -278,12 +278,12 @@ uint64_t ComputeNxMSatd4x4Units_U8(
     uint64_t *dc_value)
 {
     uint64_t satd = 0;
-    uint32_t blockIndexInWidth;
-    uint32_t blockIndexInHeight;
+    uint32_t block_index_in_width;
+    uint32_t block_index_in_height;
 
-    for (blockIndexInHeight = 0; blockIndexInHeight < height >> 2; ++blockIndexInHeight) {
-        for (blockIndexInWidth = 0; blockIndexInWidth < width >> 2; ++blockIndexInWidth)
-            satd += compute4x4_satd_u8(&(src[(blockIndexInWidth << 2) + (blockIndexInHeight << 2) * src_stride]), dc_value, src_stride);
+    for (block_index_in_height = 0; block_index_in_height < height >> 2; ++block_index_in_height) {
+        for (block_index_in_width = 0; block_index_in_width < width >> 2; ++block_index_in_width)
+            satd += compute4x4_satd_u8(&(src[(block_index_in_width << 2) + (block_index_in_height << 2) * src_stride]), dc_value, src_stride);
     }
 
     return satd;

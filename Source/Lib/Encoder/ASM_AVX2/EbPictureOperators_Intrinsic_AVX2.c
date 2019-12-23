@@ -9,8 +9,6 @@
 #include "EbPictureOperators_AVX2.h"
 #include "EbPictureOperators_Inline_AVX2.h"
 #include "EbPictureOperators_SSE2.h"
-#include "EbMemory_AVX2.h"
-#include "synonyms.h"
 
 #define _mm256_set_m128i(/* __m128i */ hi, /* __m128i */ lo) \
     _mm256_insertf128_si256(_mm256_castsi128_si256(lo), (hi), 0x1)
@@ -2121,7 +2119,7 @@ uint64_t spatial_full_distortion_kernel4x_n_avx2_intrin(
         const __m128i re1 = _mm_cvtsi32_si128(*(uint32_t *)(recon + 1 * recon_stride));
         const __m256i in = _mm256_setr_m128i(in0, in1);
         const __m256i re = _mm256_setr_m128i(re0, re1);
-        Distortion_AVX2_INTRIN(in, re, &sum);
+        distortion_avx2_intrin(in, re, &sum);
         input += 2 * input_stride;
         recon += 2 * recon_stride;
         row_count -= 2;
@@ -2158,7 +2156,7 @@ uint64_t spatial_full_distortion_kernel8x_n_avx2_intrin(
         const __m128i re1 = _mm_loadl_epi64((__m128i *)(recon + 1 * recon_stride));
         const __m256i in = _mm256_setr_m128i(in0, in1);
         const __m256i re = _mm256_setr_m128i(re0, re1);
-        Distortion_AVX2_INTRIN(in, re, &sum);
+        distortion_avx2_intrin(in, re, &sum);
         input += 2 * input_stride;
         recon += 2 * recon_stride;
         row_count -= 2;
@@ -2184,7 +2182,7 @@ uint64_t spatial_full_distortion_kernel16x_n_avx2_intrin(
     (void)area_width;
 
     do {
-        SpatialFullDistortionKernel16_AVX2_INTRIN(input, recon, &sum);
+        spatial_full_distortion_kernel16_avx2_intrin(input, recon, &sum);
         input += input_stride;
         recon += recon_stride;
     } while (--row_count);
@@ -2195,8 +2193,8 @@ uint64_t spatial_full_distortion_kernel16x_n_avx2_intrin(
 static INLINE void SpatialFullDistortionKernel64_AVX2_INTRIN(
     const uint8_t *const input, const uint8_t *const recon, __m256i *const sum)
 {
-    SpatialFullDistortionKernel32_AVX2_INTRIN(input + 0 * 32, recon + 0 * 32, sum);
-    SpatialFullDistortionKernel32_AVX2_INTRIN(input + 1 * 32, recon + 1 * 32, sum);
+    spatial_full_distortion_kernel32_avx2_intrin(input + 0 * 32, recon + 0 * 32, sum);
+    spatial_full_distortion_kernel32_avx2_intrin(input + 1 * 32, recon + 1 * 32, sum);
 }
 
 uint64_t spatial_full_distortion_kernel32x_n_avx2_intrin(
@@ -2216,7 +2214,7 @@ uint64_t spatial_full_distortion_kernel32x_n_avx2_intrin(
     (void)area_width;
 
     do {
-        SpatialFullDistortionKernel32_AVX2_INTRIN(input, recon, &sum);
+        spatial_full_distortion_kernel32_avx2_intrin(input, recon, &sum);
         input += input_stride;
         recon += recon_stride;
     } while (--row_count);
@@ -2275,8 +2273,6 @@ uint64_t spatial_full_distortion_kernel128x_n_avx2_intrin(
     return Hadd32_AVX2_INTRIN(sum);
 }
 
-#include "EbUtility.h"
-
 uint64_t spatial_full_distortion_kernel_avx2(
     uint8_t   *input,
     uint32_t   input_offset,
@@ -2308,7 +2304,7 @@ uint64_t spatial_full_distortion_kernel_avx2(
                 const __m128i re1 = _mm_cvtsi32_si128(*(uint32_t *)(rec + recon_stride));
                 const __m256i in = _mm256_setr_m128i(in0, in1);
                 const __m256i re = _mm256_setr_m128i(re0, re1);
-                Distortion_AVX2_INTRIN(in, re, &sum);
+                distortion_avx2_intrin(in, re, &sum);
                 inp += 2 * input_stride;
                 rec += 2 * recon_stride;
                 h -= 2;
@@ -2332,7 +2328,7 @@ uint64_t spatial_full_distortion_kernel_avx2(
                 const __m128i re1 = _mm_loadl_epi64((__m128i *)(rec + recon_stride));
                 const __m256i in = _mm256_setr_m128i(in0, in1);
                 const __m256i re = _mm256_setr_m128i(re0, re1);
-                Distortion_AVX2_INTRIN(in, re, &sum);
+                distortion_avx2_intrin(in, re, &sum);
                 inp += 2 * input_stride;
                 rec += 2 * recon_stride;
                 h -= 2;
@@ -2341,7 +2337,7 @@ uint64_t spatial_full_distortion_kernel_avx2(
         else if (leftover <= 16) {
             h = area_height;
             do {
-                SpatialFullDistortionKernel16_AVX2_INTRIN(inp, rec, &sum);
+                spatial_full_distortion_kernel16_avx2_intrin(inp, rec, &sum);
                 inp += input_stride;
                 rec += recon_stride;
             } while (--h);
@@ -2355,7 +2351,7 @@ uint64_t spatial_full_distortion_kernel_avx2(
             __m256i sum1 = _mm256_setzero_si256();
             h = area_height;
             do {
-                SpatialFullDistortionKernel32Leftover_AVX2_INTRIN(inp, rec, &sum, &sum1);
+                spatial_full_distortion_kernel32_leftover_avx2_intrin(inp, rec, &sum, &sum1);
                 inp += input_stride;
                 rec += recon_stride;
             } while (--h);
@@ -2389,34 +2385,34 @@ uint64_t spatial_full_distortion_kernel_avx2(
 
         if (area_width == 32) {
             do {
-                SpatialFullDistortionKernel32_AVX2_INTRIN(inp, rec, &sum);
+                spatial_full_distortion_kernel32_avx2_intrin(inp, rec, &sum);
                 inp += input_stride;
                 rec += recon_stride;
             } while (--h);
         }
         else if (area_width == 64) {
             do {
-                SpatialFullDistortionKernel32_AVX2_INTRIN(inp + 0 * 32, rec + 0 * 32, &sum);
-                SpatialFullDistortionKernel32_AVX2_INTRIN(inp + 1 * 32, rec + 1 * 32, &sum);
+                spatial_full_distortion_kernel32_avx2_intrin(inp + 0 * 32, rec + 0 * 32, &sum);
+                spatial_full_distortion_kernel32_avx2_intrin(inp + 1 * 32, rec + 1 * 32, &sum);
                 inp += input_stride;
                 rec += recon_stride;
             } while (--h);
         }
         else if (area_width == 96) {
             do {
-                SpatialFullDistortionKernel32_AVX2_INTRIN(inp + 0 * 32, rec + 0 * 32, &sum);
-                SpatialFullDistortionKernel32_AVX2_INTRIN(inp + 1 * 32, rec + 1 * 32, &sum);
-                SpatialFullDistortionKernel32_AVX2_INTRIN(inp + 2 * 32, rec + 2 * 32, &sum);
+                spatial_full_distortion_kernel32_avx2_intrin(inp + 0 * 32, rec + 0 * 32, &sum);
+                spatial_full_distortion_kernel32_avx2_intrin(inp + 1 * 32, rec + 1 * 32, &sum);
+                spatial_full_distortion_kernel32_avx2_intrin(inp + 2 * 32, rec + 2 * 32, &sum);
                 inp += input_stride;
                 rec += recon_stride;
             } while (--h);
         }
         else { // 128
             do {
-                SpatialFullDistortionKernel32_AVX2_INTRIN(inp + 0 * 32, rec + 0 * 32, &sum);
-                SpatialFullDistortionKernel32_AVX2_INTRIN(inp + 1 * 32, rec + 1 * 32, &sum);
-                SpatialFullDistortionKernel32_AVX2_INTRIN(inp + 2 * 32, rec + 2 * 32, &sum);
-                SpatialFullDistortionKernel32_AVX2_INTRIN(inp + 3 * 32, rec + 3 * 32, &sum);
+                spatial_full_distortion_kernel32_avx2_intrin(inp + 0 * 32, rec + 0 * 32, &sum);
+                spatial_full_distortion_kernel32_avx2_intrin(inp + 1 * 32, rec + 1 * 32, &sum);
+                spatial_full_distortion_kernel32_avx2_intrin(inp + 2 * 32, rec + 2 * 32, &sum);
+                spatial_full_distortion_kernel32_avx2_intrin(inp + 3 * 32, rec + 3 * 32, &sum);
                 inp += input_stride;
                 rec += recon_stride;
             } while (--h);
@@ -2457,10 +2453,10 @@ uint64_t full_distortion_kernel16_bits_avx2(
 
         if (leftover == 4) {
             do {
-                FullDistortionKernel4_AVX2_INTRIN(inp, rec, &sum32);
+                full_distortion_kernel4_avx2_intrin(inp, rec, &sum32);
                 inp += input_stride;
                 rec += recon_stride;
-                Sum32To64(&sum32, &sum64);
+                sum32_to64(&sum32, &sum64);
             } while (--h);
         }
         else if (leftover == 8) {
@@ -2469,10 +2465,10 @@ uint64_t full_distortion_kernel16_bits_avx2(
                                       _mm_loadu_si128((__m128i*)(inp + input_stride)));
                 re = _mm256_set_m128i(_mm_loadu_si128((__m128i*)rec),
                                       _mm_loadu_si128((__m128i*)(rec + recon_stride)));
-                FullDistortionKernel16_AVX2_INTRIN(in, re, &sum32);
+                full_distortion_kernel16_avx2_intrin(in, re, &sum32);
                 inp += 2 * input_stride;
                 rec += 2 * recon_stride;
-                Sum32To64(&sum32, &sum64);
+                sum32_to64(&sum32, &sum64);
             } while (h-=2);
         }
         else { //leftover == 12
@@ -2481,10 +2477,10 @@ uint64_t full_distortion_kernel16_bits_avx2(
                                       _mm_loadl_epi64((__m128i*)(inp + 8)));
                 re = _mm256_set_m128i(_mm_loadu_si128((__m128i*)rec),
                                       _mm_loadl_epi64((__m128i*)(rec + 8)));
-                FullDistortionKernel16_AVX2_INTRIN(in, re, &sum32);
+                full_distortion_kernel16_avx2_intrin(in, re, &sum32);
                 inp += input_stride;
                 rec += recon_stride;
-                Sum32To64(&sum32, &sum64);
+                sum32_to64(&sum32, &sum64);
             } while (--h);
         }
     }
@@ -2497,37 +2493,37 @@ uint64_t full_distortion_kernel16_bits_avx2(
 
         if (area_width == 16) {
             for (h = 0; h < area_height; h+=2) {
-                FullDistortionKernel16_AVX2_INTRIN(
+                full_distortion_kernel16_avx2_intrin(
                     _mm256_loadu_si256((__m256i*)inp),
                     _mm256_loadu_si256((__m256i*)rec), &sum32);
-                FullDistortionKernel16_AVX2_INTRIN(
+                full_distortion_kernel16_avx2_intrin(
                     _mm256_loadu_si256((__m256i*)(inp + input_stride)),
                     _mm256_loadu_si256((__m256i*)(rec + recon_stride)), &sum32);
                 inp += 2 * input_stride;
                 rec += 2 * recon_stride;
-                Sum32To64(&sum32, &sum64);
+                sum32_to64(&sum32, &sum64);
             }
         }
         else if (area_width == 32) {
             for (h = 0; h < area_height; h++) {
-                FullDistortionKernel16_AVX2_INTRIN(
+                full_distortion_kernel16_avx2_intrin(
                     _mm256_loadu_si256((__m256i*)inp),
                     _mm256_loadu_si256((__m256i*)rec), &sum32);
-                FullDistortionKernel16_AVX2_INTRIN(
+                full_distortion_kernel16_avx2_intrin(
                     _mm256_loadu_si256((__m256i*)(inp + 16)),
                     _mm256_loadu_si256((__m256i*)(rec + 16)), &sum32);
                 inp += input_stride;
                 rec += recon_stride;
-                Sum32To64(&sum32, &sum64);
+                sum32_to64(&sum32, &sum64);
             }
         }
         else{
             for (h = 0; h < area_height; h++) {
                 for (w = 0; w < area_width; w += 16) {
-                    FullDistortionKernel16_AVX2_INTRIN(
+                    full_distortion_kernel16_avx2_intrin(
                         _mm256_loadu_si256((__m256i*)(inp+w)),
                         _mm256_loadu_si256((__m256i*)(rec+w)), &sum32);
-                    Sum32To64(&sum32, &sum64);
+                    sum32_to64(&sum32, &sum64);
                 }
                 inp += input_stride;
                 rec += recon_stride;

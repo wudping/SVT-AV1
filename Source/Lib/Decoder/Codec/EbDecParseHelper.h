@@ -21,7 +21,7 @@ typedef struct MvCount{
     uint8_t found_left_match;
 }MvCount;
 
-static INLINE CflAllowedType is_cfl_allowed(PartitionInfo_t *xd,
+static INLINE CflAllowedType is_cfl_allowed(PartitionInfo *xd,
     EbColorConfig* color_cfg, uint8_t *lossless_array)
 {
     const BlockModeInfo *mbmi = xd->mi;
@@ -47,7 +47,7 @@ static INLINE int allow_palette(int allow_screen_content_tools, BlockSize sb_typ
         block_size_high[sb_type] <= 64 && sb_type >= BLOCK_8X8;
 }
 
-static INLINE int max_block_wide(PartitionInfo_t *part_info, int plane_bsize, int subx) {
+static INLINE int max_block_wide(PartitionInfo *part_info, int plane_bsize, int subx) {
     int max_blocks_wide = block_size_wide[plane_bsize];
     if (part_info->mb_to_right_edge < 0)
         max_blocks_wide += part_info->mb_to_right_edge >> (3 + subx);
@@ -55,7 +55,7 @@ static INLINE int max_block_wide(PartitionInfo_t *part_info, int plane_bsize, in
     return max_blocks_wide >> tx_size_wide_log2[0];
 }
 
-static INLINE int max_block_high(PartitionInfo_t *part_info, int plane_bsize, int suby) {
+static INLINE int max_block_high(PartitionInfo *part_info, int plane_bsize, int suby) {
     int max_blocks_high = block_size_high[plane_bsize];
     if (part_info->mb_to_bottom_edge < 0)
         max_blocks_high += part_info->mb_to_bottom_edge >> (3 + suby);
@@ -63,7 +63,7 @@ static INLINE int max_block_high(PartitionInfo_t *part_info, int plane_bsize, in
     return max_blocks_high >> tx_size_high_log2[0];
 }
 
-TxSize read_selected_tx_size(PartitionInfo_t *xd, ParseCtxt *parse_ctxt);
+TxSize read_selected_tx_size(PartitionInfo *xd, ParseCtxt *parse_ctxt);
 PredictionMode read_intra_mode(SvtReader *r, AomCdfProb *cdf);
 UvPredictionMode read_intra_mode_uv(FRAME_CONTEXT *ec_ctx, SvtReader *r,
     CflAllowedType cfl_allowed, PredictionMode y_mode);
@@ -72,14 +72,14 @@ IntMv gm_get_motion_vector(const GlobalMotionParams *gm, int allow_hp,
 
 void set_segment_id(EbDecHandle *dec_handle, int mi_offset,
     int x_mis, int y_mis, int segment_id);
-void update_tx_context(ParseCtxt *parse_ctxt, PartitionInfo_t *pi,
+void update_tx_context(ParseCtxt *parse_ctxt, PartitionInfo *pi,
     BlockSize bsize, TxSize txSize, int blk_row, int blk_col);
 
 int neg_deinterleave(const int diff, int ref, int max);
-int get_intra_inter_context(PartitionInfo_t *xd);
-int get_comp_reference_type_context(const PartitionInfo_t *xd);
+int get_intra_inter_context(PartitionInfo *xd);
+int get_comp_reference_type_context(const PartitionInfo *xd);
 int seg_feature_active(SegmentationParams *seg, int segment_id,
     SEG_LVL_FEATURES feature_id);
-int find_warp_samples(EbDecHandle *dec_handle, TileInfo *tile, PartitionInfo_t *pi,
+int find_warp_samples(EbDecHandle *dec_handle, TileInfo *tile, PartitionInfo *pi,
     int *pts, int *pts_inref);
 #endif  // EbDecParseHelper_h

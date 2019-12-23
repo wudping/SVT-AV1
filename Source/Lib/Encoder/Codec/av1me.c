@@ -12,12 +12,10 @@
 
 #include <limits.h>
 #include <math.h>
-#include <stdio.h>
 #include "av1me.h"
 #include "EbUtility.h"
 #include "EbPictureControlSet.h"
 #include "EbSequenceControlSet.h"
-#include "EbComputeSAD.h"
 #include "aom_dsp_rtcd.h"
 #if OBMC_FLAG
 #include "EbModeDecisionProcess.h"
@@ -191,7 +189,7 @@ void eb_av1_init3smotion_compensation(SearchSiteConfig *cfg, int stride) {
                            { len, -len }, { len, len } };
     int i;
     for (i = 0; i < 8; ++i) {
-      search_site *const ss = &cfg->ss[ss_count++];
+      SearchSite *const ss = &cfg->ss[ss_count++];
       ss->mv = ss_mvs[i];
       ss->offset = ss->mv.row * stride + ss->mv.col;
     }
@@ -352,7 +350,7 @@ int eb_av1_diamond_search_sad_c(IntraBcContext  *x, const SearchSiteConfig *cfg,
   // 0 = initial step (MAX_FIRST_STEP) pel
   // 1 = (MAX_FIRST_STEP/2) pel,
   // 2 = (MAX_FIRST_STEP/4) pel...
-  const search_site *ss = &cfg->ss[search_param * cfg->searches_per_step];
+  const SearchSite *ss = &cfg->ss[search_param * cfg->searches_per_step];
   const int tot_steps = (cfg->ss_count / cfg->searches_per_step) - search_param;
 
   const MV fcenter_mv = { center_mv->row >> 3, center_mv->col >> 3 };
@@ -1197,7 +1195,7 @@ int eb_av1_full_pixel_search(PictureControlSet *pcs, IntraBcContext  *x, BlockSi
               const MV dv = { 8 * (ref_block_hash.y - y_pos),
                               8 * (ref_block_hash.x - x_pos) };
               if (!av1_is_dv_valid(dv, x->xd, mi_row, mi_col,
-                                   bsize, pcs->parent_pcs_ptr->sequence_control_set_ptr->seq_header.sb_size_log2))
+                                   bsize, pcs->parent_pcs_ptr->scs_ptr->seq_header.sb_size_log2))
                 continue;
             }
             MV hash_mv;

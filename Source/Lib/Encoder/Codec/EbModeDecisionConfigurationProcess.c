@@ -277,8 +277,8 @@ static const int16_t ac_qlookup_12_Q3[QINDEX_RANGE] = {
 
 #if PREDICT_NSQ_SHAPE
 EbErrorType open_loop_partitioning_sb(
-    SequenceControlSet                *sequence_control_set_ptr,
-    PictureControlSet                 *picture_control_set_ptr,
+    SequenceControlSet                *scs_ptr,
+    PictureControlSet                 *pcs_ptr,
     ModeDecisionConfigurationContext  *context_ptr,
     MdcLcuData                        *mdc_result_tb_ptr,
     uint32_t                           sb_originx,
@@ -344,30 +344,30 @@ static INLINE int32_t aom_get_qmlevel(int32_t qindex, int32_t first, int32_t las
 }
 
 void SetGlobalMotionField(
-    PictureControlSet                    *picture_control_set_ptr)
+    PictureControlSet                    *pcs_ptr)
 {
     // Init Global Motion Vector
     uint8_t frameIndex;
     for (frameIndex = INTRA_FRAME; frameIndex <= ALTREF_FRAME; ++frameIndex) {
-        picture_control_set_ptr->parent_pcs_ptr->global_motion[frameIndex].wmtype = IDENTITY;
-        picture_control_set_ptr->parent_pcs_ptr->global_motion[frameIndex].alpha = 0;
-        picture_control_set_ptr->parent_pcs_ptr->global_motion[frameIndex].beta = 0;
-        picture_control_set_ptr->parent_pcs_ptr->global_motion[frameIndex].delta = 0;
-        picture_control_set_ptr->parent_pcs_ptr->global_motion[frameIndex].gamma = 0;
-        picture_control_set_ptr->parent_pcs_ptr->global_motion[frameIndex].invalid = 0;
-        picture_control_set_ptr->parent_pcs_ptr->global_motion[frameIndex].wmmat[0] = 0;
-        picture_control_set_ptr->parent_pcs_ptr->global_motion[frameIndex].wmmat[1] = 0;
-        picture_control_set_ptr->parent_pcs_ptr->global_motion[frameIndex].wmmat[2] = (1 << WARPEDMODEL_PREC_BITS);
-        picture_control_set_ptr->parent_pcs_ptr->global_motion[frameIndex].wmmat[3] = 0;
-        picture_control_set_ptr->parent_pcs_ptr->global_motion[frameIndex].wmmat[4] = 0;
-        picture_control_set_ptr->parent_pcs_ptr->global_motion[frameIndex].wmmat[5] = (1 << WARPEDMODEL_PREC_BITS);
-        picture_control_set_ptr->parent_pcs_ptr->global_motion[frameIndex].wmmat[6] = 0;
-        picture_control_set_ptr->parent_pcs_ptr->global_motion[frameIndex].wmmat[7] = 0;
+        pcs_ptr->parent_pcs_ptr->global_motion[frameIndex].wmtype = IDENTITY;
+        pcs_ptr->parent_pcs_ptr->global_motion[frameIndex].alpha = 0;
+        pcs_ptr->parent_pcs_ptr->global_motion[frameIndex].beta = 0;
+        pcs_ptr->parent_pcs_ptr->global_motion[frameIndex].delta = 0;
+        pcs_ptr->parent_pcs_ptr->global_motion[frameIndex].gamma = 0;
+        pcs_ptr->parent_pcs_ptr->global_motion[frameIndex].invalid = 0;
+        pcs_ptr->parent_pcs_ptr->global_motion[frameIndex].wmmat[0] = 0;
+        pcs_ptr->parent_pcs_ptr->global_motion[frameIndex].wmmat[1] = 0;
+        pcs_ptr->parent_pcs_ptr->global_motion[frameIndex].wmmat[2] = (1 << WARPEDMODEL_PREC_BITS);
+        pcs_ptr->parent_pcs_ptr->global_motion[frameIndex].wmmat[3] = 0;
+        pcs_ptr->parent_pcs_ptr->global_motion[frameIndex].wmmat[4] = 0;
+        pcs_ptr->parent_pcs_ptr->global_motion[frameIndex].wmmat[5] = (1 << WARPEDMODEL_PREC_BITS);
+        pcs_ptr->parent_pcs_ptr->global_motion[frameIndex].wmmat[6] = 0;
+        pcs_ptr->parent_pcs_ptr->global_motion[frameIndex].wmmat[7] = 0;
     }
 
     //Update MV
 #if GLOBAL_WARPED_MOTION
-    PictureParentControlSet *parent_pcs_ptr = picture_control_set_ptr->parent_pcs_ptr;
+    PictureParentControlSet *parent_pcs_ptr = pcs_ptr->parent_pcs_ptr;
 #if GM_OPT
     if (parent_pcs_ptr->gm_level <= GM_DOWN) {
 #endif
@@ -392,54 +392,54 @@ void SetGlobalMotionField(
 #if GM_OPT && GLOBAL_WARPED_MOTION
     }else {
 #endif
-    if (picture_control_set_ptr->parent_pcs_ptr->is_pan && picture_control_set_ptr->parent_pcs_ptr->is_tilt) {
-        picture_control_set_ptr->parent_pcs_ptr->global_motion[LAST_FRAME].wmtype = TRANSLATION;
-        picture_control_set_ptr->parent_pcs_ptr->global_motion[LAST_FRAME].wmmat[1] = ((picture_control_set_ptr->parent_pcs_ptr->panMvx + picture_control_set_ptr->parent_pcs_ptr->tiltMvx) / 2) << 1 << GM_TRANS_ONLY_PREC_DIFF;
-        picture_control_set_ptr->parent_pcs_ptr->global_motion[LAST_FRAME].wmmat[0] = ((picture_control_set_ptr->parent_pcs_ptr->panMvy + picture_control_set_ptr->parent_pcs_ptr->tiltMvy) / 2) << 1 << GM_TRANS_ONLY_PREC_DIFF;
+    if (pcs_ptr->parent_pcs_ptr->is_pan && pcs_ptr->parent_pcs_ptr->is_tilt) {
+        pcs_ptr->parent_pcs_ptr->global_motion[LAST_FRAME].wmtype = TRANSLATION;
+        pcs_ptr->parent_pcs_ptr->global_motion[LAST_FRAME].wmmat[1] = ((pcs_ptr->parent_pcs_ptr->panMvx + pcs_ptr->parent_pcs_ptr->tiltMvx) / 2) << 1 << GM_TRANS_ONLY_PREC_DIFF;
+        pcs_ptr->parent_pcs_ptr->global_motion[LAST_FRAME].wmmat[0] = ((pcs_ptr->parent_pcs_ptr->panMvy + pcs_ptr->parent_pcs_ptr->tiltMvy) / 2) << 1 << GM_TRANS_ONLY_PREC_DIFF;
     }
-    else if (picture_control_set_ptr->parent_pcs_ptr->is_pan) {
-        picture_control_set_ptr->parent_pcs_ptr->global_motion[LAST_FRAME].wmtype = TRANSLATION;
-        picture_control_set_ptr->parent_pcs_ptr->global_motion[LAST_FRAME].wmmat[1] = picture_control_set_ptr->parent_pcs_ptr->panMvx << 1 << GM_TRANS_ONLY_PREC_DIFF;
-        picture_control_set_ptr->parent_pcs_ptr->global_motion[LAST_FRAME].wmmat[0] = picture_control_set_ptr->parent_pcs_ptr->panMvy << 1 << GM_TRANS_ONLY_PREC_DIFF;
+    else if (pcs_ptr->parent_pcs_ptr->is_pan) {
+        pcs_ptr->parent_pcs_ptr->global_motion[LAST_FRAME].wmtype = TRANSLATION;
+        pcs_ptr->parent_pcs_ptr->global_motion[LAST_FRAME].wmmat[1] = pcs_ptr->parent_pcs_ptr->panMvx << 1 << GM_TRANS_ONLY_PREC_DIFF;
+        pcs_ptr->parent_pcs_ptr->global_motion[LAST_FRAME].wmmat[0] = pcs_ptr->parent_pcs_ptr->panMvy << 1 << GM_TRANS_ONLY_PREC_DIFF;
     }
-    else if (picture_control_set_ptr->parent_pcs_ptr->is_tilt) {
-        picture_control_set_ptr->parent_pcs_ptr->global_motion[LAST_FRAME].wmtype = TRANSLATION;
-        picture_control_set_ptr->parent_pcs_ptr->global_motion[LAST_FRAME].wmmat[1] = picture_control_set_ptr->parent_pcs_ptr->tiltMvx << 1 << GM_TRANS_ONLY_PREC_DIFF;
-        picture_control_set_ptr->parent_pcs_ptr->global_motion[LAST_FRAME].wmmat[0] = picture_control_set_ptr->parent_pcs_ptr->tiltMvy << 1 << GM_TRANS_ONLY_PREC_DIFF;
+    else if (pcs_ptr->parent_pcs_ptr->is_tilt) {
+        pcs_ptr->parent_pcs_ptr->global_motion[LAST_FRAME].wmtype = TRANSLATION;
+        pcs_ptr->parent_pcs_ptr->global_motion[LAST_FRAME].wmmat[1] = pcs_ptr->parent_pcs_ptr->tiltMvx << 1 << GM_TRANS_ONLY_PREC_DIFF;
+        pcs_ptr->parent_pcs_ptr->global_motion[LAST_FRAME].wmmat[0] = pcs_ptr->parent_pcs_ptr->tiltMvy << 1 << GM_TRANS_ONLY_PREC_DIFF;
     }
 
-    picture_control_set_ptr->parent_pcs_ptr->global_motion[LAST_FRAME].wmmat[1] = (int32_t)clamp(picture_control_set_ptr->parent_pcs_ptr->global_motion[LAST_FRAME].wmmat[1], GM_TRANS_MIN*GM_TRANS_DECODE_FACTOR, GM_TRANS_MAX*GM_TRANS_DECODE_FACTOR);
-    picture_control_set_ptr->parent_pcs_ptr->global_motion[LAST_FRAME].wmmat[0] = (int32_t)clamp(picture_control_set_ptr->parent_pcs_ptr->global_motion[LAST_FRAME].wmmat[0], GM_TRANS_MIN*GM_TRANS_DECODE_FACTOR, GM_TRANS_MAX*GM_TRANS_DECODE_FACTOR);
+    pcs_ptr->parent_pcs_ptr->global_motion[LAST_FRAME].wmmat[1] = (int32_t)clamp(pcs_ptr->parent_pcs_ptr->global_motion[LAST_FRAME].wmmat[1], GM_TRANS_MIN*GM_TRANS_DECODE_FACTOR, GM_TRANS_MAX*GM_TRANS_DECODE_FACTOR);
+    pcs_ptr->parent_pcs_ptr->global_motion[LAST_FRAME].wmmat[0] = (int32_t)clamp(pcs_ptr->parent_pcs_ptr->global_motion[LAST_FRAME].wmmat[0], GM_TRANS_MIN*GM_TRANS_DECODE_FACTOR, GM_TRANS_MAX*GM_TRANS_DECODE_FACTOR);
 
-    picture_control_set_ptr->parent_pcs_ptr->global_motion[BWDREF_FRAME].wmtype = TRANSLATION;
-    picture_control_set_ptr->parent_pcs_ptr->global_motion[BWDREF_FRAME].wmmat[1] = 0 - picture_control_set_ptr->parent_pcs_ptr->global_motion[LAST_FRAME].wmmat[1];
-    picture_control_set_ptr->parent_pcs_ptr->global_motion[BWDREF_FRAME].wmmat[0] = 0 - picture_control_set_ptr->parent_pcs_ptr->global_motion[LAST_FRAME].wmmat[0];
-    picture_control_set_ptr->parent_pcs_ptr->global_motion[BWDREF_FRAME].wmmat[1] = (int32_t)clamp(picture_control_set_ptr->parent_pcs_ptr->global_motion[BWDREF_FRAME].wmmat[1], GM_TRANS_MIN*GM_TRANS_DECODE_FACTOR, GM_TRANS_MAX*GM_TRANS_DECODE_FACTOR);
-    picture_control_set_ptr->parent_pcs_ptr->global_motion[BWDREF_FRAME].wmmat[0] = (int32_t)clamp(picture_control_set_ptr->parent_pcs_ptr->global_motion[BWDREF_FRAME].wmmat[0], GM_TRANS_MIN*GM_TRANS_DECODE_FACTOR, GM_TRANS_MAX*GM_TRANS_DECODE_FACTOR);
+    pcs_ptr->parent_pcs_ptr->global_motion[BWDREF_FRAME].wmtype = TRANSLATION;
+    pcs_ptr->parent_pcs_ptr->global_motion[BWDREF_FRAME].wmmat[1] = 0 - pcs_ptr->parent_pcs_ptr->global_motion[LAST_FRAME].wmmat[1];
+    pcs_ptr->parent_pcs_ptr->global_motion[BWDREF_FRAME].wmmat[0] = 0 - pcs_ptr->parent_pcs_ptr->global_motion[LAST_FRAME].wmmat[0];
+    pcs_ptr->parent_pcs_ptr->global_motion[BWDREF_FRAME].wmmat[1] = (int32_t)clamp(pcs_ptr->parent_pcs_ptr->global_motion[BWDREF_FRAME].wmmat[1], GM_TRANS_MIN*GM_TRANS_DECODE_FACTOR, GM_TRANS_MAX*GM_TRANS_DECODE_FACTOR);
+    pcs_ptr->parent_pcs_ptr->global_motion[BWDREF_FRAME].wmmat[0] = (int32_t)clamp(pcs_ptr->parent_pcs_ptr->global_motion[BWDREF_FRAME].wmmat[0], GM_TRANS_MIN*GM_TRANS_DECODE_FACTOR, GM_TRANS_MAX*GM_TRANS_DECODE_FACTOR);
 #if GM_OPT && GLOBAL_WARPED_MOTION
     }
 #endif
     //convert_to_trans_prec(
-    //    picture_control_set_ptr->parent_pcs_ptr->allow_high_precision_mv,
-    //    picture_control_set_ptr->parent_pcs_ptr->global_motion[LAST_FRAME].wmmat[0]) *GM_TRANS_ONLY_DECODE_FACTOR;
+    //    pcs_ptr->parent_pcs_ptr->allow_high_precision_mv,
+    //    pcs_ptr->parent_pcs_ptr->global_motion[LAST_FRAME].wmmat[0]) *GM_TRANS_ONLY_DECODE_FACTOR;
 
     //convert_to_trans_prec(
-    //    picture_control_set_ptr->parent_pcs_ptr->allow_high_precision_mv,
-    //    picture_control_set_ptr->parent_pcs_ptr->global_motion[LAST_FRAME].wmmat[1]) *GM_TRANS_ONLY_DECODE_FACTOR;
+    //    pcs_ptr->parent_pcs_ptr->allow_high_precision_mv,
+    //    pcs_ptr->parent_pcs_ptr->global_motion[LAST_FRAME].wmmat[1]) *GM_TRANS_ONLY_DECODE_FACTOR;
 #endif
 }
 
 void eb_av1_set_quantizer(
-    PictureParentControlSet                    *picture_control_set_ptr,
+    PictureParentControlSet                    *pcs_ptr,
     int32_t q)
 {
     // quantizer has to be reinitialized with av1_init_quantizer() if any
     // delta_q changes.
-    FrameHeader*frm_hdr = &picture_control_set_ptr->frm_hdr;
+    FrameHeader*frm_hdr = &pcs_ptr->frm_hdr;
 
     frm_hdr->quantization_params.using_qmatrix = 0;
-    picture_control_set_ptr->min_qmlevel = 5;
-    picture_control_set_ptr->max_qmlevel = 9;
+    pcs_ptr->min_qmlevel = 5;
+    pcs_ptr->max_qmlevel = 9;
 
     frm_hdr->quantization_params.base_q_idx = AOMMAX(frm_hdr->delta_q_params.delta_q_present, q);
     frm_hdr->quantization_params.delta_q_dc[AOM_PLANE_Y] = 0;
@@ -449,23 +449,23 @@ void eb_av1_set_quantizer(
     frm_hdr->quantization_params.delta_q_ac[AOM_PLANE_V] = 0;
     frm_hdr->quantization_params.delta_q_dc[AOM_PLANE_V] = 0;
     frm_hdr->quantization_params.qm[AOM_PLANE_Y] = aom_get_qmlevel(frm_hdr->
-        quantization_params.base_q_idx, picture_control_set_ptr->min_qmlevel,
-        picture_control_set_ptr->max_qmlevel);
+        quantization_params.base_q_idx, pcs_ptr->min_qmlevel,
+        pcs_ptr->max_qmlevel);
     frm_hdr->quantization_params.qm[AOM_PLANE_U] = aom_get_qmlevel(frm_hdr->
         quantization_params.base_q_idx +
         frm_hdr->quantization_params.delta_q_ac[AOM_PLANE_U],
-        picture_control_set_ptr->min_qmlevel,
-        picture_control_set_ptr->max_qmlevel);
+        pcs_ptr->min_qmlevel,
+        pcs_ptr->max_qmlevel);
 
-    if (!picture_control_set_ptr->separate_uv_delta_q)
+    if (!pcs_ptr->separate_uv_delta_q)
         frm_hdr->quantization_params.qm[AOM_PLANE_V] =
                                 frm_hdr->quantization_params.qm[AOM_PLANE_U];
     else
         frm_hdr->quantization_params.qm[AOM_PLANE_V] = aom_get_qmlevel(frm_hdr->
             quantization_params.base_q_idx +
             frm_hdr->quantization_params.delta_q_ac[AOM_PLANE_V],
-            picture_control_set_ptr->min_qmlevel,
-            picture_control_set_ptr->max_qmlevel);
+            pcs_ptr->min_qmlevel,
+            pcs_ptr->max_qmlevel);
 }
 
 void eb_av1_build_quantizer(
@@ -563,7 +563,7 @@ void eb_av1_build_quantizer(
 }
 
 void eb_av1_qm_init(
-    PictureParentControlSet                   *picture_control_set_ptr
+    PictureParentControlSet                   *pcs_ptr
 )
 {
     const uint8_t num_planes = 3;// MAX_MB_PLANE;// NM- No monochroma
@@ -576,17 +576,17 @@ void eb_av1_qm_init(
                 const int32_t size = tx_size_2d[t];
                 const TxSize qm_tx_size = av1_get_adjusted_tx_size(t);
                 if (q == NUM_QM_LEVELS - 1) {
-                    picture_control_set_ptr->gqmatrix[q][c][t] = NULL;
-                    picture_control_set_ptr->giqmatrix[q][c][t] = NULL;
+                    pcs_ptr->gqmatrix[q][c][t] = NULL;
+                    pcs_ptr->giqmatrix[q][c][t] = NULL;
                 }
                 else if (t != qm_tx_size) {  // Reuse matrices for 'qm_tx_size'
-                    picture_control_set_ptr->gqmatrix[q][c][t] = picture_control_set_ptr->gqmatrix[q][c][qm_tx_size];
-                    picture_control_set_ptr->giqmatrix[q][c][t] = picture_control_set_ptr->giqmatrix[q][c][qm_tx_size];
+                    pcs_ptr->gqmatrix[q][c][t] = pcs_ptr->gqmatrix[q][c][qm_tx_size];
+                    pcs_ptr->giqmatrix[q][c][t] = pcs_ptr->giqmatrix[q][c][qm_tx_size];
                 }
                 else {
                     assert(current + size <= QM_TOTAL_SIZE);
-                    picture_control_set_ptr->gqmatrix[q][c][t] = &wt_matrix_ref[q][c >= 1][current];
-                    picture_control_set_ptr->giqmatrix[q][c][t] = &iwt_matrix_ref[q][c >= 1][current];
+                    pcs_ptr->gqmatrix[q][c][t] = &wt_matrix_ref[q][c >= 1][current];
+                    pcs_ptr->giqmatrix[q][c][t] = &iwt_matrix_ref[q][c >= 1][current];
                     current += size;
                 }
             }
@@ -598,38 +598,38 @@ void eb_av1_qm_init(
 * Compute picture and slice level chroma QP offsets
 ******************************************************/
 void SetSliceAndPictureChromaQpOffsets(
-    PictureControlSet                    *picture_control_set_ptr
+    PictureControlSet                    *pcs_ptr
 )
 {
     // This is a picture level chroma QP offset and is sent in the PPS
-    picture_control_set_ptr->cb_qp_offset = 0;
-    picture_control_set_ptr->cr_qp_offset = 0;
+    pcs_ptr->cb_qp_offset = 0;
+    pcs_ptr->cr_qp_offset = 0;
 
-    //In order to have QP offsets for chroma at a slice level set slice_level_chroma_qp_flag flag in picture_control_set_ptr (can be done in the PCS Ctor)
+    //In order to have QP offsets for chroma at a slice level set slice_level_chroma_qp_flag flag in pcs_ptr (can be done in the PCS Ctor)
 
     // The below are slice level chroma QP offsets and is sent for each slice when slice_level_chroma_qp_flag is set
 
     // IMPORTANT: Lambda tables assume that the cb and cr have the same QP offsets.
     // However the offsets for each component can be very different for ENC DEC and we are conformant.
-    picture_control_set_ptr->slice_cb_qp_offset = 0;
-    picture_control_set_ptr->slice_cr_qp_offset = 0;
+    pcs_ptr->slice_cb_qp_offset = 0;
+    pcs_ptr->slice_cr_qp_offset = 0;
 
-    if (picture_control_set_ptr->parent_pcs_ptr->pic_noise_class >= PIC_NOISE_CLASS_6) {
-        picture_control_set_ptr->slice_cb_qp_offset = 10;
-        picture_control_set_ptr->slice_cr_qp_offset = 10;
+    if (pcs_ptr->parent_pcs_ptr->pic_noise_class >= PIC_NOISE_CLASS_6) {
+        pcs_ptr->slice_cb_qp_offset = 10;
+        pcs_ptr->slice_cr_qp_offset = 10;
     }
-    else if (picture_control_set_ptr->parent_pcs_ptr->pic_noise_class >= PIC_NOISE_CLASS_4) {
-        picture_control_set_ptr->slice_cb_qp_offset = 8;
-        picture_control_set_ptr->slice_cr_qp_offset = 8;
+    else if (pcs_ptr->parent_pcs_ptr->pic_noise_class >= PIC_NOISE_CLASS_4) {
+        pcs_ptr->slice_cb_qp_offset = 8;
+        pcs_ptr->slice_cr_qp_offset = 8;
     }
     else {
-        if (picture_control_set_ptr->temporal_layer_index == 1) {
-            picture_control_set_ptr->slice_cb_qp_offset = 2;
-            picture_control_set_ptr->slice_cr_qp_offset = 2;
+        if (pcs_ptr->temporal_layer_index == 1) {
+            pcs_ptr->slice_cb_qp_offset = 2;
+            pcs_ptr->slice_cr_qp_offset = 2;
         }
         else {
-            picture_control_set_ptr->slice_cb_qp_offset = 0;
-            picture_control_set_ptr->slice_cr_qp_offset = 0;
+            pcs_ptr->slice_cb_qp_offset = 0;
+            pcs_ptr->slice_cr_qp_offset = 0;
         }
     }
 }
@@ -638,27 +638,27 @@ void SetSliceAndPictureChromaQpOffsets(
 * Set the reference sg ep for a given picture
 ******************************************************/
 void set_reference_sg_ep(
-    PictureControlSet                    *picture_control_set_ptr)
+    PictureControlSet                    *pcs_ptr)
 {
-    Av1Common* cm = picture_control_set_ptr->parent_pcs_ptr->av1_cm;
+    Av1Common* cm = pcs_ptr->parent_pcs_ptr->av1_cm;
     EbReferenceObject  * refObjL0, *refObjL1;
     memset(cm->sg_frame_ep_cnt, 0, SGRPROJ_PARAMS * sizeof(int32_t));
     cm->sg_frame_ep = 0;
 
     // NADER: set cm->sg_ref_frame_ep[0] = cm->sg_ref_frame_ep[1] = -1 to perform all iterations
-    switch(picture_control_set_ptr->slice_type){
+    switch(pcs_ptr->slice_type){
     case I_SLICE:
         cm->sg_ref_frame_ep[0] = -1;
         cm->sg_ref_frame_ep[1] = -1;
         break;
     case B_SLICE:
-        refObjL0 = (EbReferenceObject*)picture_control_set_ptr->ref_pic_ptr_array[REF_LIST_0][0]->object_ptr;
-        refObjL1 = (EbReferenceObject*)picture_control_set_ptr->ref_pic_ptr_array[REF_LIST_1][0]->object_ptr;
+        refObjL0 = (EbReferenceObject*)pcs_ptr->ref_pic_ptr_array[REF_LIST_0][0]->object_ptr;
+        refObjL1 = (EbReferenceObject*)pcs_ptr->ref_pic_ptr_array[REF_LIST_1][0]->object_ptr;
         cm->sg_ref_frame_ep[0] = refObjL0->sg_frame_ep;
         cm->sg_ref_frame_ep[1] = refObjL1->sg_frame_ep;
         break;
     case P_SLICE:
-        refObjL0 = (EbReferenceObject*)picture_control_set_ptr->ref_pic_ptr_array[REF_LIST_0][0]->object_ptr;
+        refObjL0 = (EbReferenceObject*)pcs_ptr->ref_pic_ptr_array[REF_LIST_0][0]->object_ptr;
         cm->sg_ref_frame_ep[0] = refObjL0->sg_frame_ep;
         cm->sg_ref_frame_ep[1] = 0;
         break;
@@ -672,28 +672,28 @@ void set_reference_sg_ep(
 * Set the reference cdef strength for a given picture
 ******************************************************/
 void set_reference_cdef_strength(
-    PictureControlSet                    *picture_control_set_ptr)
+    PictureControlSet                    *pcs_ptr)
 {
     EbReferenceObject  * refObjL0, *refObjL1;
     int32_t strength;
-    // NADER: set picture_control_set_ptr->parent_pcs_ptr->use_ref_frame_cdef_strength 0 to test all strengths
-    switch (picture_control_set_ptr->slice_type) {
+    // NADER: set pcs_ptr->parent_pcs_ptr->use_ref_frame_cdef_strength 0 to test all strengths
+    switch (pcs_ptr->slice_type) {
     case I_SLICE:
-        picture_control_set_ptr->parent_pcs_ptr->use_ref_frame_cdef_strength = 0;
-        picture_control_set_ptr->parent_pcs_ptr->cdf_ref_frame_strenght = 0;
+        pcs_ptr->parent_pcs_ptr->use_ref_frame_cdef_strength = 0;
+        pcs_ptr->parent_pcs_ptr->cdf_ref_frame_strenght = 0;
         break;
     case B_SLICE:
-        refObjL0 = (EbReferenceObject*)picture_control_set_ptr->ref_pic_ptr_array[REF_LIST_0][0]->object_ptr;
-        refObjL1 = (EbReferenceObject*)picture_control_set_ptr->ref_pic_ptr_array[REF_LIST_1][0]->object_ptr;
+        refObjL0 = (EbReferenceObject*)pcs_ptr->ref_pic_ptr_array[REF_LIST_0][0]->object_ptr;
+        refObjL1 = (EbReferenceObject*)pcs_ptr->ref_pic_ptr_array[REF_LIST_1][0]->object_ptr;
         strength = (refObjL0->cdef_frame_strength + refObjL1->cdef_frame_strength) / 2;
-        picture_control_set_ptr->parent_pcs_ptr->use_ref_frame_cdef_strength = 1;
-        picture_control_set_ptr->parent_pcs_ptr->cdf_ref_frame_strenght = strength;
+        pcs_ptr->parent_pcs_ptr->use_ref_frame_cdef_strength = 1;
+        pcs_ptr->parent_pcs_ptr->cdf_ref_frame_strenght = strength;
         break;
     case P_SLICE:
-        refObjL0 = (EbReferenceObject*)picture_control_set_ptr->ref_pic_ptr_array[REF_LIST_0][0]->object_ptr;
+        refObjL0 = (EbReferenceObject*)pcs_ptr->ref_pic_ptr_array[REF_LIST_0][0]->object_ptr;
         strength = refObjL0->cdef_frame_strength;
-        picture_control_set_ptr->parent_pcs_ptr->use_ref_frame_cdef_strength = 1;
-        picture_control_set_ptr->parent_pcs_ptr->cdf_ref_frame_strenght = strength;
+        pcs_ptr->parent_pcs_ptr->use_ref_frame_cdef_strength = 1;
+        pcs_ptr->parent_pcs_ptr->cdf_ref_frame_strenght = strength;
         break;
     default:
         printf("CDEF: Not supported picture type");
@@ -736,9 +736,9 @@ EbErrorType mode_decision_configuration_context_ctor(
     int input_index,
     int output_index)
 {
-    const SequenceControlSet* sequence_control_set_ptr = enc_handle_ptr->sequence_control_set_instance_array[0]->sequence_control_set_ptr;
-    uint32_t sb_total_count = ((sequence_control_set_ptr->max_input_luma_width + BLOCK_SIZE_64 - 1) / BLOCK_SIZE_64) *
-                ((sequence_control_set_ptr->max_input_luma_height + BLOCK_SIZE_64 - 1) / BLOCK_SIZE_64);
+    const SequenceControlSet* scs_ptr = enc_handle_ptr->sequence_control_set_instance_array[0]->scs_ptr;
+    uint32_t sb_total_count = ((scs_ptr->max_input_luma_width + BLOCK_SIZE_64 - 1) / BLOCK_SIZE_64) *
+                ((scs_ptr->max_input_luma_height + BLOCK_SIZE_64 - 1) / BLOCK_SIZE_64);
 
     ModeDecisionConfigurationContext  *context_ptr;
     EB_CALLOC_ARRAY(context_ptr, 1);
@@ -809,18 +809,18 @@ EbErrorType mode_decision_configuration_context_ctor(
 ******************************************************/
 void PerformEarlyLcuPartitionning(
     ModeDecisionConfigurationContext     *context_ptr,
-    SequenceControlSet                   *sequence_control_set_ptr,
-    PictureControlSet                    *picture_control_set_ptr) {
+    SequenceControlSet                   *scs_ptr,
+    PictureControlSet                    *pcs_ptr) {
     SuperBlock                           *sb_ptr;
     uint32_t                         sb_index;
-    picture_control_set_ptr->parent_pcs_ptr->average_qp = (uint8_t)picture_control_set_ptr->parent_pcs_ptr->picture_qp;
+    pcs_ptr->parent_pcs_ptr->average_qp = (uint8_t)pcs_ptr->parent_pcs_ptr->picture_qp;
 
     // SB Loop : Partitionnig Decision
-    for (sb_index = 0; sb_index < picture_control_set_ptr->sb_total_count; ++sb_index) {
-        sb_ptr = picture_control_set_ptr->sb_ptr_array[sb_index];
+    for (sb_index = 0; sb_index < pcs_ptr->sb_total_count; ++sb_index) {
+        sb_ptr = pcs_ptr->sb_ptr_array[sb_index];
         early_mode_decision_lcu(
-            sequence_control_set_ptr,
-            picture_control_set_ptr,
+            scs_ptr,
+            pcs_ptr,
             sb_ptr,
             sb_index,
             context_ptr);
@@ -828,31 +828,31 @@ void PerformEarlyLcuPartitionning(
 }
 void PerformEarlyLcuPartitionningLcu(
     ModeDecisionConfigurationContext     *context_ptr,
-    SequenceControlSet                   *sequence_control_set_ptr,
-    PictureControlSet                    *picture_control_set_ptr,
+    SequenceControlSet                   *scs_ptr,
+    PictureControlSet                    *pcs_ptr,
     uint32_t                                    sb_index) {
     SuperBlock                           *sb_ptr;
 
     // SB Loop : Partitionnig Decision
-    sb_ptr = picture_control_set_ptr->sb_ptr_array[sb_index];
+    sb_ptr = pcs_ptr->sb_ptr_array[sb_index];
     early_mode_decision_lcu(
-        sequence_control_set_ptr,
-        picture_control_set_ptr,
+        scs_ptr,
+        pcs_ptr,
         sb_ptr,
         sb_index,
         context_ptr);
 }
 
 void Forward85CuToModeDecisionLCU(
-    SequenceControlSet  *sequence_control_set_ptr,
-    PictureControlSet   *picture_control_set_ptr,
+    SequenceControlSet  *scs_ptr,
+    PictureControlSet   *pcs_ptr,
     uint32_t                 sb_index) {
     const CodedUnitStats  *cuStatsPtr;
     EbBool split_flag;
     // SB Loop : Partitionnig Decision
 
-    SbParams  *sb_params = &sequence_control_set_ptr->sb_params_array[sb_index];
-    MdcLcuData *resultsPtr = &picture_control_set_ptr->mdc_sb_array[sb_index];
+    SbParams  *sb_params = &scs_ptr->sb_params_array[sb_index];
+    MdcLcuData *resultsPtr = &pcs_ptr->mdc_sb_array[sb_index];
     uint32_t cuIndexInRaterScan;   uint16_t cuVar;
 
     resultsPtr->leaf_count = 0;
@@ -872,8 +872,8 @@ void Forward85CuToModeDecisionLCU(
                 break;
             case 1:
                 cuIndexInRaterScan = md_scan_to_raster_scan[cu_index];
-                cuVar = (picture_control_set_ptr->parent_pcs_ptr->variance[sb_index][cuIndexInRaterScan]);
-                if (picture_control_set_ptr->slice_type == I_SLICE && cuVar > 40)
+                cuVar = (pcs_ptr->parent_pcs_ptr->variance[sb_index][cuIndexInRaterScan]);
+                if (pcs_ptr->slice_type == I_SLICE && cuVar > 40)
                     split_flag = EB_TRUE;
                 else {
                     resultsPtr->leaf_data_array[resultsPtr->leaf_count].leaf_index = cu_index;
@@ -907,15 +907,15 @@ void Forward85CuToModeDecisionLCU(
 }
 
 void Forward84CuToModeDecisionLCU(
-    SequenceControlSet  *sequence_control_set_ptr,
-    PictureControlSet   *picture_control_set_ptr,
+    SequenceControlSet  *scs_ptr,
+    PictureControlSet   *pcs_ptr,
     uint32_t                 sb_index) {
     const CodedUnitStats  *cuStatsPtr;
     EbBool split_flag;
     // SB Loop : Partitionnig Decision
 
-    SbParams  *sb_params = &sequence_control_set_ptr->sb_params_array[sb_index];
-    MdcLcuData *resultsPtr = &picture_control_set_ptr->mdc_sb_array[sb_index];
+    SbParams  *sb_params = &scs_ptr->sb_params_array[sb_index];
+    MdcLcuData *resultsPtr = &pcs_ptr->mdc_sb_array[sb_index];
     uint32_t cuIndexInRaterScan;   uint16_t cuVar;
 
     resultsPtr->leaf_count = 0;
@@ -934,8 +934,8 @@ void Forward84CuToModeDecisionLCU(
                 break;
             case 1:
                 cuIndexInRaterScan = md_scan_to_raster_scan[cu_index];
-                cuVar = (picture_control_set_ptr->parent_pcs_ptr->variance[sb_index][cuIndexInRaterScan]);
-                if (picture_control_set_ptr->slice_type == I_SLICE && cuVar > 40)
+                cuVar = (pcs_ptr->parent_pcs_ptr->variance[sb_index][cuIndexInRaterScan]);
+                if (pcs_ptr->slice_type == I_SLICE && cuVar > 40)
                     split_flag = EB_TRUE;
                 else {
                     resultsPtr->leaf_data_array[resultsPtr->leaf_count].leaf_index = cu_index;
@@ -969,32 +969,32 @@ void Forward84CuToModeDecisionLCU(
 }
 
 void forward_all_blocks_to_md(
-    SequenceControlSet                   *sequence_control_set_ptr,
-    PictureControlSet                    *picture_control_set_ptr)
+    SequenceControlSet                   *scs_ptr,
+    PictureControlSet                    *pcs_ptr)
 {
     uint32_t                   sb_index;
     EbBool                  split_flag;
 
     UNUSED(split_flag);
 
-    for (sb_index = 0; sb_index < sequence_control_set_ptr->sb_tot_cnt; ++sb_index)
+    for (sb_index = 0; sb_index < scs_ptr->sb_tot_cnt; ++sb_index)
     {
-        MdcLcuData *resultsPtr = &picture_control_set_ptr->mdc_sb_array[sb_index];
+        MdcLcuData *resultsPtr = &pcs_ptr->mdc_sb_array[sb_index];
 
         resultsPtr->leaf_count = 0;
 
         uint32_t  blk_index = 0;
 
-        while (blk_index < sequence_control_set_ptr->max_block_cnt)
+        while (blk_index < scs_ptr->max_block_cnt)
         {
             split_flag = EB_TRUE;
 
             const BlockGeom * blk_geom = get_blk_geom_mds(blk_index);
 
             //if the parentSq is inside inject this block
-            uint8_t is_blk_allowed = picture_control_set_ptr->slice_type != I_SLICE ? 1 : (blk_geom->sq_size < 128) ? 1 : 0;
+            uint8_t is_blk_allowed = pcs_ptr->slice_type != I_SLICE ? 1 : (blk_geom->sq_size < 128) ? 1 : 0;
 
-            if (sequence_control_set_ptr->sb_geom[sb_index].block_is_inside_md_scan[blk_index] && is_blk_allowed)
+            if (scs_ptr->sb_geom[sb_index].block_is_inside_md_scan[blk_index] && is_blk_allowed)
 
             {
                 resultsPtr->leaf_data_array[resultsPtr->leaf_count].tot_d1_blocks =
@@ -1020,32 +1020,32 @@ void forward_all_blocks_to_md(
         }
     }
 
-    picture_control_set_ptr->parent_pcs_ptr->average_qp = (uint8_t)picture_control_set_ptr->parent_pcs_ptr->picture_qp;
+    pcs_ptr->parent_pcs_ptr->average_qp = (uint8_t)pcs_ptr->parent_pcs_ptr->picture_qp;
 }
 
 void forward_sq_blocks_to_md(
-    SequenceControlSet                   *sequence_control_set_ptr,
-    PictureControlSet                    *picture_control_set_ptr)
+    SequenceControlSet                   *scs_ptr,
+    PictureControlSet                    *pcs_ptr)
 {
     uint32_t                   sb_index;
     EbBool                  split_flag;
 
-    for (sb_index = 0; sb_index < sequence_control_set_ptr->sb_tot_cnt; ++sb_index)
+    for (sb_index = 0; sb_index < scs_ptr->sb_tot_cnt; ++sb_index)
     {
-        MdcLcuData *resultsPtr = &picture_control_set_ptr->mdc_sb_array[sb_index];
+        MdcLcuData *resultsPtr = &pcs_ptr->mdc_sb_array[sb_index];
 
         resultsPtr->leaf_count = 0;
 
-        uint32_t  blk_index = picture_control_set_ptr->slice_type == I_SLICE && sequence_control_set_ptr->seq_header.sb_size == BLOCK_128X128 ? 17 : 0;
+        uint32_t  blk_index = pcs_ptr->slice_type == I_SLICE && scs_ptr->seq_header.sb_size == BLOCK_128X128 ? 17 : 0;
 
-        while (blk_index < sequence_control_set_ptr->max_block_cnt)
+        while (blk_index < scs_ptr->max_block_cnt)
         {
             split_flag = EB_TRUE;
 
             const BlockGeom * blk_geom = get_blk_geom_mds(blk_index);
 
             //if the parentSq is inside inject this block
-            if (sequence_control_set_ptr->sb_geom[sb_index].block_is_inside_md_scan[blk_index])
+            if (scs_ptr->sb_geom[sb_index].block_is_inside_md_scan[blk_index])
 
             {
                 //int32_t offset_d1 = ns_blk_offset[(int32_t)from_shape_to_part[blk_geom->shape]]; //cu_ptr->best_d1_blk; // TOCKECK
@@ -1068,30 +1068,30 @@ void forward_sq_blocks_to_md(
                     split_flag = EB_FALSE;
                 }
             }
-            blk_index += split_flag ? d1_depth_offset[sequence_control_set_ptr->seq_header.sb_size == BLOCK_128X128][blk_geom->depth] : ns_depth_offset[sequence_control_set_ptr->seq_header.sb_size == BLOCK_128X128][blk_geom->depth];
+            blk_index += split_flag ? d1_depth_offset[scs_ptr->seq_header.sb_size == BLOCK_128X128][blk_geom->depth] : ns_depth_offset[scs_ptr->seq_header.sb_size == BLOCK_128X128][blk_geom->depth];
         }
     }
 
-    picture_control_set_ptr->parent_pcs_ptr->average_qp = (uint8_t)picture_control_set_ptr->parent_pcs_ptr->picture_qp;
+    pcs_ptr->parent_pcs_ptr->average_qp = (uint8_t)pcs_ptr->parent_pcs_ptr->picture_qp;
 }
 
 void sb_forward_sq_blocks_to_md(
-    SequenceControlSet *sequence_control_set_ptr,
-    PictureControlSet  *picture_control_set_ptr,
+    SequenceControlSet *scs_ptr,
+    PictureControlSet  *pcs_ptr,
     uint32_t              sb_index)
 {
     EbBool   split_flag;
-    MdcLcuData *resultsPtr = &picture_control_set_ptr->mdc_sb_array[sb_index];
+    MdcLcuData *resultsPtr = &pcs_ptr->mdc_sb_array[sb_index];
     resultsPtr->leaf_count = 0;
-    uint32_t  blk_index = picture_control_set_ptr->slice_type == I_SLICE && sequence_control_set_ptr->seq_header.sb_size == BLOCK_128X128 ? 17 : 0;
+    uint32_t  blk_index = pcs_ptr->slice_type == I_SLICE && scs_ptr->seq_header.sb_size == BLOCK_128X128 ? 17 : 0;
 
-    while (blk_index < sequence_control_set_ptr->max_block_cnt)
+    while (blk_index < scs_ptr->max_block_cnt)
     {
         split_flag = EB_TRUE;
 
         const BlockGeom * blk_geom = get_blk_geom_mds(blk_index);
 
-        if (sequence_control_set_ptr->sb_geom[sb_index].block_is_inside_md_scan[blk_index])
+        if (scs_ptr->sb_geom[sb_index].block_is_inside_md_scan[blk_index])
         {
             resultsPtr->leaf_data_array[resultsPtr->leaf_count].tot_d1_blocks = 1;
             resultsPtr->leaf_data_array[resultsPtr->leaf_count].leaf_index = 0;//valid only for square 85 world. will be removed.
@@ -1107,9 +1107,9 @@ void sb_forward_sq_blocks_to_md(
                 split_flag = EB_FALSE;
             }
         }
-        blk_index += split_flag ? d1_depth_offset[sequence_control_set_ptr->seq_header.sb_size == BLOCK_128X128][blk_geom->depth] : ns_depth_offset[sequence_control_set_ptr->seq_header.sb_size == BLOCK_128X128][blk_geom->depth];
+        blk_index += split_flag ? d1_depth_offset[scs_ptr->seq_header.sb_size == BLOCK_128X128][blk_geom->depth] : ns_depth_offset[scs_ptr->seq_header.sb_size == BLOCK_128X128][blk_geom->depth];
     }
-    picture_control_set_ptr->parent_pcs_ptr->average_qp = (uint8_t)picture_control_set_ptr->parent_pcs_ptr->picture_qp;
+    pcs_ptr->parent_pcs_ptr->average_qp = (uint8_t)pcs_ptr->parent_pcs_ptr->picture_qp;
 }
 
 #if PREDICT_NSQ_SHAPE
@@ -1251,7 +1251,7 @@ uint64_t  mdc_tab[9][2][3] = {
 
 // Update MDC refinement
 uint8_t update_mdc_level(
-    PictureControlSet  *picture_control_set_ptr,
+    PictureControlSet  *pcs_ptr,
     SuperBlock         *sb_ptr,
     uint32_t sb_size,
     const BlockGeom * blk_geom,
@@ -1260,7 +1260,7 @@ uint8_t update_mdc_level(
     int8_t depth = blk_geom->depth + depth_offset;
     uint8_t adjusted_depth_level = mdc_depth_level;
     uint8_t depth_refinement_mode = mdc_depth_level;
-    uint8_t encode_mode = picture_control_set_ptr->parent_pcs_ptr->enc_mode;
+    uint8_t encode_mode = pcs_ptr->parent_pcs_ptr->enc_mode;
     int8_t start_depth = sb_size == BLOCK_128X128 ? 0 : 1;
     int8_t end_depth = 5;
     int8_t depthp1 = depth + 1 <= end_depth ? depth + 1 : depth;
@@ -1397,20 +1397,20 @@ uint8_t update_mdc_level(
 }
 #endif
 void init_considered_block(
-    SequenceControlSet *sequence_control_set_ptr,
-    PictureControlSet  *picture_control_set_ptr,
+    SequenceControlSet *scs_ptr,
+    PictureControlSet  *pcs_ptr,
     ModeDecisionConfigurationContext *context_ptr,
     uint32_t            sb_index) {
-    MdcLcuData *resultsPtr = &picture_control_set_ptr->mdc_sb_array[sb_index];
+    MdcLcuData *resultsPtr = &pcs_ptr->mdc_sb_array[sb_index];
     resultsPtr->leaf_count = 0;
     uint32_t  blk_index = 0;
 
 #if MDC_ADAPTIVE_LEVEL
-    SuperBlock  *sb_ptr = picture_control_set_ptr->sb_ptr_array[sb_index];
+    SuperBlock  *sb_ptr = pcs_ptr->sb_ptr_array[sb_index];
 #else
     uint32_t  parent_depth_idx_mds, sparent_depth_idx_mds, ssparent_depth_idx_mds, child_block_idx_1, child_block_idx_2, child_block_idx_3, child_block_idx_4;
 #endif
-    SbParams *sb_params = &sequence_control_set_ptr->sb_params_array[sb_index];
+    SbParams *sb_params = &scs_ptr->sb_params_array[sb_index];
     uint8_t  is_complete_sb = sb_params->is_complete_sb;
     uint32_t tot_d1_blocks, block_1d_idx;
     EbBool split_flag;
@@ -1419,7 +1419,7 @@ void init_considered_block(
 #else
     uint32_t depth_refinement_mode = AllD;
 
-    switch (picture_control_set_ptr->parent_pcs_ptr->mdc_depth_level) {
+    switch (pcs_ptr->parent_pcs_ptr->mdc_depth_level) {
     case 0:
         depth_refinement_mode = is_complete_sb ? Pred : AllD;
         break;
@@ -1452,29 +1452,29 @@ void init_considered_block(
         break;
     }
 #endif
-    while (blk_index < sequence_control_set_ptr->max_block_cnt) {
+    while (blk_index < scs_ptr->max_block_cnt) {
         const BlockGeom * blk_geom = get_blk_geom_mds(blk_index);
         tot_d1_blocks =
             blk_geom->sq_size == 128 ? 17 :
             blk_geom->sq_size > 8 ? 25 :
             blk_geom->sq_size == 8 ? 5 : 1;
         //if the parent square is inside inject this block
-        uint8_t is_blk_allowed = picture_control_set_ptr->slice_type != I_SLICE ? 1 : (blk_geom->sq_size < 128) ? 1 : 0;
+        uint8_t is_blk_allowed = pcs_ptr->slice_type != I_SLICE ? 1 : (blk_geom->sq_size < 128) ? 1 : 0;
         if (depth_refinement_mode == AllD)
             split_flag = blk_geom->sq_size > 4 ? EB_TRUE : EB_FALSE;
         else
             split_flag = context_ptr->local_cu_array[blk_index].early_split_flag;
-        if (sequence_control_set_ptr->sb_geom[sb_index].block_is_inside_md_scan[blk_index] && is_blk_allowed) {
+        if (scs_ptr->sb_geom[sb_index].block_is_inside_md_scan[blk_index] && is_blk_allowed) {
             if (blk_geom->shape == PART_N) {
 #if MDC_ADAPTIVE_LEVEL
                 // Update MDC refinement
                 uint8_t adjusted_refinement_mode = depth_refinement_mode;
-                if (picture_control_set_ptr->parent_pcs_ptr->enable_adaptive_ol_partitioning)
+                if (pcs_ptr->parent_pcs_ptr->enable_adaptive_ol_partitioning)
                     if (is_complete_sb && (context_ptr->local_cu_array[blk_index].early_split_flag == EB_FALSE))
                         adjusted_refinement_mode = update_mdc_level(
-                            picture_control_set_ptr,
+                            pcs_ptr,
                             sb_ptr,
-                            sequence_control_set_ptr->seq_header.sb_size,
+                            scs_ptr->seq_header.sb_size,
                             blk_geom,
                             depth_refinement_mode);
 
@@ -1501,7 +1501,7 @@ void init_considered_block(
                         set_child_to_be_considered(
                             resultsPtr,
                             blk_index,
-                            sequence_control_set_ptr->seq_header.sb_size,
+                            scs_ptr->seq_header.sb_size,
                             1);
                     }
                     break;
@@ -1514,7 +1514,7 @@ void init_considered_block(
                         set_child_to_be_considered(
                             resultsPtr,
                             blk_index,
-                            sequence_control_set_ptr->seq_header.sb_size,
+                            scs_ptr->seq_header.sb_size,
                             2);
                     }
                     break;
@@ -1527,7 +1527,7 @@ void init_considered_block(
                         set_child_to_be_considered(
                             resultsPtr,
                             blk_index,
-                            sequence_control_set_ptr->seq_header.sb_size,
+                            scs_ptr->seq_header.sb_size,
                             3);
                     }
                     break;
@@ -1541,12 +1541,12 @@ void init_considered_block(
                         set_parent_to_be_considered(
                             resultsPtr,
                             blk_index,
-                            sequence_control_set_ptr->seq_header.sb_size,
+                            scs_ptr->seq_header.sb_size,
                             -1);
 #else
-                        if (blk_geom->sq_size < (sequence_control_set_ptr->seq_header.sb_size == BLOCK_128X128 ? 128 : 64) && blk_geom->sq_size > 4) {
+                        if (blk_geom->sq_size < (scs_ptr->seq_header.sb_size == BLOCK_128X128 ? 128 : 64) && blk_geom->sq_size > 4) {
                             //Set parent to be considered
-                            parent_depth_idx_mds = (blk_geom->sqi_mds - (blk_geom->quadi - 3) * ns_depth_offset[sequence_control_set_ptr->seq_header.sb_size == BLOCK_128X128][blk_geom->depth]) - parent_depth_offset[sequence_control_set_ptr->seq_header.sb_size == BLOCK_128X128][blk_geom->depth];
+                            parent_depth_idx_mds = (blk_geom->sqi_mds - (blk_geom->quadi - 3) * ns_depth_offset[scs_ptr->seq_header.sb_size == BLOCK_128X128][blk_geom->depth]) - parent_depth_offset[scs_ptr->seq_header.sb_size == BLOCK_128X128][blk_geom->depth];
                             const BlockGeom * parent_blk_geom = get_blk_geom_mds(parent_depth_idx_mds);
                             uint32_t parent_tot_d1_blocks =
                                 parent_blk_geom->sq_size == 128 ? 17 :
@@ -1564,7 +1564,7 @@ void init_considered_block(
                         set_child_to_be_considered(
                             resultsPtr,
                             blk_index,
-                            sequence_control_set_ptr->seq_header.sb_size,
+                            scs_ptr->seq_header.sb_size,
                             2);
                     }
                     break;
@@ -1578,12 +1578,12 @@ void init_considered_block(
                         set_parent_to_be_considered(
                             resultsPtr,
                             blk_index,
-                            sequence_control_set_ptr->seq_header.sb_size,
+                            scs_ptr->seq_header.sb_size,
                             -1);
 #else
-                        if (blk_geom->sq_size < (sequence_control_set_ptr->seq_header.sb_size == BLOCK_128X128 ? 128 : 64) && blk_geom->sq_size > 4) {
+                        if (blk_geom->sq_size < (scs_ptr->seq_header.sb_size == BLOCK_128X128 ? 128 : 64) && blk_geom->sq_size > 4) {
                             //Set parent to be considered
-                            parent_depth_idx_mds = (blk_geom->sqi_mds - (blk_geom->quadi - 3) * ns_depth_offset[sequence_control_set_ptr->seq_header.sb_size == BLOCK_128X128][blk_geom->depth]) - parent_depth_offset[sequence_control_set_ptr->seq_header.sb_size == BLOCK_128X128][blk_geom->depth];
+                            parent_depth_idx_mds = (blk_geom->sqi_mds - (blk_geom->quadi - 3) * ns_depth_offset[scs_ptr->seq_header.sb_size == BLOCK_128X128][blk_geom->depth]) - parent_depth_offset[scs_ptr->seq_header.sb_size == BLOCK_128X128][blk_geom->depth];
                             const BlockGeom * parent_blk_geom = get_blk_geom_mds(parent_depth_idx_mds);
                             uint32_t parent_tot_d1_blocks =
                                 parent_blk_geom->sq_size == 128 ? 17 :
@@ -1601,7 +1601,7 @@ void init_considered_block(
                         set_child_to_be_considered(
                             resultsPtr,
                             blk_index,
-                            sequence_control_set_ptr->seq_header.sb_size,
+                            scs_ptr->seq_header.sb_size,
                             3);
                     }
                     break;
@@ -1615,12 +1615,12 @@ void init_considered_block(
                         set_parent_to_be_considered(
                             resultsPtr,
                             blk_index,
-                            sequence_control_set_ptr->seq_header.sb_size,
+                            scs_ptr->seq_header.sb_size,
                             -2);
 #else
-                        if (blk_geom->sq_size < (sequence_control_set_ptr->seq_header.sb_size == BLOCK_128X128 ? 128 : 64) && blk_geom->sq_size > 4) {
+                        if (blk_geom->sq_size < (scs_ptr->seq_header.sb_size == BLOCK_128X128 ? 128 : 64) && blk_geom->sq_size > 4) {
                             //Set parent to be considered
-                            parent_depth_idx_mds = (blk_geom->sqi_mds - (blk_geom->quadi - 3) * ns_depth_offset[sequence_control_set_ptr->seq_header.sb_size == BLOCK_128X128][blk_geom->depth]) - parent_depth_offset[sequence_control_set_ptr->seq_header.sb_size == BLOCK_128X128][blk_geom->depth];
+                            parent_depth_idx_mds = (blk_geom->sqi_mds - (blk_geom->quadi - 3) * ns_depth_offset[scs_ptr->seq_header.sb_size == BLOCK_128X128][blk_geom->depth]) - parent_depth_offset[scs_ptr->seq_header.sb_size == BLOCK_128X128][blk_geom->depth];
                             const BlockGeom * parent_blk_geom = get_blk_geom_mds(parent_depth_idx_mds);
                             uint32_t parent_tot_d1_blocks =
                                 parent_blk_geom->sq_size == 128 ? 17 :
@@ -1629,9 +1629,9 @@ void init_considered_block(
                             for (block_1d_idx = 0; block_1d_idx < parent_tot_d1_blocks; block_1d_idx++) {
                                 resultsPtr->leaf_data_array[parent_depth_idx_mds + block_1d_idx].consider_block = 1;
                             }
-                            if (parent_blk_geom->sq_size < (sequence_control_set_ptr->seq_header.sb_size == BLOCK_128X128 ? 128 : 64) && parent_blk_geom->sq_size > 4) {
+                            if (parent_blk_geom->sq_size < (scs_ptr->seq_header.sb_size == BLOCK_128X128 ? 128 : 64) && parent_blk_geom->sq_size > 4) {
                                 //Set parent to be considered
-                                sparent_depth_idx_mds = (parent_blk_geom->sqi_mds - (parent_blk_geom->quadi - 3) * ns_depth_offset[sequence_control_set_ptr->seq_header.sb_size == BLOCK_128X128][parent_blk_geom->depth]) - parent_depth_offset[sequence_control_set_ptr->seq_header.sb_size == BLOCK_128X128][parent_blk_geom->depth];
+                                sparent_depth_idx_mds = (parent_blk_geom->sqi_mds - (parent_blk_geom->quadi - 3) * ns_depth_offset[scs_ptr->seq_header.sb_size == BLOCK_128X128][parent_blk_geom->depth]) - parent_depth_offset[scs_ptr->seq_header.sb_size == BLOCK_128X128][parent_blk_geom->depth];
                                 uint32_t sparent_tot_d1_blocks =
                                     parent_blk_geom->sq_size == 128 ? 17 :
                                     parent_blk_geom->sq_size > 8 ? 25 :
@@ -1648,7 +1648,7 @@ void init_considered_block(
                         set_child_to_be_considered(
                             resultsPtr,
                             blk_index,
-                            sequence_control_set_ptr->seq_header.sb_size,
+                            scs_ptr->seq_header.sb_size,
                             3);
                     }
                     break;
@@ -1663,16 +1663,16 @@ void init_considered_block(
                         set_parent_to_be_considered(
                             resultsPtr,
                             blk_index,
-                            sequence_control_set_ptr->seq_header.sb_size,
+                            scs_ptr->seq_header.sb_size,
                             -1);
                         for (block_1d_idx = 0; block_1d_idx < tot_d1_blocks; block_1d_idx++) {
                             resultsPtr->leaf_data_array[blk_index + block_1d_idx].consider_block = 1;
                             resultsPtr->leaf_data_array[blk_index + block_1d_idx].refined_split_flag = EB_FALSE;
                         }
 #else
-                        if (blk_geom->sq_size < (sequence_control_set_ptr->seq_header.sb_size == BLOCK_128X128 ? 128 : 64) && blk_geom->sq_size > 4) {
+                        if (blk_geom->sq_size < (scs_ptr->seq_header.sb_size == BLOCK_128X128 ? 128 : 64) && blk_geom->sq_size > 4) {
                             //Set parent to be considered
-                            parent_depth_idx_mds = (blk_geom->sqi_mds - (blk_geom->quadi - 3) * ns_depth_offset[sequence_control_set_ptr->seq_header.sb_size == BLOCK_128X128][blk_geom->depth]) - parent_depth_offset[sequence_control_set_ptr->seq_header.sb_size == BLOCK_128X128][blk_geom->depth];
+                            parent_depth_idx_mds = (blk_geom->sqi_mds - (blk_geom->quadi - 3) * ns_depth_offset[scs_ptr->seq_header.sb_size == BLOCK_128X128][blk_geom->depth]) - parent_depth_offset[scs_ptr->seq_header.sb_size == BLOCK_128X128][blk_geom->depth];
                             const BlockGeom * parent_blk_geom = get_blk_geom_mds(parent_depth_idx_mds);
                             uint32_t parent_tot_d1_blocks =
                                 parent_blk_geom->sq_size == 128 ? 17 :
@@ -1695,13 +1695,13 @@ void init_considered_block(
                         set_parent_to_be_considered(
                             resultsPtr,
                             blk_index,
-                            sequence_control_set_ptr->seq_header.sb_size,
+                            scs_ptr->seq_header.sb_size,
                             -2);
 
 #else
-                        if (blk_geom->sq_size < (sequence_control_set_ptr->seq_header.sb_size == BLOCK_128X128 ? 128 : 64) && blk_geom->sq_size > 4) {
+                        if (blk_geom->sq_size < (scs_ptr->seq_header.sb_size == BLOCK_128X128 ? 128 : 64) && blk_geom->sq_size > 4) {
                             //Set parent to be considered
-                            parent_depth_idx_mds = (blk_geom->sqi_mds - (blk_geom->quadi - 3) * ns_depth_offset[sequence_control_set_ptr->seq_header.sb_size == BLOCK_128X128][blk_geom->depth]) - parent_depth_offset[sequence_control_set_ptr->seq_header.sb_size == BLOCK_128X128][blk_geom->depth];
+                            parent_depth_idx_mds = (blk_geom->sqi_mds - (blk_geom->quadi - 3) * ns_depth_offset[scs_ptr->seq_header.sb_size == BLOCK_128X128][blk_geom->depth]) - parent_depth_offset[scs_ptr->seq_header.sb_size == BLOCK_128X128][blk_geom->depth];
                             const BlockGeom * parent_blk_geom = get_blk_geom_mds(parent_depth_idx_mds);
                             uint32_t parent_tot_d1_blocks =
                                 parent_blk_geom->sq_size == 128 ? 17 :
@@ -1710,9 +1710,9 @@ void init_considered_block(
                             for (block_1d_idx = 0; block_1d_idx < parent_tot_d1_blocks; block_1d_idx++) {
                                 resultsPtr->leaf_data_array[parent_depth_idx_mds + block_1d_idx].consider_block = 1;
                             }
-                            if (parent_blk_geom->sq_size < (sequence_control_set_ptr->seq_header.sb_size == BLOCK_128X128 ? 128 : 64) && parent_blk_geom->sq_size > 4) {
+                            if (parent_blk_geom->sq_size < (scs_ptr->seq_header.sb_size == BLOCK_128X128 ? 128 : 64) && parent_blk_geom->sq_size > 4) {
                                 //Set parent to be considered
-                                sparent_depth_idx_mds = (parent_blk_geom->sqi_mds - (parent_blk_geom->quadi - 3) * ns_depth_offset[sequence_control_set_ptr->seq_header.sb_size == BLOCK_128X128][parent_blk_geom->depth]) - parent_depth_offset[sequence_control_set_ptr->seq_header.sb_size == BLOCK_128X128][parent_blk_geom->depth];
+                                sparent_depth_idx_mds = (parent_blk_geom->sqi_mds - (parent_blk_geom->quadi - 3) * ns_depth_offset[scs_ptr->seq_header.sb_size == BLOCK_128X128][parent_blk_geom->depth]) - parent_depth_offset[scs_ptr->seq_header.sb_size == BLOCK_128X128][parent_blk_geom->depth];
                                 uint32_t sparent_tot_d1_blocks =
                                     parent_blk_geom->sq_size == 128 ? 17 :
                                     parent_blk_geom->sq_size > 8 ? 25 :
@@ -1739,7 +1739,7 @@ void init_considered_block(
                         set_parent_to_be_considered(
                             resultsPtr,
                             blk_index,
-                            sequence_control_set_ptr->seq_header.sb_size,
+                            scs_ptr->seq_header.sb_size,
                             -1);
                         for (block_1d_idx = 0; block_1d_idx < tot_d1_blocks; block_1d_idx++) {
                             resultsPtr->leaf_data_array[blk_index + block_1d_idx].consider_block = 1;
@@ -1748,12 +1748,12 @@ void init_considered_block(
                         set_child_to_be_considered(
                             resultsPtr,
                             blk_index,
-                            sequence_control_set_ptr->seq_header.sb_size,
+                            scs_ptr->seq_header.sb_size,
                             1);
 #else
-                        if (blk_geom->sq_size < (sequence_control_set_ptr->seq_header.sb_size == BLOCK_128X128 ? 128 : 64) && blk_geom->sq_size > 4) {
+                        if (blk_geom->sq_size < (scs_ptr->seq_header.sb_size == BLOCK_128X128 ? 128 : 64) && blk_geom->sq_size > 4) {
                             //Set parent to be considered
-                            parent_depth_idx_mds = (blk_geom->sqi_mds - (blk_geom->quadi - 3) * ns_depth_offset[sequence_control_set_ptr->seq_header.sb_size == BLOCK_128X128][blk_geom->depth]) - parent_depth_offset[sequence_control_set_ptr->seq_header.sb_size == BLOCK_128X128][blk_geom->depth];
+                            parent_depth_idx_mds = (blk_geom->sqi_mds - (blk_geom->quadi - 3) * ns_depth_offset[scs_ptr->seq_header.sb_size == BLOCK_128X128][blk_geom->depth]) - parent_depth_offset[scs_ptr->seq_header.sb_size == BLOCK_128X128][blk_geom->depth];
                             const BlockGeom * parent_blk_geom = get_blk_geom_mds(parent_depth_idx_mds);
                             uint32_t parent_tot_d1_blocks =
                                 parent_blk_geom->sq_size == 128 ? 17 :
@@ -1771,7 +1771,7 @@ void init_considered_block(
                                 resultsPtr->leaf_data_array[blk_index + block_1d_idx].refined_split_flag = EB_TRUE;
                             }
                             //Set first child to be considered
-                            child_block_idx_1 = blk_index + d1_depth_offset[sequence_control_set_ptr->seq_header.sb_size == BLOCK_128X128][blk_geom->depth];
+                            child_block_idx_1 = blk_index + d1_depth_offset[scs_ptr->seq_header.sb_size == BLOCK_128X128][blk_geom->depth];
                             const BlockGeom * child1_blk_geom = get_blk_geom_mds(child_block_idx_1);
                             uint32_t child1_tot_d1_blocks =
                                 child1_blk_geom->sq_size == 128 ? 17 :
@@ -1783,7 +1783,7 @@ void init_considered_block(
                                 resultsPtr->leaf_data_array[child_block_idx_1 + block_1d_idx].refined_split_flag = EB_FALSE;
                             }
                             //Set second child to be considered
-                            child_block_idx_2 = child_block_idx_1 + ns_depth_offset[sequence_control_set_ptr->seq_header.sb_size == BLOCK_128X128][blk_geom->depth + 1];
+                            child_block_idx_2 = child_block_idx_1 + ns_depth_offset[scs_ptr->seq_header.sb_size == BLOCK_128X128][blk_geom->depth + 1];
                             const BlockGeom * child2_blk_geom = get_blk_geom_mds(child_block_idx_2);
                             uint32_t child2_tot_d1_blocks =
                                 child2_blk_geom->sq_size == 128 ? 17 :
@@ -1794,7 +1794,7 @@ void init_considered_block(
                                 resultsPtr->leaf_data_array[child_block_idx_2 + block_1d_idx].refined_split_flag = EB_FALSE;
                             }
                             //Set third child to be considered
-                            child_block_idx_3 = child_block_idx_2 + ns_depth_offset[sequence_control_set_ptr->seq_header.sb_size == BLOCK_128X128][blk_geom->depth + 1];
+                            child_block_idx_3 = child_block_idx_2 + ns_depth_offset[scs_ptr->seq_header.sb_size == BLOCK_128X128][blk_geom->depth + 1];
                             const BlockGeom * child3_blk_geom = get_blk_geom_mds(child_block_idx_3);
                             uint32_t child3_tot_d1_blocks =
                                 child3_blk_geom->sq_size == 128 ? 17 :
@@ -1806,7 +1806,7 @@ void init_considered_block(
                                 resultsPtr->leaf_data_array[child_block_idx_3 + block_1d_idx].refined_split_flag = EB_FALSE;
                             }
                             //Set forth child to be considered
-                            child_block_idx_4 = child_block_idx_3 + ns_depth_offset[sequence_control_set_ptr->seq_header.sb_size == BLOCK_128X128][blk_geom->depth + 1];
+                            child_block_idx_4 = child_block_idx_3 + ns_depth_offset[scs_ptr->seq_header.sb_size == BLOCK_128X128][blk_geom->depth + 1];
                             const BlockGeom * child4_blk_geom = get_blk_geom_mds(child_block_idx_4);
                             uint32_t child4_tot_d1_blocks =
                                 child4_blk_geom->sq_size == 128 ? 17 :
@@ -1830,7 +1830,7 @@ void init_considered_block(
                         set_parent_to_be_considered(
                             resultsPtr,
                             blk_index,
-                            sequence_control_set_ptr->seq_header.sb_size,
+                            scs_ptr->seq_header.sb_size,
                             -2);
                         for (block_1d_idx = 0; block_1d_idx < tot_d1_blocks; block_1d_idx++) {
                             resultsPtr->leaf_data_array[blk_index + block_1d_idx].consider_block = 1;
@@ -1839,7 +1839,7 @@ void init_considered_block(
                         set_child_to_be_considered(
                             resultsPtr,
                             blk_index,
-                            sequence_control_set_ptr->seq_header.sb_size,
+                            scs_ptr->seq_header.sb_size,
                             1);
                     }
                     break;
@@ -1852,7 +1852,7 @@ void init_considered_block(
                         set_parent_to_be_considered(
                             resultsPtr,
                             blk_index,
-                            sequence_control_set_ptr->seq_header.sb_size,
+                            scs_ptr->seq_header.sb_size,
                             -2);
                         for (block_1d_idx = 0; block_1d_idx < tot_d1_blocks; block_1d_idx++) {
                             resultsPtr->leaf_data_array[blk_index + block_1d_idx].consider_block = 1;
@@ -1861,7 +1861,7 @@ void init_considered_block(
                         set_child_to_be_considered(
                             resultsPtr,
                             blk_index,
-                            sequence_control_set_ptr->seq_header.sb_size,
+                            scs_ptr->seq_header.sb_size,
                             2);
                     }
                     break;
@@ -1874,7 +1874,7 @@ void init_considered_block(
                         set_parent_to_be_considered(
                             resultsPtr,
                             blk_index,
-                            sequence_control_set_ptr->seq_header.sb_size,
+                            scs_ptr->seq_header.sb_size,
                             -3);
                         for (block_1d_idx = 0; block_1d_idx < tot_d1_blocks; block_1d_idx++) {
                             resultsPtr->leaf_data_array[blk_index + block_1d_idx].consider_block = 1;
@@ -1883,7 +1883,7 @@ void init_considered_block(
                         set_child_to_be_considered(
                             resultsPtr,
                             blk_index,
-                            sequence_control_set_ptr->seq_header.sb_size,
+                            scs_ptr->seq_header.sb_size,
                             2);
                     }
                     break;
@@ -1896,7 +1896,7 @@ void init_considered_block(
                         set_parent_to_be_considered(
                             resultsPtr,
                             blk_index,
-                            sequence_control_set_ptr->seq_header.sb_size,
+                            scs_ptr->seq_header.sb_size,
                             -3);
                         for (block_1d_idx = 0; block_1d_idx < tot_d1_blocks; block_1d_idx++) {
                             resultsPtr->leaf_data_array[blk_index + block_1d_idx].consider_block = 1;
@@ -1905,7 +1905,7 @@ void init_considered_block(
                         set_child_to_be_considered(
                             resultsPtr,
                             blk_index,
-                            sequence_control_set_ptr->seq_header.sb_size,
+                            scs_ptr->seq_header.sb_size,
                             3);
                     }
                     break;
@@ -1918,7 +1918,7 @@ void init_considered_block(
                         set_parent_to_be_considered(
                             resultsPtr,
                             blk_index,
-                            sequence_control_set_ptr->seq_header.sb_size,
+                            scs_ptr->seq_header.sb_size,
                             -3);
                         for (block_1d_idx = 0; block_1d_idx < tot_d1_blocks; block_1d_idx++) {
                             resultsPtr->leaf_data_array[blk_index + block_1d_idx].consider_block = 1;
@@ -1927,7 +1927,7 @@ void init_considered_block(
                         set_child_to_be_considered(
                             resultsPtr,
                             blk_index,
-                            sequence_control_set_ptr->seq_header.sb_size,
+                            scs_ptr->seq_header.sb_size,
                             1);
                     }
                     break;
@@ -1940,7 +1940,7 @@ void init_considered_block(
                         set_parent_to_be_considered(
                             resultsPtr,
                             blk_index,
-                            sequence_control_set_ptr->seq_header.sb_size,
+                            scs_ptr->seq_header.sb_size,
                             -3);
                         for (block_1d_idx = 0; block_1d_idx < tot_d1_blocks; block_1d_idx++) {
                             resultsPtr->leaf_data_array[blk_index + block_1d_idx].consider_block = 1;
@@ -1949,7 +1949,7 @@ void init_considered_block(
                         set_child_to_be_considered(
                             resultsPtr,
                             blk_index,
-                            sequence_control_set_ptr->seq_header.sb_size,
+                            scs_ptr->seq_header.sb_size,
                             1);
                     }
                     break;
@@ -1967,25 +1967,25 @@ void init_considered_block(
                 }
             }
         }
-        blk_index += split_flag ? d1_depth_offset[sequence_control_set_ptr->seq_header.sb_size == BLOCK_128X128][blk_geom->depth] : ns_depth_offset[sequence_control_set_ptr->seq_header.sb_size == BLOCK_128X128][blk_geom->depth];
+        blk_index += split_flag ? d1_depth_offset[scs_ptr->seq_header.sb_size == BLOCK_128X128][blk_geom->depth] : ns_depth_offset[scs_ptr->seq_header.sb_size == BLOCK_128X128][blk_geom->depth];
     }
 }
 void forward_considered_blocks(
-    SequenceControlSet *sequence_control_set_ptr,
-    PictureControlSet  *picture_control_set_ptr,
+    SequenceControlSet *scs_ptr,
+    PictureControlSet  *pcs_ptr,
     uint32_t            sb_index) {
-    MdcLcuData *resultsPtr = &picture_control_set_ptr->mdc_sb_array[sb_index];
+    MdcLcuData *resultsPtr = &pcs_ptr->mdc_sb_array[sb_index];
     resultsPtr->leaf_count = 0;
     uint32_t  blk_index = 0;
     uint32_t d1_blocks_accumlated, tot_d1_blocks = 0, d1_block_idx;
     EbBool split_flag;
-    while (blk_index < sequence_control_set_ptr->max_block_cnt) {
+    while (blk_index < scs_ptr->max_block_cnt) {
         const BlockGeom * blk_geom = get_blk_geom_mds(blk_index);
         split_flag = blk_geom->sq_size > 4 ? EB_TRUE : EB_FALSE;
         //if the parent sq is inside inject this block
-        uint8_t is_blk_allowed = picture_control_set_ptr->slice_type != I_SLICE ? 1 : (blk_geom->sq_size < 128) ? 1 : 0;
+        uint8_t is_blk_allowed = pcs_ptr->slice_type != I_SLICE ? 1 : (blk_geom->sq_size < 128) ? 1 : 0;
         //init consider block flag
-        if (sequence_control_set_ptr->sb_geom[sb_index].block_is_inside_md_scan[blk_index] && is_blk_allowed) {
+        if (scs_ptr->sb_geom[sb_index].block_is_inside_md_scan[blk_index] && is_blk_allowed) {
             tot_d1_blocks =
                 blk_geom->sq_size == 128 ? 17 :
                 blk_geom->sq_size > 8 ? 25 :
@@ -2005,24 +2005,24 @@ void forward_considered_blocks(
                 blk_index++;
             }
         }
-        blk_index += split_flag ? d1_depth_offset[sequence_control_set_ptr->seq_header.sb_size == BLOCK_128X128][blk_geom->depth] - tot_d1_blocks : ns_depth_offset[sequence_control_set_ptr->seq_header.sb_size == BLOCK_128X128][blk_geom->depth] - tot_d1_blocks;
+        blk_index += split_flag ? d1_depth_offset[scs_ptr->seq_header.sb_size == BLOCK_128X128][blk_geom->depth] - tot_d1_blocks : ns_depth_offset[scs_ptr->seq_header.sb_size == BLOCK_128X128][blk_geom->depth] - tot_d1_blocks;
     }
 }
 #endif
 void open_loop_partitioning_pass(
-    SequenceControlSet *sequence_control_set_ptr,
-    PictureControlSet  *picture_control_set_ptr,
+    SequenceControlSet *scs_ptr,
+    PictureControlSet  *pcs_ptr,
     ModeDecisionConfigurationContext *context_ptr,
     uint32_t            sb_index) {
     //EbBool split_flag;
-    MdcLcuData *resultsPtr = &picture_control_set_ptr->mdc_sb_array[sb_index];
+    MdcLcuData *resultsPtr = &pcs_ptr->mdc_sb_array[sb_index];
     resultsPtr->leaf_count = 0;
     uint32_t  blk_index = 0;
-    while (blk_index < sequence_control_set_ptr->max_block_cnt) {
+    while (blk_index < scs_ptr->max_block_cnt) {
         //split_flag = EB_TRUE;
         const BlockGeom * blk_geom = get_blk_geom_mds(blk_index);
         //if the parentSq is inside inject this block
-        uint8_t is_blk_allowed = picture_control_set_ptr->slice_type != I_SLICE ? 1 : (blk_geom->sq_size < 128) ? 1 : 0;
+        uint8_t is_blk_allowed = pcs_ptr->slice_type != I_SLICE ? 1 : (blk_geom->sq_size < 128) ? 1 : 0;
         //init ranking
         resultsPtr->leaf_data_array[blk_index].early_split_flag = blk_geom->sq_size > 4 ? EB_TRUE : EB_FALSE;
 #if ADD_MDC_REFINEMENT_LOOP
@@ -2031,7 +2031,7 @@ void open_loop_partitioning_pass(
         resultsPtr->leaf_data_array[blk_index].refined_split_flag = resultsPtr->leaf_data_array[blk_index].early_split_flag;
         context_ptr->local_cu_array[blk_index].early_split_flag = resultsPtr->leaf_data_array[blk_index].early_split_flag;
 #endif
-        if (sequence_control_set_ptr->sb_geom[sb_index].block_is_inside_md_scan[blk_index] && is_blk_allowed) {
+        if (scs_ptr->sb_geom[sb_index].block_is_inside_md_scan[blk_index] && is_blk_allowed) {
             resultsPtr->leaf_data_array[resultsPtr->leaf_count].tot_d1_blocks =
                 blk_geom->sq_size == 128 ? 17 :
                 blk_geom->sq_size > 8 ? 25 :
@@ -2049,18 +2049,18 @@ void open_loop_partitioning_pass(
         }
         blk_index++;
     }
-    if (picture_control_set_ptr->slice_type != I_SLICE) {
+    if (pcs_ptr->slice_type != I_SLICE) {
         SuperBlock            *sb_ptr;
         // SB Loop : Partitionnig Decision
-        sb_ptr = picture_control_set_ptr->sb_ptr_array[sb_index];
-        sb_ptr->qp = (uint8_t)picture_control_set_ptr->parent_pcs_ptr->picture_qp;
+        sb_ptr = pcs_ptr->sb_ptr_array[sb_index];
+        sb_ptr->qp = (uint8_t)pcs_ptr->parent_pcs_ptr->picture_qp;
 #if MDC_ADAPTIVE_LEVEL
-        uint32_t is_complete_sb = sequence_control_set_ptr->sb_geom[sb_index].is_complete_sb;
-        if (sequence_control_set_ptr->over_boundary_block_mode == 1 || is_complete_sb) {
+        uint32_t is_complete_sb = scs_ptr->sb_geom[sb_index].is_complete_sb;
+        if (scs_ptr->over_boundary_block_mode == 1 || is_complete_sb) {
 #endif
             open_loop_partitioning_sb(
-                sequence_control_set_ptr,
-                picture_control_set_ptr,
+                scs_ptr,
+                pcs_ptr,
                 context_ptr,
                 resultsPtr,
                 sb_ptr->origin_x,
@@ -2070,20 +2070,20 @@ void open_loop_partitioning_pass(
         }
 #endif
     }
-    picture_control_set_ptr->parent_pcs_ptr->average_qp = (uint8_t)picture_control_set_ptr->parent_pcs_ptr->picture_qp;
+    pcs_ptr->parent_pcs_ptr->average_qp = (uint8_t)pcs_ptr->parent_pcs_ptr->picture_qp;
 }
 #endif
 
 void Forward85CuToModeDecision(
-    SequenceControlSet                   *sequence_control_set_ptr,
-    PictureControlSet                    *picture_control_set_ptr) {
+    SequenceControlSet                   *scs_ptr,
+    PictureControlSet                    *pcs_ptr) {
     const CodedUnitStats  *cuStatsPtr;
     uint32_t                   sb_index;
     EbBool split_flag;
     // SB Loop : Partitionnig Decision
-    for (sb_index = 0; sb_index < picture_control_set_ptr->sb_total_count; ++sb_index) {
-        SbParams  *sb_params = &sequence_control_set_ptr->sb_params_array[sb_index];
-        MdcLcuData *resultsPtr = &picture_control_set_ptr->mdc_sb_array[sb_index];
+    for (sb_index = 0; sb_index < pcs_ptr->sb_total_count; ++sb_index) {
+        SbParams  *sb_params = &scs_ptr->sb_params_array[sb_index];
+        MdcLcuData *resultsPtr = &pcs_ptr->mdc_sb_array[sb_index];
         resultsPtr->leaf_count = 0;
         uint8_t cu_index = 0;
         while (cu_index < CU_MAX_COUNT)
@@ -2127,19 +2127,19 @@ void Forward85CuToModeDecision(
         } // End CU Loop
     }
 
-    picture_control_set_ptr->parent_pcs_ptr->average_qp = (uint8_t)picture_control_set_ptr->parent_pcs_ptr->picture_qp;
+    pcs_ptr->parent_pcs_ptr->average_qp = (uint8_t)pcs_ptr->parent_pcs_ptr->picture_qp;
 }
 
 void Forward84CuToModeDecision(
-    SequenceControlSet                   *sequence_control_set_ptr,
-    PictureControlSet                    *picture_control_set_ptr) {
+    SequenceControlSet                   *scs_ptr,
+    PictureControlSet                    *pcs_ptr) {
     const CodedUnitStats  *cuStatsPtr;
     uint32_t                   sb_index;
     EbBool split_flag;
     // SB Loop : Partitionnig Decision
-    for (sb_index = 0; sb_index < picture_control_set_ptr->sb_total_count; ++sb_index) {
-        SbParams  *sb_params = &sequence_control_set_ptr->sb_params_array[sb_index];
-        MdcLcuData *resultsPtr = &picture_control_set_ptr->mdc_sb_array[sb_index];
+    for (sb_index = 0; sb_index < pcs_ptr->sb_total_count; ++sb_index) {
+        SbParams  *sb_params = &scs_ptr->sb_params_array[sb_index];
+        MdcLcuData *resultsPtr = &pcs_ptr->mdc_sb_array[sb_index];
         uint32_t cuIndexInRaterScan;   uint16_t cuVar;
 
         resultsPtr->leaf_count = 0;
@@ -2152,7 +2152,7 @@ void Forward84CuToModeDecision(
             {
                 switch (cuStatsPtr->depth) {
                 case 0:
-                    if (picture_control_set_ptr->slice_type == I_SLICE)
+                    if (pcs_ptr->slice_type == I_SLICE)
                         split_flag = EB_TRUE;
                     else {
                         resultsPtr->leaf_data_array[resultsPtr->leaf_count].leaf_index = cu_index;
@@ -2164,8 +2164,8 @@ void Forward84CuToModeDecision(
 
                     //OMK To revisit : add Varpart flag and move to MD
                     cuIndexInRaterScan = md_scan_to_raster_scan[cu_index];
-                    cuVar = (picture_control_set_ptr->parent_pcs_ptr->variance[sb_index][cuIndexInRaterScan]);
-                    if ((picture_control_set_ptr->slice_type == I_SLICE && cuVar > 40) || (sequence_control_set_ptr->input_resolution < INPUT_SIZE_4K_RANGE&& picture_control_set_ptr->slice_type == I_SLICE && cuVar>40))
+                    cuVar = (pcs_ptr->parent_pcs_ptr->variance[sb_index][cuIndexInRaterScan]);
+                    if ((pcs_ptr->slice_type == I_SLICE && cuVar > 40) || (scs_ptr->input_resolution < INPUT_SIZE_4K_RANGE&& pcs_ptr->slice_type == I_SLICE && cuVar>40))
                         split_flag = EB_TRUE;
                     else {
                         resultsPtr->leaf_data_array[resultsPtr->leaf_count].leaf_index = cu_index;
@@ -2198,33 +2198,33 @@ void Forward84CuToModeDecision(
         } // End CU Loop
     }
 
-    picture_control_set_ptr->parent_pcs_ptr->average_qp = (uint8_t)picture_control_set_ptr->parent_pcs_ptr->picture_qp;
+    pcs_ptr->parent_pcs_ptr->average_qp = (uint8_t)pcs_ptr->parent_pcs_ptr->picture_qp;
 }
 
 /******************************************************
 * Derive MD parameters
 ******************************************************/
 void SetMdSettings(
-    SequenceControlSet                   *sequence_control_set_ptr,
-    PictureControlSet                    *picture_control_set_ptr) {
+    SequenceControlSet                   *scs_ptr,
+    PictureControlSet                    *pcs_ptr) {
     // Initialize the homogeneous area threshold
     // Set the MD Open Loop Flag
     // HG - to clean up the intra_md_open_loop_flag derivation
 
-    picture_control_set_ptr->intra_md_open_loop_flag = picture_control_set_ptr->temporal_layer_index == 0 ? EB_FALSE : EB_TRUE;
+    pcs_ptr->intra_md_open_loop_flag = pcs_ptr->temporal_layer_index == 0 ? EB_FALSE : EB_TRUE;
 
-    if (picture_control_set_ptr->parent_pcs_ptr->is_used_as_reference_flag == EB_TRUE && sequence_control_set_ptr->input_resolution < INPUT_SIZE_4K_RANGE)
-        picture_control_set_ptr->intra_md_open_loop_flag = EB_FALSE;
+    if (pcs_ptr->parent_pcs_ptr->is_used_as_reference_flag == EB_TRUE && scs_ptr->input_resolution < INPUT_SIZE_4K_RANGE)
+        pcs_ptr->intra_md_open_loop_flag = EB_FALSE;
 
-    picture_control_set_ptr->constrained_intra_flag = EB_FALSE;
+    pcs_ptr->constrained_intra_flag = EB_FALSE;
 
-    if (sequence_control_set_ptr->static_config.constrained_intra == EB_TRUE &&
-        picture_control_set_ptr->parent_pcs_ptr->is_used_as_reference_flag == EB_FALSE)
+    if (scs_ptr->static_config.constrained_intra == EB_TRUE &&
+        pcs_ptr->parent_pcs_ptr->is_used_as_reference_flag == EB_FALSE)
     {
-        picture_control_set_ptr->constrained_intra_flag = EB_TRUE;
+        pcs_ptr->constrained_intra_flag = EB_TRUE;
     }
-    picture_control_set_ptr->limit_intra = EB_FALSE;
-    picture_control_set_ptr->intra_md_open_loop_flag = EB_FALSE;
+    pcs_ptr->limit_intra = EB_FALSE;
+    pcs_ptr->intra_md_open_loop_flag = EB_FALSE;
 }
 /******************************************************
 * Load the cost of the different partitioning method into a local array and derive sensitive picture flag
@@ -2232,9 +2232,9 @@ void SetMdSettings(
     Output  : valid cost_depth_mode and valid sensitivePicture
 ******************************************************/
 void configure_adp(
-    PictureControlSet                *picture_control_set_ptr,
+    PictureControlSet                *pcs_ptr,
     ModeDecisionConfigurationContext *context_ptr){
-    UNUSED(picture_control_set_ptr);
+    UNUSED(pcs_ptr);
     context_ptr->cost_depth_mode[SB_SQ_BLOCKS_DEPTH_MODE      - 1]       = SQ_BLOCKS_SEARCH_COST;
     context_ptr->cost_depth_mode[SB_SQ_NON4_BLOCKS_DEPTH_MODE - 1]       = SQ_NON4_BLOCKS_SEARCH_COST;
     context_ptr->cost_depth_mode[SB_OPEN_LOOP_DEPTH_MODE      - 1]       = SB_OPEN_LOOP_COST;
@@ -2260,40 +2260,40 @@ void configure_adp(
     Output  : search method per LCU
 ******************************************************/
 void derive_search_method(
-    PictureControlSet                *picture_control_set_ptr,
+    PictureControlSet                *pcs_ptr,
     ModeDecisionConfigurationContext *context_ptr)
 {
     uint32_t sb_index;
 
-    for (sb_index = 0; sb_index < picture_control_set_ptr->parent_pcs_ptr->sequence_control_set_ptr->sb_tot_cnt; sb_index++) {
+    for (sb_index = 0; sb_index < pcs_ptr->parent_pcs_ptr->scs_ptr->sb_tot_cnt; sb_index++) {
         if (context_ptr->sb_cost_array[sb_index] == context_ptr->cost_depth_mode[SB_PRED_OPEN_LOOP_DEPTH_MODE - 1])
-            picture_control_set_ptr->parent_pcs_ptr->sb_depth_mode_array[sb_index] = SB_PRED_OPEN_LOOP_DEPTH_MODE;
+            pcs_ptr->parent_pcs_ptr->sb_depth_mode_array[sb_index] = SB_PRED_OPEN_LOOP_DEPTH_MODE;
         else if (context_ptr->sb_cost_array[sb_index] == context_ptr->cost_depth_mode[SB_FAST_OPEN_LOOP_DEPTH_MODE - 1])
-            picture_control_set_ptr->parent_pcs_ptr->sb_depth_mode_array[sb_index] = SB_FAST_OPEN_LOOP_DEPTH_MODE;
+            pcs_ptr->parent_pcs_ptr->sb_depth_mode_array[sb_index] = SB_FAST_OPEN_LOOP_DEPTH_MODE;
         else if (context_ptr->sb_cost_array[sb_index] == context_ptr->cost_depth_mode[SB_OPEN_LOOP_DEPTH_MODE - 1])
-            picture_control_set_ptr->parent_pcs_ptr->sb_depth_mode_array[sb_index] = SB_OPEN_LOOP_DEPTH_MODE;
+            pcs_ptr->parent_pcs_ptr->sb_depth_mode_array[sb_index] = SB_OPEN_LOOP_DEPTH_MODE;
         else if (context_ptr->sb_cost_array[sb_index] == context_ptr->cost_depth_mode[SB_SQ_NON4_BLOCKS_DEPTH_MODE - 1])
-            picture_control_set_ptr->parent_pcs_ptr->sb_depth_mode_array[sb_index] = SB_SQ_NON4_BLOCKS_DEPTH_MODE;
+            pcs_ptr->parent_pcs_ptr->sb_depth_mode_array[sb_index] = SB_SQ_NON4_BLOCKS_DEPTH_MODE;
         else
-            picture_control_set_ptr->parent_pcs_ptr->sb_depth_mode_array[sb_index] = SB_SQ_BLOCKS_DEPTH_MODE;
+            pcs_ptr->parent_pcs_ptr->sb_depth_mode_array[sb_index] = SB_SQ_BLOCKS_DEPTH_MODE;
     }
 
 #if ADP_STATS_PER_LAYER
-    SequenceControlSet *sequence_control_set_ptr = (SequenceControlSet *)picture_control_set_ptr->sequence_control_set_wrapper_ptr->object_ptr;
+    SequenceControlSet *scs_ptr = (SequenceControlSet *)pcs_ptr->sequence_control_set_wrapper_ptr->object_ptr;
 
-    for (sb_index = 0; sb_index < picture_control_set_ptr->parent_pcs_ptr->sequence_control_set_ptr->sb_tot_cnt; sb_index++) {
-        sequence_control_set_ptr->total_count[picture_control_set_ptr->parent_pcs_ptr->temporal_layer_index] ++;
+    for (sb_index = 0; sb_index < pcs_ptr->parent_pcs_ptr->scs_ptr->sb_tot_cnt; sb_index++) {
+        scs_ptr->total_count[pcs_ptr->parent_pcs_ptr->temporal_layer_index] ++;
 
-        if (picture_control_set_ptr->parent_pcs_ptr->sb_depth_mode_array[sb_index] == SB_SQ_BLOCKS_DEPTH_MODE)
-            sequence_control_set_ptr->sq_search_count[picture_control_set_ptr->parent_pcs_ptr->temporal_layer_index]  ++;
-        else if (picture_control_set_ptr->parent_pcs_ptr->sb_depth_mode_array[sb_index] == SB_SQ_NON4_BLOCKS_DEPTH_MODE)
-            sequence_control_set_ptr->sq_non4_search_count[picture_control_set_ptr->parent_pcs_ptr->temporal_layer_index]  ++;
-        else if (picture_control_set_ptr->parent_pcs_ptr->sb_depth_mode_array[sb_index] == SB_OPEN_LOOP_DEPTH_MODE)
-            sequence_control_set_ptr->mdc_count[picture_control_set_ptr->parent_pcs_ptr->temporal_layer_index]  ++;
-        else if (picture_control_set_ptr->parent_pcs_ptr->sb_depth_mode_array[sb_index] == SB_FAST_OPEN_LOOP_DEPTH_MODE)
-            sequence_control_set_ptr->pred_count[picture_control_set_ptr->parent_pcs_ptr->temporal_layer_index]  ++;
-        else if (picture_control_set_ptr->parent_pcs_ptr->sb_depth_mode_array[sb_index] == SB_PRED_OPEN_LOOP_DEPTH_MODE)
-            sequence_control_set_ptr->pred1_nfl_count[picture_control_set_ptr->parent_pcs_ptr->temporal_layer_index]  ++;
+        if (pcs_ptr->parent_pcs_ptr->sb_depth_mode_array[sb_index] == SB_SQ_BLOCKS_DEPTH_MODE)
+            scs_ptr->sq_search_count[pcs_ptr->parent_pcs_ptr->temporal_layer_index]  ++;
+        else if (pcs_ptr->parent_pcs_ptr->sb_depth_mode_array[sb_index] == SB_SQ_NON4_BLOCKS_DEPTH_MODE)
+            scs_ptr->sq_non4_search_count[pcs_ptr->parent_pcs_ptr->temporal_layer_index]  ++;
+        else if (pcs_ptr->parent_pcs_ptr->sb_depth_mode_array[sb_index] == SB_OPEN_LOOP_DEPTH_MODE)
+            scs_ptr->mdc_count[pcs_ptr->parent_pcs_ptr->temporal_layer_index]  ++;
+        else if (pcs_ptr->parent_pcs_ptr->sb_depth_mode_array[sb_index] == SB_FAST_OPEN_LOOP_DEPTH_MODE)
+            scs_ptr->pred_count[pcs_ptr->parent_pcs_ptr->temporal_layer_index]  ++;
+        else if (pcs_ptr->parent_pcs_ptr->sb_depth_mode_array[sb_index] == SB_PRED_OPEN_LOOP_DEPTH_MODE)
+            scs_ptr->pred1_nfl_count[pcs_ptr->parent_pcs_ptr->temporal_layer_index]  ++;
         else
             SVT_LOG("error");
     }
@@ -2306,15 +2306,15 @@ void derive_search_method(
     Output  : predicted budget for the LCU
 ******************************************************/
 void set_sb_budget(
-    SequenceControlSet               *sequence_control_set_ptr,
-    PictureControlSet                *picture_control_set_ptr,
+    SequenceControlSet               *scs_ptr,
+    PictureControlSet                *pcs_ptr,
     SuperBlock                       *sb_ptr,
     ModeDecisionConfigurationContext *context_ptr)
 {
     const uint32_t sb_index = sb_ptr->index;
     uint32_t max_to_min_score, score_to_min;
-    UNUSED(sequence_control_set_ptr);
-    UNUSED(picture_control_set_ptr);
+    UNUSED(scs_ptr);
+    UNUSED(pcs_ptr);
     {
         context_ptr->sb_score_array[sb_index] = CLIP3(context_ptr->sb_min_score, context_ptr->sb_max_score, context_ptr->sb_score_array[sb_index]);
         score_to_min = context_ptr->sb_score_array[sb_index] - context_ptr->sb_min_score;
@@ -2357,8 +2357,8 @@ void set_sb_budget(
     Output  : optimal budget for each LCU
 ******************************************************/
 void  derive_optimal_budget_per_sb(
-    SequenceControlSet               *sequence_control_set_ptr,
-    PictureControlSet                *picture_control_set_ptr,
+    SequenceControlSet               *scs_ptr,
+    PictureControlSet                *pcs_ptr,
     ModeDecisionConfigurationContext *context_ptr)
 {
     uint32_t sb_index;
@@ -2383,12 +2383,12 @@ void  derive_optimal_budget_per_sb(
         // reset running cost
         context_ptr->predicted_cost = 0;
 
-        for (sb_index = 0; sb_index < picture_control_set_ptr->parent_pcs_ptr->sequence_control_set_ptr->sb_tot_cnt; sb_index++) {
-            SuperBlock* sb_ptr = picture_control_set_ptr->sb_ptr_array[sb_index];
+        for (sb_index = 0; sb_index < pcs_ptr->parent_pcs_ptr->scs_ptr->sb_tot_cnt; sb_index++) {
+            SuperBlock* sb_ptr = pcs_ptr->sb_ptr_array[sb_index];
 
             set_sb_budget(
-                sequence_control_set_ptr,
-                picture_control_set_ptr,
+                scs_ptr,
+                pcs_ptr,
                 sb_ptr,
                 context_ptr);
         }
@@ -2421,11 +2421,11 @@ void  derive_optimal_budget_per_sb(
 }
 
 EbErrorType derive_default_segments(
-    SequenceControlSet               *sequence_control_set_ptr,
+    SequenceControlSet               *scs_ptr,
     ModeDecisionConfigurationContext *context_ptr){
     EbErrorType return_error = EB_ErrorNone;
 
-    if (context_ptr->budget > (uint16_t)(sequence_control_set_ptr->sb_tot_cnt * U_140)) {
+    if (context_ptr->budget > (uint16_t)(scs_ptr->sb_tot_cnt * U_140)) {
         context_ptr->number_of_segments = 2;
         context_ptr->score_th[0] = (int8_t)((1 * 100) / context_ptr->number_of_segments);
         context_ptr->score_th[1] = (int8_t)((2 * 100) / context_ptr->number_of_segments);
@@ -2434,7 +2434,7 @@ EbErrorType derive_default_segments(
         context_ptr->interval_cost[0] = context_ptr->cost_depth_mode[SB_OPEN_LOOP_DEPTH_MODE      - 1];
         context_ptr->interval_cost[1] = context_ptr->cost_depth_mode[SB_SQ_NON4_BLOCKS_DEPTH_MODE - 1];
     }
-    else if (context_ptr->budget > (uint16_t)(sequence_control_set_ptr->sb_tot_cnt * U_115)) {
+    else if (context_ptr->budget > (uint16_t)(scs_ptr->sb_tot_cnt * U_115)) {
         context_ptr->number_of_segments = 3;
 
         context_ptr->score_th[0] = (int8_t)((1 * 100) / context_ptr->number_of_segments);
@@ -2468,8 +2468,8 @@ EbErrorType derive_default_segments(
     Output  : LCU score
 ******************************************************/
 void derive_sb_score(
-    SequenceControlSet               *sequence_control_set_ptr,
-    PictureControlSet                *picture_control_set_ptr,
+    SequenceControlSet               *scs_ptr,
+    PictureControlSet                *pcs_ptr,
     ModeDecisionConfigurationContext *context_ptr)
 {
     uint32_t  sb_index;
@@ -2479,9 +2479,9 @@ void derive_sb_score(
     context_ptr->sb_min_score = ~0u;
     context_ptr->sb_max_score = 0u;
 
-    for (sb_index = 0; sb_index < sequence_control_set_ptr->sb_tot_cnt; sb_index++) {
-        SbParams *sb_params = &sequence_control_set_ptr->sb_params_array[sb_index];
-        if (picture_control_set_ptr->slice_type == I_SLICE)
+    for (sb_index = 0; sb_index < scs_ptr->sb_tot_cnt; sb_index++) {
+        SbParams *sb_params = &scs_ptr->sb_params_array[sb_index];
+        if (pcs_ptr->slice_type == I_SLICE)
             assert(0);
         else {
             if (sb_params->raster_scan_cu_validity[RASTER_SCAN_CU_INDEX_64x64]== EB_FALSE) {
@@ -2490,7 +2490,7 @@ void derive_sb_score(
                 distortion = 0;
                 for (cu8x8Index = RASTER_SCAN_CU_INDEX_8x8_0; cu8x8Index <= RASTER_SCAN_CU_INDEX_8x8_63; cu8x8Index++) {
                     if (sb_params->raster_scan_cu_validity[cu8x8Index]) {
-                        distortion = picture_control_set_ptr->parent_pcs_ptr->me_results[sb_index]->me_candidate[cu8x8Index][0].distortion;
+                        distortion = pcs_ptr->parent_pcs_ptr->me_results[sb_index]->me_candidate[cu8x8Index][0].distortion;
                         validCu8x8Count++;
                     }
                 }
@@ -2501,7 +2501,7 @@ void derive_sb_score(
                 sb_score = distortion;
             }
             else {
-                distortion = picture_control_set_ptr->parent_pcs_ptr->me_results[sb_index]->me_candidate[RASTER_SCAN_CU_INDEX_64x64][0].distortion;
+                distortion = pcs_ptr->parent_pcs_ptr->me_results[sb_index]->me_candidate[RASTER_SCAN_CU_INDEX_64x64][0].distortion;
                 // Perform SB score manipulation for incomplete SBs for SQ mode
                 sb_score = distortion;
             }
@@ -2512,7 +2512,7 @@ void derive_sb_score(
         context_ptr->sb_max_score = MAX(sb_score, context_ptr->sb_max_score);
         sb_tot_score += sb_score;
     }
-    context_ptr->sb_average_score = (uint32_t)(sb_tot_score / sequence_control_set_ptr->sb_tot_cnt);
+    context_ptr->sb_average_score = (uint32_t)(sb_tot_score / scs_ptr->sb_tot_cnt);
 }
 
 /******************************************************
@@ -2521,21 +2521,21 @@ Input   : cost per depth
 Output  : budget per picture
 ******************************************************/
 void set_target_budget_oq(
-    SequenceControlSet               *sequence_control_set_ptr,
-    PictureControlSet                *picture_control_set_ptr,
+    SequenceControlSet               *scs_ptr,
+    PictureControlSet                *pcs_ptr,
     ModeDecisionConfigurationContext *context_ptr)
 {
     uint32_t budget;
 
     // Luminosity-based budget boost - if P or B only; add 1 U for each 1 current-to-ref diff
     uint32_t luminosity_change_boost = 0;
-    if (picture_control_set_ptr->slice_type != I_SLICE) {
-        if (picture_control_set_ptr->parent_pcs_ptr->is_used_as_reference_flag) {
+    if (pcs_ptr->slice_type != I_SLICE) {
+        if (pcs_ptr->parent_pcs_ptr->is_used_as_reference_flag) {
             EbReferenceObject  * ref_obj_l0, *ref_obj_l1;
-            ref_obj_l0 = (EbReferenceObject*)picture_control_set_ptr->ref_pic_ptr_array[REF_LIST_0][0]->object_ptr;
-            ref_obj_l1 = (picture_control_set_ptr->parent_pcs_ptr->slice_type == B_SLICE) ? (EbReferenceObject*)picture_control_set_ptr->ref_pic_ptr_array[REF_LIST_1][0]->object_ptr : (EbReferenceObject*)EB_NULL;
-            luminosity_change_boost = ABS(picture_control_set_ptr->parent_pcs_ptr->average_intensity[0] - ref_obj_l0->average_intensity);
-            luminosity_change_boost += (ref_obj_l1 != EB_NULL) ? ABS(picture_control_set_ptr->parent_pcs_ptr->average_intensity[0] - ref_obj_l1->average_intensity) : 0;
+            ref_obj_l0 = (EbReferenceObject*)pcs_ptr->ref_pic_ptr_array[REF_LIST_0][0]->object_ptr;
+            ref_obj_l1 = (pcs_ptr->parent_pcs_ptr->slice_type == B_SLICE) ? (EbReferenceObject*)pcs_ptr->ref_pic_ptr_array[REF_LIST_1][0]->object_ptr : (EbReferenceObject*)EB_NULL;
+            luminosity_change_boost = ABS(pcs_ptr->parent_pcs_ptr->average_intensity[0] - ref_obj_l0->average_intensity);
+            luminosity_change_boost += (ref_obj_l1 != EB_NULL) ? ABS(pcs_ptr->parent_pcs_ptr->average_intensity[0] - ref_obj_l1->average_intensity) : 0;
             luminosity_change_boost = MAX(MAX_LUMINOSITY_BOOST, luminosity_change_boost);
         }
     }
@@ -2550,8 +2550,8 @@ void set_target_budget_oq(
         budget_per_sb = (((context_ptr->sb_average_score - MEDIUM_SB_SCORE) * (U_150 - U_125)) / (HIGH_SB_SCORE - MEDIUM_SB_SCORE)) + U_125;
     budget_per_sb = CLIP3(SB_PRED_OPEN_LOOP_COST, U_150, budget_per_sb + budget_per_sb_boost[context_ptr->adp_level] + luminosity_change_boost);
 
-    //printf("picture_number = %d\tsb_average_score = %d\n", picture_control_set_ptr->picture_number, budget_per_sb);
-    budget = sequence_control_set_ptr->sb_tot_cnt * budget_per_sb;
+    //printf("picture_number = %d\tsb_average_score = %d\n", pcs_ptr->picture_number, budget_per_sb);
+    budget = scs_ptr->sb_tot_cnt * budget_per_sb;
 
     context_ptr->budget = budget;
 }
@@ -2562,39 +2562,39 @@ void set_target_budget_oq(
     Output  : search method for each LCU
 ******************************************************/
 void derive_sb_md_mode(
-    SequenceControlSet               *sequence_control_set_ptr,
-    PictureControlSet                *picture_control_set_ptr,
+    SequenceControlSet               *scs_ptr,
+    PictureControlSet                *pcs_ptr,
     ModeDecisionConfigurationContext *context_ptr) {
     // Configure ADP
     configure_adp(
-        picture_control_set_ptr,
+        pcs_ptr,
         context_ptr);
 
     // Derive SB score
     derive_sb_score(
-        sequence_control_set_ptr,
-        picture_control_set_ptr,
+        scs_ptr,
+        pcs_ptr,
         context_ptr);
 
     // Set the target budget
     set_target_budget_oq(
-        sequence_control_set_ptr,
-        picture_control_set_ptr,
+        scs_ptr,
+        pcs_ptr,
         context_ptr);
 
     // Set the percentage based thresholds
     derive_default_segments(
-        sequence_control_set_ptr,
+        scs_ptr,
         context_ptr);
     // Perform Budgetting
     derive_optimal_budget_per_sb(
-        sequence_control_set_ptr,
-        picture_control_set_ptr,
+        scs_ptr,
+        pcs_ptr,
         context_ptr);
 
     // Set the search method using the LCU cost (mapping)
     derive_search_method(
-        picture_control_set_ptr,
+        pcs_ptr,
         context_ptr);
 }
 
@@ -2604,56 +2604,56 @@ Input   : encoder mode and tune
 Output  : EncDec Kernel signal(s)
 ******************************************************/
 EbErrorType signal_derivation_mode_decision_config_kernel_oq(
-    SequenceControlSet               *sequence_control_set_ptr,
-    PictureControlSet                *picture_control_set_ptr,
+    SequenceControlSet               *scs_ptr,
+    PictureControlSet                *pcs_ptr,
     ModeDecisionConfigurationContext *context_ptr)
 {
-    UNUSED(sequence_control_set_ptr);
+    UNUSED(scs_ptr);
     EbErrorType return_error = EB_ErrorNone;
 
-    context_ptr->adp_level = picture_control_set_ptr->parent_pcs_ptr->enc_mode;
+    context_ptr->adp_level = pcs_ptr->parent_pcs_ptr->enc_mode;
 
-    if (picture_control_set_ptr->parent_pcs_ptr->sc_content_detected)
-        if (picture_control_set_ptr->enc_mode <= ENC_M6)
-            picture_control_set_ptr->update_cdf = 1;
+    if (pcs_ptr->parent_pcs_ptr->sc_content_detected)
+        if (pcs_ptr->enc_mode <= ENC_M6)
+            pcs_ptr->update_cdf = 1;
         else
-            picture_control_set_ptr->update_cdf = 0;
+            pcs_ptr->update_cdf = 0;
     else
-        picture_control_set_ptr->update_cdf = (picture_control_set_ptr->parent_pcs_ptr->enc_mode <= ENC_M5) ? 1 : 0;
-    if(picture_control_set_ptr->update_cdf)
-        assert(sequence_control_set_ptr->cdf_mode == 0 && "use cdf_mode 0");
+        pcs_ptr->update_cdf = (pcs_ptr->parent_pcs_ptr->enc_mode <= ENC_M5) ? 1 : 0;
+    if(pcs_ptr->update_cdf)
+        assert(scs_ptr->cdf_mode == 0 && "use cdf_mode 0");
     //Filter Intra Mode : 0: OFF  1: ON
-    if (sequence_control_set_ptr->seq_header.enable_filter_intra)
-        picture_control_set_ptr->pic_filter_intra_mode = picture_control_set_ptr->parent_pcs_ptr->sc_content_detected == 0 && picture_control_set_ptr->temporal_layer_index == 0 ? 1 : 0;
+    if (scs_ptr->seq_header.enable_filter_intra)
+        pcs_ptr->pic_filter_intra_mode = pcs_ptr->parent_pcs_ptr->sc_content_detected == 0 && pcs_ptr->temporal_layer_index == 0 ? 1 : 0;
     else
-        picture_control_set_ptr->pic_filter_intra_mode = 0;
-    FrameHeader *frm_hdr = &picture_control_set_ptr->parent_pcs_ptr->frm_hdr;
+        pcs_ptr->pic_filter_intra_mode = 0;
+    FrameHeader *frm_hdr = &pcs_ptr->parent_pcs_ptr->frm_hdr;
     frm_hdr->allow_high_precision_mv =
 #if PRESETS_TUNE
 #if PRESETS_OPT
-        picture_control_set_ptr->enc_mode <= ENC_M7 && frm_hdr->quantization_params.base_q_idx < HIGH_PRECISION_MV_QTHRESH &&
+        pcs_ptr->enc_mode <= ENC_M7 && frm_hdr->quantization_params.base_q_idx < HIGH_PRECISION_MV_QTHRESH &&
 #else
-        picture_control_set_ptr->enc_mode <= ENC_M1 && frm_hdr->quantization_params.base_q_idx < HIGH_PRECISION_MV_QTHRESH &&
+        pcs_ptr->enc_mode <= ENC_M1 && frm_hdr->quantization_params.base_q_idx < HIGH_PRECISION_MV_QTHRESH &&
 #endif
 #else
-        picture_control_set_ptr->enc_mode == ENC_M0 && frm_hdr->quantization_params.base_q_idx < HIGH_PRECISION_MV_QTHRESH &&
+        pcs_ptr->enc_mode == ENC_M0 && frm_hdr->quantization_params.base_q_idx < HIGH_PRECISION_MV_QTHRESH &&
 #endif
-        (sequence_control_set_ptr->input_resolution == INPUT_SIZE_576p_RANGE_OR_LOWER) ? 1 : 0;
+        (scs_ptr->input_resolution == INPUT_SIZE_576p_RANGE_OR_LOWER) ? 1 : 0;
 #if MULTI_PASS_PD
     EbBool enable_wm;
-    if (picture_control_set_ptr->parent_pcs_ptr->sc_content_detected)
+    if (pcs_ptr->parent_pcs_ptr->sc_content_detected)
         enable_wm = EB_FALSE;
     else
 #if ENHANCED_M0_SETTINGS
-        enable_wm = (picture_control_set_ptr->parent_pcs_ptr->enc_mode == ENC_M0 ||
+        enable_wm = (pcs_ptr->parent_pcs_ptr->enc_mode == ENC_M0 ||
 #else
         enable_wm = (MR_MODE ||
-        (picture_control_set_ptr->parent_pcs_ptr->enc_mode == ENC_M0 && picture_control_set_ptr->parent_pcs_ptr->is_used_as_reference_flag) ||
+        (pcs_ptr->parent_pcs_ptr->enc_mode == ENC_M0 && pcs_ptr->parent_pcs_ptr->is_used_as_reference_flag) ||
 #endif
 #if PRESETS_TUNE && !PRESETS_OPT
-            (picture_control_set_ptr->parent_pcs_ptr->enc_mode <= ENC_M1 && picture_control_set_ptr->parent_pcs_ptr->is_used_as_reference_flag) ||
+            (pcs_ptr->parent_pcs_ptr->enc_mode <= ENC_M1 && pcs_ptr->parent_pcs_ptr->is_used_as_reference_flag) ||
 #endif
-            (picture_control_set_ptr->parent_pcs_ptr->enc_mode <= ENC_M5 && picture_control_set_ptr->parent_pcs_ptr->temporal_layer_index == 0)) ? EB_TRUE : EB_FALSE;
+            (pcs_ptr->parent_pcs_ptr->enc_mode <= ENC_M5 && pcs_ptr->parent_pcs_ptr->temporal_layer_index == 0)) ? EB_TRUE : EB_FALSE;
     frm_hdr->allow_warped_motion = enable_wm
         && !(frm_hdr->frame_type == KEY_FRAME || frm_hdr->frame_type == INTRA_ONLY_FRAME)
         && !frm_hdr->error_resilient_mode;
@@ -2665,41 +2665,41 @@ EbErrorType signal_derivation_mode_decision_config_kernel_oq(
     // 2                                            OBMC @(MVP, PME and ME) + Opt NICs
     // 3                                            OBMC @(MVP, PME ) + Opt NICs
     // 4                                            OBMC @(MVP, PME ) + Opt2 NICs
-    if (sequence_control_set_ptr->static_config.enable_obmc) {
+    if (scs_ptr->static_config.enable_obmc) {
 #if PRESETS_TUNE
 #if M0_OPT
-        if (picture_control_set_ptr->parent_pcs_ptr->enc_mode == ENC_M0)
-            picture_control_set_ptr->parent_pcs_ptr->pic_obmc_mode =
-            picture_control_set_ptr->slice_type != I_SLICE ? 2 : 0;
+        if (pcs_ptr->parent_pcs_ptr->enc_mode == ENC_M0)
+            pcs_ptr->parent_pcs_ptr->pic_obmc_mode =
+            pcs_ptr->slice_type != I_SLICE ? 2 : 0;
         else
 #endif
-            if (picture_control_set_ptr->parent_pcs_ptr->enc_mode <= ENC_M2)
-                picture_control_set_ptr->parent_pcs_ptr->pic_obmc_mode =
-                picture_control_set_ptr->parent_pcs_ptr->sc_content_detected == 0 && picture_control_set_ptr->slice_type != I_SLICE ? 2 : 0;
+            if (pcs_ptr->parent_pcs_ptr->enc_mode <= ENC_M2)
+                pcs_ptr->parent_pcs_ptr->pic_obmc_mode =
+                pcs_ptr->parent_pcs_ptr->sc_content_detected == 0 && pcs_ptr->slice_type != I_SLICE ? 2 : 0;
         else
-            picture_control_set_ptr->parent_pcs_ptr->pic_obmc_mode = 0;
+            pcs_ptr->parent_pcs_ptr->pic_obmc_mode = 0;
 #else
-        if (picture_control_set_ptr->parent_pcs_ptr->enc_mode <= ENC_M0)
-            picture_control_set_ptr->parent_pcs_ptr->pic_obmc_mode =
+        if (pcs_ptr->parent_pcs_ptr->enc_mode <= ENC_M0)
+            pcs_ptr->parent_pcs_ptr->pic_obmc_mode =
 #if M0_OPT
-            picture_control_set_ptr->slice_type != I_SLICE ? 2 : 0;
+            pcs_ptr->slice_type != I_SLICE ? 2 : 0;
 #else
-            picture_control_set_ptr->parent_pcs_ptr->sc_content_detected == 0 && picture_control_set_ptr->slice_type != I_SLICE ? 2 : 0;
+            pcs_ptr->parent_pcs_ptr->sc_content_detected == 0 && pcs_ptr->slice_type != I_SLICE ? 2 : 0;
 #endif
         else
-            picture_control_set_ptr->parent_pcs_ptr->pic_obmc_mode = 0;
+            pcs_ptr->parent_pcs_ptr->pic_obmc_mode = 0;
 #endif
 
 #if MR_MODE
-        picture_control_set_ptr->parent_pcs_ptr->pic_obmc_mode =
-            picture_control_set_ptr->parent_pcs_ptr->sc_content_detected == 0 && picture_control_set_ptr->slice_type != I_SLICE ? 1 : 0;
+        pcs_ptr->parent_pcs_ptr->pic_obmc_mode =
+            pcs_ptr->parent_pcs_ptr->sc_content_detected == 0 && pcs_ptr->slice_type != I_SLICE ? 1 : 0;
 #endif
     }
     else
-        picture_control_set_ptr->parent_pcs_ptr->pic_obmc_mode = 0;
+        pcs_ptr->parent_pcs_ptr->pic_obmc_mode = 0;
 
     frm_hdr->is_motion_mode_switchable =
-        frm_hdr->is_motion_mode_switchable || picture_control_set_ptr->parent_pcs_ptr->pic_obmc_mode;
+        frm_hdr->is_motion_mode_switchable || pcs_ptr->parent_pcs_ptr->pic_obmc_mode;
 
 #endif
 #endif
@@ -2707,28 +2707,28 @@ EbErrorType signal_derivation_mode_decision_config_kernel_oq(
 }
 
 void forward_sq_non4_blocks_to_md(
-    SequenceControlSet                   *sequence_control_set_ptr,
-    PictureControlSet                    *picture_control_set_ptr)
+    SequenceControlSet                   *scs_ptr,
+    PictureControlSet                    *pcs_ptr)
 {
     uint32_t                   sb_index;
     EbBool                  split_flag;
 
-    for (sb_index = 0; sb_index < sequence_control_set_ptr->sb_tot_cnt; ++sb_index)
+    for (sb_index = 0; sb_index < scs_ptr->sb_tot_cnt; ++sb_index)
     {
-        MdcLcuData *resultsPtr = &picture_control_set_ptr->mdc_sb_array[sb_index];
+        MdcLcuData *resultsPtr = &pcs_ptr->mdc_sb_array[sb_index];
 
         resultsPtr->leaf_count = 0;
 
-        uint32_t  blk_index = picture_control_set_ptr->slice_type == I_SLICE && sequence_control_set_ptr->seq_header.sb_size == BLOCK_128X128 ? 17 : 0;
+        uint32_t  blk_index = pcs_ptr->slice_type == I_SLICE && scs_ptr->seq_header.sb_size == BLOCK_128X128 ? 17 : 0;
 
-        while (blk_index < sequence_control_set_ptr->max_block_cnt)
+        while (blk_index < scs_ptr->max_block_cnt)
         {
             split_flag = EB_TRUE;
 
             const BlockGeom * blk_geom = get_blk_geom_mds(blk_index);
 
             //if the parentSq is inside inject this block
-            if (sequence_control_set_ptr->sb_geom[sb_index].block_is_inside_md_scan[blk_index])
+            if (scs_ptr->sb_geom[sb_index].block_is_inside_md_scan[blk_index])
 
             {
                 //int32_t offset_d1 = ns_blk_offset[(int32_t)from_shape_to_part[blk_geom->shape]]; //cu_ptr->best_d1_blk; // TOCKECK
@@ -2752,28 +2752,28 @@ void forward_sq_non4_blocks_to_md(
                 }
             }
 
-            blk_index += split_flag ? d1_depth_offset[sequence_control_set_ptr->seq_header.sb_size == BLOCK_128X128][blk_geom->depth] : ns_depth_offset[sequence_control_set_ptr->seq_header.sb_size == BLOCK_128X128][blk_geom->depth];
+            blk_index += split_flag ? d1_depth_offset[scs_ptr->seq_header.sb_size == BLOCK_128X128][blk_geom->depth] : ns_depth_offset[scs_ptr->seq_header.sb_size == BLOCK_128X128][blk_geom->depth];
         }
     }
 
-    picture_control_set_ptr->parent_pcs_ptr->average_qp = (uint8_t)picture_control_set_ptr->parent_pcs_ptr->picture_qp;
+    pcs_ptr->parent_pcs_ptr->average_qp = (uint8_t)pcs_ptr->parent_pcs_ptr->picture_qp;
 }
 
 void sb_forward_sq_non4_blocks_to_md(
-    SequenceControlSet *sequence_control_set_ptr,
-    PictureControlSet  *picture_control_set_ptr,
+    SequenceControlSet *scs_ptr,
+    PictureControlSet  *pcs_ptr,
     uint32_t              sb_index)
 {
     EbBool split_flag;
-    MdcLcuData *resultsPtr = &picture_control_set_ptr->mdc_sb_array[sb_index];
+    MdcLcuData *resultsPtr = &pcs_ptr->mdc_sb_array[sb_index];
     resultsPtr->leaf_count = 0;
-    uint32_t blk_index = picture_control_set_ptr->slice_type == I_SLICE && sequence_control_set_ptr->seq_header.sb_size == BLOCK_128X128 ? 17 : 0;
+    uint32_t blk_index = pcs_ptr->slice_type == I_SLICE && scs_ptr->seq_header.sb_size == BLOCK_128X128 ? 17 : 0;
 
-    while (blk_index < sequence_control_set_ptr->max_block_cnt)
+    while (blk_index < scs_ptr->max_block_cnt)
     {
         split_flag = EB_TRUE;
         const BlockGeom * blk_geom = get_blk_geom_mds(blk_index);
-        if (sequence_control_set_ptr->sb_geom[sb_index].block_is_inside_md_scan[blk_index])
+        if (scs_ptr->sb_geom[sb_index].block_is_inside_md_scan[blk_index])
         {
             resultsPtr->leaf_data_array[resultsPtr->leaf_count].tot_d1_blocks = 1;
 
@@ -2790,30 +2790,30 @@ void sb_forward_sq_non4_blocks_to_md(
                 split_flag = EB_FALSE;
             }
         }
-        blk_index += split_flag ? d1_depth_offset[sequence_control_set_ptr->seq_header.sb_size == BLOCK_128X128][blk_geom->depth] : ns_depth_offset[sequence_control_set_ptr->seq_header.sb_size == BLOCK_128X128][blk_geom->depth];
+        blk_index += split_flag ? d1_depth_offset[scs_ptr->seq_header.sb_size == BLOCK_128X128][blk_geom->depth] : ns_depth_offset[scs_ptr->seq_header.sb_size == BLOCK_128X128][blk_geom->depth];
     }
-    picture_control_set_ptr->parent_pcs_ptr->average_qp = (uint8_t)picture_control_set_ptr->parent_pcs_ptr->picture_qp;
+    pcs_ptr->parent_pcs_ptr->average_qp = (uint8_t)pcs_ptr->parent_pcs_ptr->picture_qp;
 }
 
 void forward_all_c_blocks_to_md(
-    SequenceControlSet   *sequence_control_set_ptr,
-    PictureControlSet    *picture_control_set_ptr){
+    SequenceControlSet   *scs_ptr,
+    PictureControlSet    *pcs_ptr){
     uint32_t                sb_index;
-    for (sb_index = 0; sb_index < sequence_control_set_ptr->sb_tot_cnt; ++sb_index){
-        MdcLcuData *resultsPtr = &picture_control_set_ptr->mdc_sb_array[sb_index];
+    for (sb_index = 0; sb_index < scs_ptr->sb_tot_cnt; ++sb_index){
+        MdcLcuData *resultsPtr = &pcs_ptr->mdc_sb_array[sb_index];
         resultsPtr->leaf_count = 0;
         uint32_t blk_index = 0;
         uint32_t tot_d1_blocks;
 
-        while (blk_index < sequence_control_set_ptr->max_block_cnt)
+        while (blk_index < scs_ptr->max_block_cnt)
         {
             tot_d1_blocks = 0;
             const BlockGeom * blk_geom = get_blk_geom_mds(blk_index);
 
             //if the parentSq is inside inject this block
-            uint8_t is_blk_allowed = picture_control_set_ptr->slice_type != I_SLICE ? 1 : (blk_geom->sq_size < 128) ? 1 : 0;
+            uint8_t is_blk_allowed = pcs_ptr->slice_type != I_SLICE ? 1 : (blk_geom->sq_size < 128) ? 1 : 0;
 
-            if (sequence_control_set_ptr->sb_geom[sb_index].block_is_inside_md_scan[blk_index] && is_blk_allowed){
+            if (scs_ptr->sb_geom[sb_index].block_is_inside_md_scan[blk_index] && is_blk_allowed){
                 tot_d1_blocks = resultsPtr->leaf_data_array[resultsPtr->leaf_count].tot_d1_blocks =
 
                     blk_geom->sq_size == 128 ? 17 :
@@ -2825,7 +2825,7 @@ void forward_all_c_blocks_to_md(
                     blk_geom = get_blk_geom_mds(blk_index);
 
                     //if the parentSq is inside inject this block
-                    if (sequence_control_set_ptr->sb_geom[sb_index].block_is_inside_md_scan[blk_index]){
+                    if (scs_ptr->sb_geom[sb_index].block_is_inside_md_scan[blk_index]){
                         resultsPtr->leaf_data_array[resultsPtr->leaf_count].leaf_index = 0;//valid only for square 85 world. will be removed.
                         resultsPtr->leaf_data_array[resultsPtr->leaf_count].mds_idx = blk_index;
                         if (blk_geom->sq_size > 4)
@@ -2836,11 +2836,11 @@ void forward_all_c_blocks_to_md(
                     blk_index++;
                 }
             }
-            blk_index += (d1_depth_offset[sequence_control_set_ptr->seq_header.sb_size == BLOCK_128X128][blk_geom->depth] - tot_d1_blocks);
+            blk_index += (d1_depth_offset[scs_ptr->seq_header.sb_size == BLOCK_128X128][blk_geom->depth] - tot_d1_blocks);
         }
     }
 
-    picture_control_set_ptr->parent_pcs_ptr->average_qp = (uint8_t)picture_control_set_ptr->parent_pcs_ptr->picture_qp;
+    pcs_ptr->parent_pcs_ptr->average_qp = (uint8_t)pcs_ptr->parent_pcs_ptr->picture_qp;
 }
 void av1_set_ref_frame(MvReferenceFrame *rf,
     int8_t ref_frame_type);
@@ -2900,9 +2900,9 @@ static int get_block_position(Av1Common *cm, int *mi_r, int *mi_c, int blk_row,
 // Call Start frame's reference frames as reference frames.
 // Call ref_offset as frame distances between start frame and its reference
 // frames.
-static int motion_field_projection(Av1Common *cm, PictureControlSet       *picture_control_set_ptr,
+static int motion_field_projection(Av1Common *cm, PictureControlSet       *pcs_ptr,
     MvReferenceFrame start_frame, int dir) {
-    TPL_MV_REF *tpl_mvs_base = picture_control_set_ptr->tpl_mvs;
+    TPL_MV_REF *tpl_mvs_base = pcs_ptr->tpl_mvs;
     int ref_offset[REF_FRAMES] = { 0 };
 
     MvReferenceFrame rf[2];
@@ -2911,7 +2911,7 @@ static int motion_field_projection(Av1Common *cm, PictureControlSet       *pictu
     uint8_t list_idx0, ref_idx_l0;
     list_idx0 = get_list_idx(start_frame);
     ref_idx_l0 = get_ref_frame_idx(start_frame);
-    EbReferenceObject *start_frame_buf = (EbReferenceObject*)picture_control_set_ptr->ref_pic_ptr_array[list_idx0][ref_idx_l0]->object_ptr;
+    EbReferenceObject *start_frame_buf = (EbReferenceObject*)pcs_ptr->ref_pic_ptr_array[list_idx0][ref_idx_l0]->object_ptr;
 
     if (start_frame_buf == NULL) return 0;
 
@@ -2921,12 +2921,12 @@ static int motion_field_projection(Av1Common *cm, PictureControlSet       *pictu
 
     const int start_frame_order_hint = start_frame_buf->order_hint;
     const unsigned int *const ref_order_hints = &start_frame_buf->ref_order_hint[0];
-    const int cur_order_hint = picture_control_set_ptr->parent_pcs_ptr->cur_order_hint;
+    const int cur_order_hint = pcs_ptr->parent_pcs_ptr->cur_order_hint;
     int start_to_current_frame_offset = get_relative_dist(
-        &picture_control_set_ptr->parent_pcs_ptr->sequence_control_set_ptr->seq_header.order_hint_info, start_frame_order_hint, cur_order_hint);
+        &pcs_ptr->parent_pcs_ptr->scs_ptr->seq_header.order_hint_info, start_frame_order_hint, cur_order_hint);
 
     for (MvReferenceFrame rf = LAST_FRAME; rf <= INTER_REFS_PER_FRAME; ++rf) {
-        ref_offset[rf] = get_relative_dist(&picture_control_set_ptr->parent_pcs_ptr->sequence_control_set_ptr->seq_header.order_hint_info,
+        ref_offset[rf] = get_relative_dist(&pcs_ptr->parent_pcs_ptr->scs_ptr->seq_header.order_hint_info,
             start_frame_order_hint,
             ref_order_hints[rf - LAST_FRAME]);
     }
@@ -2974,21 +2974,21 @@ static int motion_field_projection(Av1Common *cm, PictureControlSet       *pictu
 }
 void av1_setup_motion_field(
     Av1Common               *cm,
-    PictureControlSet       *picture_control_set_ptr)
+    PictureControlSet       *pcs_ptr)
 {
 
-    const OrderHintInfo *const order_hint_info = &picture_control_set_ptr->parent_pcs_ptr->sequence_control_set_ptr->seq_header.order_hint_info;
-    memset(picture_control_set_ptr->ref_frame_side, 0, sizeof(picture_control_set_ptr->ref_frame_side));
+    const OrderHintInfo *const order_hint_info = &pcs_ptr->parent_pcs_ptr->scs_ptr->seq_header.order_hint_info;
+    memset(pcs_ptr->ref_frame_side, 0, sizeof(pcs_ptr->ref_frame_side));
     if (!order_hint_info->enable_order_hint) return;
 
-    TPL_MV_REF *tpl_mvs_base = picture_control_set_ptr->tpl_mvs;
+    TPL_MV_REF *tpl_mvs_base = pcs_ptr->tpl_mvs;
     int size = ((cm->mi_rows + MAX_MIB_SIZE) >> 1) * (cm->mi_stride >> 1);
     for (int idx = 0; idx < size; ++idx) {
         tpl_mvs_base[idx].mfmv0.as_int = INVALID_MV;
         tpl_mvs_base[idx].ref_frame_offset = 0;
     }
 
-    const int cur_order_hint = picture_control_set_ptr->parent_pcs_ptr->cur_order_hint;
+    const int cur_order_hint = pcs_ptr->parent_pcs_ptr->cur_order_hint;
     const EbReferenceObject *ref_buf[INTER_REFS_PER_FRAME];
     int ref_order_hint[INTER_REFS_PER_FRAME];
 
@@ -2999,7 +2999,7 @@ void av1_setup_motion_field(
         uint8_t list_idx0, ref_idx_l0;
         list_idx0 = get_list_idx(ref_frame);
         ref_idx_l0 = get_ref_frame_idx(ref_frame);
-        EbReferenceObject *buf = (EbReferenceObject*)picture_control_set_ptr->ref_pic_ptr_array[list_idx0][ref_idx_l0]->object_ptr;
+        EbReferenceObject *buf = (EbReferenceObject*)pcs_ptr->ref_pic_ptr_array[list_idx0][ref_idx_l0]->object_ptr;
 
         if (buf != NULL) order_hint = buf->order_hint;
 
@@ -3007,9 +3007,9 @@ void av1_setup_motion_field(
         ref_order_hint[ref_idx] = order_hint;
 
         if (get_relative_dist(order_hint_info, order_hint, cur_order_hint) > 0)
-            picture_control_set_ptr->ref_frame_side[ref_frame] = 1;
+            pcs_ptr->ref_frame_side[ref_frame] = 1;
         else if (order_hint == cur_order_hint)
-            picture_control_set_ptr->ref_frame_side[ref_frame] = -1;
+            pcs_ptr->ref_frame_side[ref_frame] = -1;
     }
 
     int ref_stamp = MFMV_STACK_SIZE - 1;
@@ -3018,23 +3018,23 @@ void av1_setup_motion_field(
         const int alt_of_lst_order_hint = ref_buf[LAST_FRAME - LAST_FRAME]->ref_order_hint[ALTREF_FRAME - LAST_FRAME];
         const int is_lst_overlay = (alt_of_lst_order_hint == ref_order_hint[GOLDEN_FRAME - LAST_FRAME]);
         if (!is_lst_overlay)
-            motion_field_projection(cm, picture_control_set_ptr, LAST_FRAME, 2);
+            motion_field_projection(cm, pcs_ptr, LAST_FRAME, 2);
 
         --ref_stamp;
     }
 
     if (get_relative_dist(order_hint_info, ref_order_hint[BWDREF_FRAME - LAST_FRAME], cur_order_hint) > 0) {
-        if (motion_field_projection(cm, picture_control_set_ptr, BWDREF_FRAME, 0)) --ref_stamp;
+        if (motion_field_projection(cm, pcs_ptr, BWDREF_FRAME, 0)) --ref_stamp;
     }
 
     if (get_relative_dist(order_hint_info, ref_order_hint[ALTREF2_FRAME - LAST_FRAME], cur_order_hint) > 0) {
-        if (motion_field_projection(cm, picture_control_set_ptr, ALTREF2_FRAME, 0)) --ref_stamp;
+        if (motion_field_projection(cm, pcs_ptr, ALTREF2_FRAME, 0)) --ref_stamp;
     }
 
     if (get_relative_dist(order_hint_info, ref_order_hint[ALTREF_FRAME - LAST_FRAME], cur_order_hint) > 0 && ref_stamp >= 0)
-        if (motion_field_projection(cm, picture_control_set_ptr, ALTREF_FRAME, 0)) --ref_stamp;
+        if (motion_field_projection(cm, pcs_ptr, ALTREF_FRAME, 0)) --ref_stamp;
 
-    if (ref_stamp >= 0) motion_field_projection(cm, picture_control_set_ptr, LAST2_FRAME, 2);
+    if (ref_stamp >= 0) motion_field_projection(cm, pcs_ptr, LAST2_FRAME, 2);
 }
 /******************************************************
  * Mode Decision Configuration Kernel
@@ -3044,8 +3044,8 @@ void* mode_decision_configuration_kernel(void *input_ptr)
     // Context & SCS & PCS
     EbThreadContext                          *thread_context_ptr = (EbThreadContext*)input_ptr;
     ModeDecisionConfigurationContext         *context_ptr = (ModeDecisionConfigurationContext*)thread_context_ptr->priv;
-    PictureControlSet                        *picture_control_set_ptr;
-    SequenceControlSet                       *sequence_control_set_ptr;
+    PictureControlSet                        *pcs_ptr;
+    SequenceControlSet                       *scs_ptr;
     FrameHeader                              *frm_hdr;
     // Input
     EbObjectWrapper                          *rateControlResultsWrapperPtr;
@@ -3062,49 +3062,49 @@ void* mode_decision_configuration_kernel(void *input_ptr)
             &rateControlResultsWrapperPtr);
 
         rateControlResultsPtr = (RateControlResults*)rateControlResultsWrapperPtr->object_ptr;
-        picture_control_set_ptr = (PictureControlSet*)rateControlResultsPtr->picture_control_set_wrapper_ptr->object_ptr;
-        sequence_control_set_ptr = (SequenceControlSet*)picture_control_set_ptr->sequence_control_set_wrapper_ptr->object_ptr;
-        if (picture_control_set_ptr->parent_pcs_ptr->frm_hdr.use_ref_frame_mvs)
-            av1_setup_motion_field(picture_control_set_ptr->parent_pcs_ptr->av1_cm, picture_control_set_ptr);
+        pcs_ptr = (PictureControlSet*)rateControlResultsPtr->picture_control_set_wrapper_ptr->object_ptr;
+        scs_ptr = (SequenceControlSet*)pcs_ptr->sequence_control_set_wrapper_ptr->object_ptr;
+        if (pcs_ptr->parent_pcs_ptr->frm_hdr.use_ref_frame_mvs)
+            av1_setup_motion_field(pcs_ptr->parent_pcs_ptr->av1_cm, pcs_ptr);
 
-        frm_hdr = &picture_control_set_ptr->parent_pcs_ptr->frm_hdr;
+        frm_hdr = &pcs_ptr->parent_pcs_ptr->frm_hdr;
 
         // Mode Decision Configuration Kernel Signal(s) derivation
         signal_derivation_mode_decision_config_kernel_oq(
-            sequence_control_set_ptr,
-            picture_control_set_ptr,
+            scs_ptr,
+            pcs_ptr,
             context_ptr);
 
-        context_ptr->qp = picture_control_set_ptr->picture_qp;
+        context_ptr->qp = pcs_ptr->picture_qp;
 
-        picture_control_set_ptr->parent_pcs_ptr->average_qp = 0;
-        picture_control_set_ptr->intra_coded_area = 0;
+        pcs_ptr->parent_pcs_ptr->average_qp = 0;
+        pcs_ptr->intra_coded_area = 0;
         // Compute picture and slice level chroma QP offsets
         SetSliceAndPictureChromaQpOffsets( // HT done
-            picture_control_set_ptr);
+            pcs_ptr);
 
         // Compute Tc, and Beta offsets for a given picture
         // Set reference cdef strength
         set_reference_cdef_strength(
-            picture_control_set_ptr);
+            pcs_ptr);
 
         // Set reference sg ep
         set_reference_sg_ep(
-            picture_control_set_ptr);
+            pcs_ptr);
         SetGlobalMotionField(
-            picture_control_set_ptr);
+            pcs_ptr);
 
         eb_av1_qm_init(
-            picture_control_set_ptr->parent_pcs_ptr);
+            pcs_ptr->parent_pcs_ptr);
 
-        Quants *const quants = &picture_control_set_ptr->parent_pcs_ptr->quants;
-        Dequants *const dequants = &picture_control_set_ptr->parent_pcs_ptr->deq;
+        Quants *const quants = &pcs_ptr->parent_pcs_ptr->quants;
+        Dequants *const dequants = &pcs_ptr->parent_pcs_ptr->deq;
 
         eb_av1_set_quantizer(
-            picture_control_set_ptr->parent_pcs_ptr,
+            pcs_ptr->parent_pcs_ptr,
             frm_hdr->quantization_params.base_q_idx);
         eb_av1_build_quantizer(
-            (AomBitDepth)sequence_control_set_ptr->static_config.encoder_bit_depth,
+            (AomBitDepth)scs_ptr->static_config.encoder_bit_depth,
             frm_hdr->quantization_params.delta_q_dc[AOM_PLANE_Y],
             frm_hdr->quantization_params.delta_q_dc[AOM_PLANE_U],
             frm_hdr->quantization_params.delta_q_ac[AOM_PLANE_U],
@@ -3113,10 +3113,10 @@ void* mode_decision_configuration_kernel(void *input_ptr)
             quants,
             dequants);
 
-        Quants *const quantsMd = &picture_control_set_ptr->parent_pcs_ptr->quantsMd;
-        Dequants *const dequantsMd = &picture_control_set_ptr->parent_pcs_ptr->deqMd;
+        Quants *const quantsMd = &pcs_ptr->parent_pcs_ptr->quantsMd;
+        Dequants *const dequantsMd = &pcs_ptr->parent_pcs_ptr->deqMd;
         eb_av1_build_quantizer(
-            picture_control_set_ptr->hbd_mode_decision ? AOM_BITS_10 : AOM_BITS_8,
+            pcs_ptr->hbd_mode_decision ? AOM_BITS_10 : AOM_BITS_8,
             frm_hdr->quantization_params.delta_q_dc[AOM_PLANE_Y],
             frm_hdr->quantization_params.delta_q_dc[AOM_PLANE_U],
             frm_hdr->quantization_params.delta_q_ac[AOM_PLANE_U],
@@ -3130,7 +3130,7 @@ void* mode_decision_configuration_kernel(void *input_ptr)
         uint32_t                     entropyCodingQp;
 
         // QP
-        context_ptr->qp = picture_control_set_ptr->picture_qp;
+        context_ptr->qp = pcs_ptr->picture_qp;
 
         // QP Index
         context_ptr->qp_index = (uint8_t)frm_hdr->quantization_params.base_q_idx;
@@ -3138,19 +3138,19 @@ void* mode_decision_configuration_kernel(void *input_ptr)
         // Lambda Assignement
         uint32_t lambdaSse;
         uint32_t lambdaSad;
-        (*av1_lambda_assignment_function_table[picture_control_set_ptr->parent_pcs_ptr->pred_structure])(
+        (*av1_lambda_assignment_function_table[pcs_ptr->parent_pcs_ptr->pred_structure])(
             &lambdaSad,
             &lambdaSse,
             &lambdaSad,
             &lambdaSse,
-            (uint8_t)picture_control_set_ptr->parent_pcs_ptr->enhanced_picture_ptr->bit_depth,
+            (uint8_t)pcs_ptr->parent_pcs_ptr->enhanced_picture_ptr->bit_depth,
             context_ptr->qp_index,
-            picture_control_set_ptr->hbd_mode_decision);
+            pcs_ptr->hbd_mode_decision);
         context_ptr->lambda = (uint64_t)lambdaSad;
 #if ADD_MDC_FULL_COST
         context_ptr->full_lambda = (uint64_t)lambdaSse;
 #endif
-        md_rate_estimation_array = picture_control_set_ptr->md_rate_estimation_array;
+        md_rate_estimation_array = pcs_ptr->md_rate_estimation_array;
         // Reset MD rate Estimation table to initial values by copying from md_rate_estimation_array
         if (context_ptr->is_md_rate_estimation_ptr_owner) {
             EB_FREE_ARRAY(context_ptr->md_rate_estimation_ptr);
@@ -3159,134 +3159,134 @@ void* mode_decision_configuration_kernel(void *input_ptr)
         context_ptr->md_rate_estimation_ptr = md_rate_estimation_array;
 
         entropyCodingQp = frm_hdr->quantization_params.base_q_idx;
-        if (picture_control_set_ptr->parent_pcs_ptr->frm_hdr.primary_ref_frame != PRIMARY_REF_NONE)
-            memcpy(picture_control_set_ptr->coeff_est_entropy_coder_ptr->fc, &picture_control_set_ptr->ref_frame_context[picture_control_set_ptr->parent_pcs_ptr->frm_hdr.primary_ref_frame], sizeof(FRAME_CONTEXT));
+        if (pcs_ptr->parent_pcs_ptr->frm_hdr.primary_ref_frame != PRIMARY_REF_NONE)
+            memcpy(pcs_ptr->coeff_est_entropy_coder_ptr->fc, &pcs_ptr->ref_frame_context[pcs_ptr->parent_pcs_ptr->frm_hdr.primary_ref_frame], sizeof(FRAME_CONTEXT));
         else
             reset_entropy_coder(
-                sequence_control_set_ptr->encode_context_ptr,
-                picture_control_set_ptr->coeff_est_entropy_coder_ptr,
+                scs_ptr->encode_context_ptr,
+                pcs_ptr->coeff_est_entropy_coder_ptr,
                 entropyCodingQp,
-                picture_control_set_ptr->slice_type);
+                pcs_ptr->slice_type);
 
         // Initial Rate Estimation of the syntax elements
         av1_estimate_syntax_rate(
             md_rate_estimation_array,
-            picture_control_set_ptr->slice_type == I_SLICE ? EB_TRUE : EB_FALSE,
-            picture_control_set_ptr->coeff_est_entropy_coder_ptr->fc);
+            pcs_ptr->slice_type == I_SLICE ? EB_TRUE : EB_FALSE,
+            pcs_ptr->coeff_est_entropy_coder_ptr->fc);
         // Initial Rate Estimation of the Motion vectors
         av1_estimate_mv_rate(
-            picture_control_set_ptr,
+            pcs_ptr,
             md_rate_estimation_array,
-            picture_control_set_ptr->coeff_est_entropy_coder_ptr->fc);
+            pcs_ptr->coeff_est_entropy_coder_ptr->fc);
         // Initial Rate Estimation of the quantized coefficients
         av1_estimate_coefficients_rate(
             md_rate_estimation_array,
-            picture_control_set_ptr->coeff_est_entropy_coder_ptr->fc);
-        if (picture_control_set_ptr->parent_pcs_ptr->pic_depth_mode == PIC_SB_SWITCH_DEPTH_MODE) {
+            pcs_ptr->coeff_est_entropy_coder_ptr->fc);
+        if (pcs_ptr->parent_pcs_ptr->pic_depth_mode == PIC_SB_SWITCH_DEPTH_MODE) {
             derive_sb_md_mode(
-                sequence_control_set_ptr,
-                picture_control_set_ptr,
+                scs_ptr,
+                pcs_ptr,
                 context_ptr);
 
-            for (int sb_index = 0; sb_index < picture_control_set_ptr->sb_total_count; ++sb_index) {
-                if (picture_control_set_ptr->parent_pcs_ptr->sb_depth_mode_array[sb_index] == SB_SQ_BLOCKS_DEPTH_MODE) {
+            for (int sb_index = 0; sb_index < pcs_ptr->sb_total_count; ++sb_index) {
+                if (pcs_ptr->parent_pcs_ptr->sb_depth_mode_array[sb_index] == SB_SQ_BLOCKS_DEPTH_MODE) {
                     sb_forward_sq_blocks_to_md(
-                        sequence_control_set_ptr,
-                        picture_control_set_ptr,
+                        scs_ptr,
+                        pcs_ptr,
                         sb_index);
                 }
-                else if (picture_control_set_ptr->parent_pcs_ptr->sb_depth_mode_array[sb_index] == SB_SQ_NON4_BLOCKS_DEPTH_MODE) {
+                else if (pcs_ptr->parent_pcs_ptr->sb_depth_mode_array[sb_index] == SB_SQ_NON4_BLOCKS_DEPTH_MODE) {
                     sb_forward_sq_non4_blocks_to_md(
-                        sequence_control_set_ptr,
-                        picture_control_set_ptr,
+                        scs_ptr,
+                        pcs_ptr,
                         sb_index);
                 }
                 else {
                     PerformEarlyLcuPartitionningLcu(
                         context_ptr,
-                        sequence_control_set_ptr,
-                        picture_control_set_ptr,
+                        scs_ptr,
+                        pcs_ptr,
                         sb_index);
                 }
             }
         }
 #if MULTI_PASS_PD
-        else  if (picture_control_set_ptr->parent_pcs_ptr->pic_depth_mode == PIC_ALL_DEPTH_MODE       ||
-                  picture_control_set_ptr->parent_pcs_ptr->pic_depth_mode == PIC_MULTI_PASS_PD_MODE_0 ||
-                  picture_control_set_ptr->parent_pcs_ptr->pic_depth_mode == PIC_MULTI_PASS_PD_MODE_1 ||
-                  picture_control_set_ptr->parent_pcs_ptr->pic_depth_mode == PIC_MULTI_PASS_PD_MODE_2 ||
-                  picture_control_set_ptr->parent_pcs_ptr->pic_depth_mode == PIC_MULTI_PASS_PD_MODE_3 ){
+        else  if (pcs_ptr->parent_pcs_ptr->pic_depth_mode == PIC_ALL_DEPTH_MODE       ||
+                  pcs_ptr->parent_pcs_ptr->pic_depth_mode == PIC_MULTI_PASS_PD_MODE_0 ||
+                  pcs_ptr->parent_pcs_ptr->pic_depth_mode == PIC_MULTI_PASS_PD_MODE_1 ||
+                  pcs_ptr->parent_pcs_ptr->pic_depth_mode == PIC_MULTI_PASS_PD_MODE_2 ||
+                  pcs_ptr->parent_pcs_ptr->pic_depth_mode == PIC_MULTI_PASS_PD_MODE_3 ){
 #else
-        else  if (picture_control_set_ptr->parent_pcs_ptr->pic_depth_mode == PIC_ALL_DEPTH_MODE) {
+        else  if (pcs_ptr->parent_pcs_ptr->pic_depth_mode == PIC_ALL_DEPTH_MODE) {
 #endif
             forward_all_blocks_to_md(
-                sequence_control_set_ptr,
-                picture_control_set_ptr);
+                scs_ptr,
+                pcs_ptr);
         }
-        else  if (picture_control_set_ptr->parent_pcs_ptr->pic_depth_mode == PIC_ALL_C_DEPTH_MODE) {
+        else  if (pcs_ptr->parent_pcs_ptr->pic_depth_mode == PIC_ALL_C_DEPTH_MODE) {
             forward_all_c_blocks_to_md(
-                sequence_control_set_ptr,
-                picture_control_set_ptr);
+                scs_ptr,
+                pcs_ptr);
         }
-        else  if (picture_control_set_ptr->parent_pcs_ptr->pic_depth_mode == PIC_SQ_DEPTH_MODE) {
+        else  if (pcs_ptr->parent_pcs_ptr->pic_depth_mode == PIC_SQ_DEPTH_MODE) {
             forward_sq_blocks_to_md(
-                sequence_control_set_ptr,
-                picture_control_set_ptr);
+                scs_ptr,
+                pcs_ptr);
         }
-        else  if (picture_control_set_ptr->parent_pcs_ptr->pic_depth_mode == PIC_SQ_NON4_DEPTH_MODE) {
+        else  if (pcs_ptr->parent_pcs_ptr->pic_depth_mode == PIC_SQ_NON4_DEPTH_MODE) {
             forward_sq_non4_blocks_to_md(
-                sequence_control_set_ptr,
-                picture_control_set_ptr);
+                scs_ptr,
+                pcs_ptr);
         }
-        else if (picture_control_set_ptr->parent_pcs_ptr->pic_depth_mode >= PIC_OPEN_LOOP_DEPTH_MODE) {
+        else if (pcs_ptr->parent_pcs_ptr->pic_depth_mode >= PIC_OPEN_LOOP_DEPTH_MODE) {
             // Predict the SB partitionning
             PerformEarlyLcuPartitionning( // HT done
                 context_ptr,
-                sequence_control_set_ptr,
-                picture_control_set_ptr);
+                scs_ptr,
+                pcs_ptr);
         }
-        else {   // (picture_control_set_ptr->parent_pcs_ptr->mdMode == PICT_BDP_DEPTH_MODE || picture_control_set_ptr->parent_pcs_ptr->mdMode == PICT_LIGHT_BDP_DEPTH_MODE )
-            picture_control_set_ptr->parent_pcs_ptr->average_qp = (uint8_t)picture_control_set_ptr->parent_pcs_ptr->picture_qp;
+        else {   // (pcs_ptr->parent_pcs_ptr->mdMode == PICT_BDP_DEPTH_MODE || pcs_ptr->parent_pcs_ptr->mdMode == PICT_LIGHT_BDP_DEPTH_MODE )
+            pcs_ptr->parent_pcs_ptr->average_qp = (uint8_t)pcs_ptr->parent_pcs_ptr->picture_qp;
         }
 #if ADD_MDC_REFINEMENT_LOOP
-        if (picture_control_set_ptr->parent_pcs_ptr->slice_type != I_SLICE) {
+        if (pcs_ptr->parent_pcs_ptr->slice_type != I_SLICE) {
 #if MDC_ADAPTIVE_LEVEL
-            if (picture_control_set_ptr->parent_pcs_ptr->enable_adaptive_ol_partitioning) {
+            if (pcs_ptr->parent_pcs_ptr->enable_adaptive_ol_partitioning) {
 #else
-            if (picture_control_set_ptr->parent_pcs_ptr->mdc_depth_level < MAX_MDC_LEVEL) {
+            if (pcs_ptr->parent_pcs_ptr->mdc_depth_level < MAX_MDC_LEVEL) {
 #endif
                 // SB Constants
-                uint8_t sb_sz = (uint8_t)sequence_control_set_ptr->sb_size_pix;
+                uint8_t sb_sz = (uint8_t)scs_ptr->sb_size_pix;
                 uint8_t lcu_size_log_2 = (uint8_t)Log2f(sb_sz);
-                uint32_t picture_height_in_sb = (sequence_control_set_ptr->seq_header.max_frame_height + sb_sz - 1) >> lcu_size_log_2;
-                uint32_t picture_width_in_sb = (sequence_control_set_ptr->seq_header.max_frame_width + sb_sz - 1) >> lcu_size_log_2;
+                uint32_t picture_height_in_sb = (scs_ptr->seq_header.max_frame_height + sb_sz - 1) >> lcu_size_log_2;
+                uint32_t picture_width_in_sb = (scs_ptr->seq_header.max_frame_width + sb_sz - 1) >> lcu_size_log_2;
 
                 for (uint32_t y_lcu_index = 0; y_lcu_index < picture_height_in_sb; ++y_lcu_index) {
                     for (uint32_t x_lcu_index = 0; x_lcu_index < picture_width_in_sb; ++x_lcu_index) {
                         uint32_t sb_index = (uint16_t)(y_lcu_index * picture_width_in_sb + x_lcu_index);
-                        SuperBlock  *sb_ptr = picture_control_set_ptr->sb_ptr_array[sb_index];
+                        SuperBlock  *sb_ptr = pcs_ptr->sb_ptr_array[sb_index];
 #if MDC_ADAPTIVE_LEVEL
-                        uint32_t is_complete_sb = sequence_control_set_ptr->sb_geom[sb_index].is_complete_sb;
+                        uint32_t is_complete_sb = scs_ptr->sb_geom[sb_index].is_complete_sb;
 #endif
                         sb_ptr->origin_x = x_lcu_index << lcu_size_log_2;
                         sb_ptr->origin_y = y_lcu_index << lcu_size_log_2;
 #if MDC_ADAPTIVE_LEVEL
-                        if (sequence_control_set_ptr->over_boundary_block_mode == 1 || is_complete_sb) {
+                        if (scs_ptr->over_boundary_block_mode == 1 || is_complete_sb) {
 #endif
                         open_loop_partitioning_pass(
-                            sequence_control_set_ptr,
-                            picture_control_set_ptr,
+                            scs_ptr,
+                            pcs_ptr,
                             context_ptr,
                             sb_index);
 
                             init_considered_block(
-                                sequence_control_set_ptr,
-                                picture_control_set_ptr,
+                                scs_ptr,
+                                pcs_ptr,
                                 context_ptr,
                                 sb_index);
                             forward_considered_blocks(
-                                sequence_control_set_ptr,
-                                picture_control_set_ptr,
+                                scs_ptr,
+                                pcs_ptr,
                                 sb_index);
 #if MDC_ADAPTIVE_LEVEL
                         }
@@ -3300,7 +3300,7 @@ void* mode_decision_configuration_kernel(void *input_ptr)
         {
             int i;
             int speed = 1;
-            SpeedFeatures *sf = &picture_control_set_ptr->sf;
+            SpeedFeatures *sf = &pcs_ptr->sf;
             sf->allow_exhaustive_searches = 1;
 
             const int mesh_speed = AOMMIN(speed, MAX_MESH_SPEED);
@@ -3320,7 +3320,7 @@ void* mode_decision_configuration_kernel(void *input_ptr)
                     good_quality_mesh_patterns[mesh_speed][i].interval;
             }
 
-            if (picture_control_set_ptr->slice_type == I_SLICE)
+            if (pcs_ptr->slice_type == I_SLICE)
             {
                 for (i = 0; i < MAX_MESH_STEP; ++i) {
                     sf->mesh_patterns[i].range = intrabc_mesh_patterns[mesh_speed][i].range;
@@ -3332,8 +3332,8 @@ void* mode_decision_configuration_kernel(void *input_ptr)
 
             {
                 // add to hash table
-                const int pic_width = picture_control_set_ptr->parent_pcs_ptr->sequence_control_set_ptr->seq_header.max_frame_width;
-                const int pic_height = picture_control_set_ptr->parent_pcs_ptr->sequence_control_set_ptr->seq_header.max_frame_height;
+                const int pic_width = pcs_ptr->parent_pcs_ptr->scs_ptr->seq_header.max_frame_width;
+                const int pic_height = pcs_ptr->parent_pcs_ptr->scs_ptr->seq_header.max_frame_height;
                 uint32_t *block_hash_values[2][2];
                 int8_t *is_block_same[2][3];
                 int k, j;
@@ -3345,55 +3345,55 @@ void* mode_decision_configuration_kernel(void *input_ptr)
                         is_block_same[k][j] = malloc(sizeof(int8_t) * pic_width * pic_height);
                 }
 
-                //picture_control_set_ptr->hash_table.p_lookup_table = NULL;
-                //av1_hash_table_create(&picture_control_set_ptr->hash_table);
+                //pcs_ptr->hash_table.p_lookup_table = NULL;
+                //av1_hash_table_create(&pcs_ptr->hash_table);
 
                 Yv12BufferConfig cpi_source;
                 link_Eb_to_aom_buffer_desc_8bit(
-                    picture_control_set_ptr->parent_pcs_ptr->enhanced_picture_ptr,
+                    pcs_ptr->parent_pcs_ptr->enhanced_picture_ptr,
                     &cpi_source);
 
-                av1_crc_calculator_init(&picture_control_set_ptr->crc_calculator1, 24, 0x5D6DCB);
-                av1_crc_calculator_init(&picture_control_set_ptr->crc_calculator2, 24, 0x864CFB);
+                av1_crc_calculator_init(&pcs_ptr->crc_calculator1, 24, 0x5D6DCB);
+                av1_crc_calculator_init(&pcs_ptr->crc_calculator2, 24, 0x864CFB);
 
                 av1_generate_block_2x2_hash_value(&cpi_source, block_hash_values[0],
-                    is_block_same[0], picture_control_set_ptr);
+                    is_block_same[0], pcs_ptr);
                 av1_generate_block_hash_value(&cpi_source, 4, block_hash_values[0],
                     block_hash_values[1], is_block_same[0],
-                    is_block_same[1], picture_control_set_ptr);
+                    is_block_same[1], pcs_ptr);
                 av1_add_to_hash_map_by_row_with_precal_data(
-                    &picture_control_set_ptr->hash_table, block_hash_values[1], is_block_same[1][2],
+                    &pcs_ptr->hash_table, block_hash_values[1], is_block_same[1][2],
                     pic_width, pic_height, 4);
                 av1_generate_block_hash_value(&cpi_source, 8, block_hash_values[1],
                     block_hash_values[0], is_block_same[1],
-                    is_block_same[0], picture_control_set_ptr);
+                    is_block_same[0], pcs_ptr);
                 av1_add_to_hash_map_by_row_with_precal_data(
-                    &picture_control_set_ptr->hash_table, block_hash_values[0], is_block_same[0][2],
+                    &pcs_ptr->hash_table, block_hash_values[0], is_block_same[0][2],
                     pic_width, pic_height, 8);
                 av1_generate_block_hash_value(&cpi_source, 16, block_hash_values[0],
                     block_hash_values[1], is_block_same[0],
-                    is_block_same[1], picture_control_set_ptr);
+                    is_block_same[1], pcs_ptr);
                 av1_add_to_hash_map_by_row_with_precal_data(
-                    &picture_control_set_ptr->hash_table, block_hash_values[1], is_block_same[1][2],
+                    &pcs_ptr->hash_table, block_hash_values[1], is_block_same[1][2],
                     pic_width, pic_height, 16);
                 av1_generate_block_hash_value(&cpi_source, 32, block_hash_values[1],
                     block_hash_values[0], is_block_same[1],
-                    is_block_same[0], picture_control_set_ptr);
+                    is_block_same[0], pcs_ptr);
                 av1_add_to_hash_map_by_row_with_precal_data(
-                    &picture_control_set_ptr->hash_table, block_hash_values[0], is_block_same[0][2],
+                    &pcs_ptr->hash_table, block_hash_values[0], is_block_same[0][2],
                     pic_width, pic_height, 32);
                 av1_generate_block_hash_value(&cpi_source, 64, block_hash_values[0],
                     block_hash_values[1], is_block_same[0],
-                    is_block_same[1], picture_control_set_ptr);
+                    is_block_same[1], pcs_ptr);
                 av1_add_to_hash_map_by_row_with_precal_data(
-                    &picture_control_set_ptr->hash_table, block_hash_values[1], is_block_same[1][2],
+                    &pcs_ptr->hash_table, block_hash_values[1], is_block_same[1][2],
                     pic_width, pic_height, 64);
 
                 av1_generate_block_hash_value(&cpi_source, 128, block_hash_values[1],
                     block_hash_values[0], is_block_same[1],
-                    is_block_same[0], picture_control_set_ptr);
+                    is_block_same[0], pcs_ptr);
                 av1_add_to_hash_map_by_row_with_precal_data(
-                    &picture_control_set_ptr->hash_table, block_hash_values[0], is_block_same[0][2],
+                    &pcs_ptr->hash_table, block_hash_values[0], is_block_same[0][2],
                     pic_width, pic_height, 128);
 
                 for (k = 0; k < 2; k++) {
@@ -3404,13 +3404,13 @@ void* mode_decision_configuration_kernel(void *input_ptr)
                 }
             }
 
-            eb_av1_init3smotion_compensation(&picture_control_set_ptr->ss_cfg, picture_control_set_ptr->parent_pcs_ptr->enhanced_picture_ptr->stride_y);
+            eb_av1_init3smotion_compensation(&pcs_ptr->ss_cfg, pcs_ptr->parent_pcs_ptr->enhanced_picture_ptr->stride_y);
         }
 
         // Derive MD parameters
         SetMdSettings( // HT Done
-            sequence_control_set_ptr,
-            picture_control_set_ptr);
+            scs_ptr,
+            pcs_ptr);
 
         // Post the results to the MD processes
         eb_get_empty_object(

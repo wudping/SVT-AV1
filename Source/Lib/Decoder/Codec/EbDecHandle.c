@@ -65,9 +65,9 @@ uint32_t                         lib_malloc_count = 0;
 uint32_t                         lib_semaphore_count = 0;
 uint32_t                         lib_mutex_count = 0;
 
-void asmSetConvolveAsmTable(void);
+void asm_set_convolve_asm_table(void);
 void init_intra_dc_predictors_c_internal(void);
-void asmSetConvolveHbdAsmTable(void);
+void asm_set_convolve_hbd_asm_table(void);
 void init_intra_predictors_internal(void);
 extern void av1_init_wedge_masks(void);
 void dec_sync_all_threads(EbDecHandle *dec_handle_ptr);
@@ -75,7 +75,7 @@ void dec_sync_all_threads(EbDecHandle *dec_handle_ptr);
 EbErrorType decode_multiple_obu(EbDecHandle *dec_handle_ptr,
                                 uint8_t **data, size_t data_size, uint32_t is_annexb);
 
-void SwitchToRealTime(){
+void switch_to_real_time(){
 #ifndef _WIN32
 
     struct sched_param schedParam = {
@@ -310,7 +310,7 @@ int svt_dec_out_buf(
 
     if (!dec_handle_ptr->dec_config.skip_film_grain) {
         /* Need to fill the dst buf with recon data before calling film_grain */
-        aom_film_grain_t *film_grain_ptr = &dec_handle_ptr->cur_pic_buf[0]->
+        AomFilmGrain *film_grain_ptr = &dec_handle_ptr->cur_pic_buf[0]->
             film_grain_params;
         if (film_grain_ptr->apply_grain) {
 
@@ -395,7 +395,7 @@ static EbErrorType init_svt_av1_decoder_handle(
     printf("LIB Build date: %s %s\n", __DATE__, __TIME__);
     printf("-------------------------------------------\n");
 
-    SwitchToRealTime();
+    switch_to_real_time();
 
     // Set Component Size & Version
     svt_dec_component->size = sizeof(EbComponentType);
@@ -491,11 +491,11 @@ EB_API EbErrorType eb_init_decoder(
     dec_handle_ptr->showable_frame      = 0;
 
     setup_rtcd_internal(cpu_flags);
-    asmSetConvolveAsmTable();
+    asm_set_convolve_asm_table();
 
     init_intra_dc_predictors_c_internal();
 
-    asmSetConvolveHbdAsmTable();
+    asm_set_convolve_hbd_asm_table();
 
     init_intra_predictors_internal();
 

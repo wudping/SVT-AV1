@@ -22,11 +22,11 @@ Contains the Decoder Loop Filtering related functions*/
 
 extern const int32_t mode_lf_lut[];
 
-typedef void(*svt_lbd_filter_tap_fn_t)(uint8_t *s,
+typedef void(*SvtLbdFilterTapFn)(uint8_t *s,
     int32_t pitch, const uint8_t *blimit,
     const uint8_t *limit, const uint8_t *thresh);
 
-typedef void(*svt_hbd_filter_tap_fn_t)(uint16_t *s,
+typedef void(*SvtHbdFilterTapFn)(uint16_t *s,
     int32_t pitch, const uint8_t *blimit,
     const uint8_t *limit, const uint8_t *thresh, int32_t bd);
 

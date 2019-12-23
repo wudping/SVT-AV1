@@ -255,40 +255,40 @@ EbErrorType mode_decision_context_ctor(
 /**************************************************
  * Reset Mode Decision Neighbor Arrays
  *************************************************/
-void reset_mode_decision_neighbor_arrays(PictureControlSet *picture_control_set_ptr)
+void reset_mode_decision_neighbor_arrays(PictureControlSet *pcs_ptr)
 {
     uint8_t depth;
     for (depth = 0; depth < NEIGHBOR_ARRAY_TOTAL_COUNT; depth++) {
-        neighbor_array_unit_reset(picture_control_set_ptr->md_intra_luma_mode_neighbor_array[depth]);
-        neighbor_array_unit_reset(picture_control_set_ptr->md_intra_chroma_mode_neighbor_array[depth]);
-        neighbor_array_unit_reset(picture_control_set_ptr->md_mv_neighbor_array[depth]);
-        neighbor_array_unit_reset(picture_control_set_ptr->md_skip_flag_neighbor_array[depth]);
-        neighbor_array_unit_reset(picture_control_set_ptr->md_mode_type_neighbor_array[depth]);
-        neighbor_array_unit_reset(picture_control_set_ptr->md_leaf_depth_neighbor_array[depth]);
-        neighbor_array_unit_reset(picture_control_set_ptr->mdleaf_partition_neighbor_array[depth]);
-        if (picture_control_set_ptr->hbd_mode_decision != EB_10_BIT_MD) {
-            neighbor_array_unit_reset(picture_control_set_ptr->md_luma_recon_neighbor_array[depth]);
-            neighbor_array_unit_reset(picture_control_set_ptr->md_tx_depth_1_luma_recon_neighbor_array[depth]);
-            neighbor_array_unit_reset(picture_control_set_ptr->md_cb_recon_neighbor_array[depth]);
-            neighbor_array_unit_reset(picture_control_set_ptr->md_cr_recon_neighbor_array[depth]);
+        neighbor_array_unit_reset(pcs_ptr->md_intra_luma_mode_neighbor_array[depth]);
+        neighbor_array_unit_reset(pcs_ptr->md_intra_chroma_mode_neighbor_array[depth]);
+        neighbor_array_unit_reset(pcs_ptr->md_mv_neighbor_array[depth]);
+        neighbor_array_unit_reset(pcs_ptr->md_skip_flag_neighbor_array[depth]);
+        neighbor_array_unit_reset(pcs_ptr->md_mode_type_neighbor_array[depth]);
+        neighbor_array_unit_reset(pcs_ptr->md_leaf_depth_neighbor_array[depth]);
+        neighbor_array_unit_reset(pcs_ptr->mdleaf_partition_neighbor_array[depth]);
+        if (pcs_ptr->hbd_mode_decision != EB_10_BIT_MD) {
+            neighbor_array_unit_reset(pcs_ptr->md_luma_recon_neighbor_array[depth]);
+            neighbor_array_unit_reset(pcs_ptr->md_tx_depth_1_luma_recon_neighbor_array[depth]);
+            neighbor_array_unit_reset(pcs_ptr->md_cb_recon_neighbor_array[depth]);
+            neighbor_array_unit_reset(pcs_ptr->md_cr_recon_neighbor_array[depth]);
         }
-        if (picture_control_set_ptr->hbd_mode_decision > EB_8_BIT_MD) {
-            neighbor_array_unit_reset(picture_control_set_ptr->md_luma_recon_neighbor_array16bit[depth]);
-            neighbor_array_unit_reset(picture_control_set_ptr->md_tx_depth_1_luma_recon_neighbor_array16bit[depth]);
-            neighbor_array_unit_reset(picture_control_set_ptr->md_cb_recon_neighbor_array16bit[depth]);
-            neighbor_array_unit_reset(picture_control_set_ptr->md_cr_recon_neighbor_array16bit[depth]);
+        if (pcs_ptr->hbd_mode_decision > EB_8_BIT_MD) {
+            neighbor_array_unit_reset(pcs_ptr->md_luma_recon_neighbor_array16bit[depth]);
+            neighbor_array_unit_reset(pcs_ptr->md_tx_depth_1_luma_recon_neighbor_array16bit[depth]);
+            neighbor_array_unit_reset(pcs_ptr->md_cb_recon_neighbor_array16bit[depth]);
+            neighbor_array_unit_reset(pcs_ptr->md_cr_recon_neighbor_array16bit[depth]);
         }
 
-        neighbor_array_unit_reset(picture_control_set_ptr->md_skip_coeff_neighbor_array[depth]);
-        neighbor_array_unit_reset(picture_control_set_ptr->md_luma_dc_sign_level_coeff_neighbor_array[depth]);
-        neighbor_array_unit_reset(picture_control_set_ptr->md_tx_depth_1_luma_dc_sign_level_coeff_neighbor_array[depth]);
-        neighbor_array_unit_reset(picture_control_set_ptr->md_cb_dc_sign_level_coeff_neighbor_array[depth]);
-        neighbor_array_unit_reset(picture_control_set_ptr->md_cr_dc_sign_level_coeff_neighbor_array[depth]);
-        neighbor_array_unit_reset(picture_control_set_ptr->md_txfm_context_array[depth]);
-        neighbor_array_unit_reset(picture_control_set_ptr->md_inter_pred_dir_neighbor_array[depth]);
-        neighbor_array_unit_reset(picture_control_set_ptr->md_ref_frame_type_neighbor_array[depth]);
+        neighbor_array_unit_reset(pcs_ptr->md_skip_coeff_neighbor_array[depth]);
+        neighbor_array_unit_reset(pcs_ptr->md_luma_dc_sign_level_coeff_neighbor_array[depth]);
+        neighbor_array_unit_reset(pcs_ptr->md_tx_depth_1_luma_dc_sign_level_coeff_neighbor_array[depth]);
+        neighbor_array_unit_reset(pcs_ptr->md_cb_dc_sign_level_coeff_neighbor_array[depth]);
+        neighbor_array_unit_reset(pcs_ptr->md_cr_dc_sign_level_coeff_neighbor_array[depth]);
+        neighbor_array_unit_reset(pcs_ptr->md_txfm_context_array[depth]);
+        neighbor_array_unit_reset(pcs_ptr->md_inter_pred_dir_neighbor_array[depth]);
+        neighbor_array_unit_reset(pcs_ptr->md_ref_frame_type_neighbor_array[depth]);
 
-        neighbor_array_unit_reset32(picture_control_set_ptr->md_interpolation_type_neighbor_array[depth]);
+        neighbor_array_unit_reset32(pcs_ptr->md_interpolation_type_neighbor_array[depth]);
     }
 
     return;
@@ -427,30 +427,30 @@ const EbAv1LambdaAssignFunc av1_lambda_assignment_function_table[4] = {
 };
 
 void reset_mode_decision(
-    SequenceControlSet    *sequence_control_set_ptr,
+    SequenceControlSet    *scs_ptr,
     ModeDecisionContext   *context_ptr,
-    PictureControlSet     *picture_control_set_ptr,
+    PictureControlSet     *pcs_ptr,
     uint32_t                   segment_index)
 {
-    FrameHeader *frm_hdr = &picture_control_set_ptr->parent_pcs_ptr->frm_hdr;
+    FrameHeader *frm_hdr = &pcs_ptr->parent_pcs_ptr->frm_hdr;
 
     // QP
 #if ADD_DELTA_QP_SUPPORT
-    uint16_t picture_qp = picture_control_set_ptr->parent_pcs_ptr->frm_hdr.quantization_params.base_q_idx;
+    uint16_t picture_qp = pcs_ptr->parent_pcs_ptr->frm_hdr.quantization_params.base_q_idx;
     context_ptr->qp = picture_qp;
     context_ptr->qp_index = context_ptr->qp;
 #else
-    context_ptr->qp = picture_control_set_ptr->picture_qp;
+    context_ptr->qp = pcs_ptr->picture_qp;
 #endif
     // Asuming cb and cr offset to be the same for chroma QP in both slice and pps for lambda computation
     context_ptr->chroma_qp = (uint8_t)context_ptr->qp;
     context_ptr->qp_index = (uint8_t)frm_hdr->quantization_params.base_q_idx;
-    (*av1_lambda_assignment_function_table[picture_control_set_ptr->parent_pcs_ptr->pred_structure])(
+    (*av1_lambda_assignment_function_table[pcs_ptr->parent_pcs_ptr->pred_structure])(
         &context_ptr->fast_lambda,
         &context_ptr->full_lambda,
         &context_ptr->fast_chroma_lambda,
         &context_ptr->full_chroma_lambda,
-        (uint8_t)picture_control_set_ptr->parent_pcs_ptr->enhanced_picture_ptr->bit_depth,
+        (uint8_t)pcs_ptr->parent_pcs_ptr->enhanced_picture_ptr->bit_depth,
         context_ptr->qp_index,
         context_ptr->hbd_mode_decision);
     // Reset MD rate Estimation table to initial values by copying from md_rate_estimation_array
@@ -458,30 +458,30 @@ void reset_mode_decision(
         context_ptr->is_md_rate_estimation_ptr_owner = EB_FALSE;
         EB_FREE_ARRAY(context_ptr->md_rate_estimation_ptr);
     }
-    context_ptr->md_rate_estimation_ptr = picture_control_set_ptr->md_rate_estimation_array;
+    context_ptr->md_rate_estimation_ptr = pcs_ptr->md_rate_estimation_array;
     uint32_t  candidateIndex;
     for (candidateIndex = 0; candidateIndex < MODE_DECISION_CANDIDATE_MAX_COUNT; ++candidateIndex)
         context_ptr->fast_candidate_ptr_array[candidateIndex]->md_rate_estimation_ptr = context_ptr->md_rate_estimation_ptr;
 
     // Reset CABAC Contexts
-    context_ptr->coeff_est_entropy_coder_ptr = picture_control_set_ptr->coeff_est_entropy_coder_ptr;
+    context_ptr->coeff_est_entropy_coder_ptr = pcs_ptr->coeff_est_entropy_coder_ptr;
 
     // Reset Neighbor Arrays at start of new Segment / Picture
     if (segment_index == 0) {
-        reset_mode_decision_neighbor_arrays(picture_control_set_ptr);
-    (void)sequence_control_set_ptr;
+        reset_mode_decision_neighbor_arrays(pcs_ptr);
+    (void)scs_ptr;
 #if !MULTI_PASS_PD
     EbBool enable_wm;
-    if (picture_control_set_ptr->parent_pcs_ptr->sc_content_detected)
+    if (pcs_ptr->parent_pcs_ptr->sc_content_detected)
         enable_wm = EB_FALSE;
     else
 #if ENHANCED_M0_SETTINGS
-        enable_wm = (picture_control_set_ptr->parent_pcs_ptr->enc_mode == ENC_M0 ||
+        enable_wm = (pcs_ptr->parent_pcs_ptr->enc_mode == ENC_M0 ||
 #else
         enable_wm = (MR_MODE ||
-        (picture_control_set_ptr->parent_pcs_ptr->enc_mode == ENC_M0 && picture_control_set_ptr->parent_pcs_ptr->is_used_as_reference_flag) ||
+        (pcs_ptr->parent_pcs_ptr->enc_mode == ENC_M0 && pcs_ptr->parent_pcs_ptr->is_used_as_reference_flag) ||
 #endif
-        (picture_control_set_ptr->parent_pcs_ptr->enc_mode <= ENC_M5 && picture_control_set_ptr->parent_pcs_ptr->temporal_layer_index == 0)) ? EB_TRUE : EB_FALSE;
+        (pcs_ptr->parent_pcs_ptr->enc_mode <= ENC_M5 && pcs_ptr->parent_pcs_ptr->temporal_layer_index == 0)) ? EB_TRUE : EB_FALSE;
     frm_hdr->allow_warped_motion = enable_wm
         && !(frm_hdr->frame_type == KEY_FRAME || frm_hdr->frame_type == INTRA_ONLY_FRAME)
         && !frm_hdr->error_resilient_mode;
@@ -493,27 +493,27 @@ void reset_mode_decision(
     // 2                                            OBMC @(MVP, PME and ME) + Opt NICs
     // 3                                            OBMC @(MVP, PME ) + Opt NICs
     // 4                                            OBMC @(MVP, PME ) + Opt2 NICs
-    if (sequence_control_set_ptr->static_config.enable_obmc) {
-        if (picture_control_set_ptr->parent_pcs_ptr->enc_mode <= ENC_M0)
-            picture_control_set_ptr->parent_pcs_ptr->pic_obmc_mode =
+    if (scs_ptr->static_config.enable_obmc) {
+        if (pcs_ptr->parent_pcs_ptr->enc_mode <= ENC_M0)
+            pcs_ptr->parent_pcs_ptr->pic_obmc_mode =
 #if M0_OPT
-            picture_control_set_ptr->slice_type != I_SLICE ? 2 : 0;
+            pcs_ptr->slice_type != I_SLICE ? 2 : 0;
 #else
-            picture_control_set_ptr->parent_pcs_ptr->sc_content_detected == 0 && picture_control_set_ptr->slice_type != I_SLICE ? 2 : 0;
+            pcs_ptr->parent_pcs_ptr->sc_content_detected == 0 && pcs_ptr->slice_type != I_SLICE ? 2 : 0;
 #endif
         else
-            picture_control_set_ptr->parent_pcs_ptr->pic_obmc_mode = 0;
+            pcs_ptr->parent_pcs_ptr->pic_obmc_mode = 0;
 
 #if MR_MODE
-        picture_control_set_ptr->parent_pcs_ptr->pic_obmc_mode =
-            picture_control_set_ptr->parent_pcs_ptr->sc_content_detected == 0 && picture_control_set_ptr->slice_type != I_SLICE ? 1 : 0;
+        pcs_ptr->parent_pcs_ptr->pic_obmc_mode =
+            pcs_ptr->parent_pcs_ptr->sc_content_detected == 0 && pcs_ptr->slice_type != I_SLICE ? 1 : 0;
 #endif
     }
     else
-        picture_control_set_ptr->parent_pcs_ptr->pic_obmc_mode = 0;
+        pcs_ptr->parent_pcs_ptr->pic_obmc_mode = 0;
 
     frm_hdr->is_motion_mode_switchable =
-        frm_hdr->is_motion_mode_switchable || picture_control_set_ptr->parent_pcs_ptr->pic_obmc_mode;
+        frm_hdr->is_motion_mode_switchable || pcs_ptr->parent_pcs_ptr->pic_obmc_mode;
 
 #endif
 #endif
@@ -526,9 +526,9 @@ void reset_mode_decision(
  ******************************************************/
 void mode_decision_configure_lcu(
     ModeDecisionContext   *context_ptr,
-    PictureControlSet     *picture_control_set_ptr,
+    PictureControlSet     *pcs_ptr,
     uint8_t                    sb_qp){
-    (void)picture_control_set_ptr;
+    (void)pcs_ptr;
     //Disable Lambda update per LCU
     context_ptr->qp = sb_qp;
     // Asuming cb and cr offset to be the same for chroma QP in both slice and pps for lambda computation
@@ -538,14 +538,14 @@ void mode_decision_configure_lcu(
     /* Note(CHKN) : when Qp modulation varies QP on a sub-LCU(CU) basis,  Lamda has to change based on Cu->QP , and then this code has to move inside the CU loop in MD */
 
     // Lambda Assignement
-    context_ptr->qp_index = picture_control_set_ptr->parent_pcs_ptr->frm_hdr.delta_q_params.delta_q_present ? (uint8_t)quantizer_to_qindex[sb_qp] : (uint8_t)picture_control_set_ptr->parent_pcs_ptr->frm_hdr.quantization_params.base_q_idx;
+    context_ptr->qp_index = pcs_ptr->parent_pcs_ptr->frm_hdr.delta_q_params.delta_q_present ? (uint8_t)quantizer_to_qindex[sb_qp] : (uint8_t)pcs_ptr->parent_pcs_ptr->frm_hdr.quantization_params.base_q_idx;
 
-    (*av1_lambda_assignment_function_table[picture_control_set_ptr->parent_pcs_ptr->pred_structure])(
+    (*av1_lambda_assignment_function_table[pcs_ptr->parent_pcs_ptr->pred_structure])(
         &context_ptr->fast_lambda,
         &context_ptr->full_lambda,
         &context_ptr->fast_chroma_lambda,
         &context_ptr->full_chroma_lambda,
-        (uint8_t)picture_control_set_ptr->parent_pcs_ptr->enhanced_picture_ptr->bit_depth,
+        (uint8_t)pcs_ptr->parent_pcs_ptr->enhanced_picture_ptr->bit_depth,
         context_ptr->qp_index,
         context_ptr->hbd_mode_decision);
 

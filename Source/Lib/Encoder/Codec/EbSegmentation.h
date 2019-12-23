@@ -27,20 +27,20 @@
 
 void apply_segmentation_based_quantization(
         const BlockGeom *blk_geom,
-        PictureControlSet *picture_control_set_ptr,
+        PictureControlSet *pcs_ptr,
         SuperBlock        *sb_ptr,
         CodingUnit *cu_ptr
 );
 
 void setup_segmentation(
-        PictureControlSet *picture_control_set_ptr,
-        SequenceControlSet *sequence_control_set_ptr,
+        PictureControlSet *pcs_ptr,
+        SequenceControlSet *scs_ptr,
         RateControlLayerContext *rateControlLayerPtr
 );
 
 void find_segment_qps(
         SegmentationParams *segmentation_params,
-        PictureControlSet *picture_control_set_ptr
+        PictureControlSet *pcs_ptr
 );
 
 void temporally_update_qps(

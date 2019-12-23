@@ -206,7 +206,7 @@ EbErrorType parse_tile(EbDecHandle *dec_handle_ptr, ParseCtxt *parse_ctx,
         set_default_sgrproj(&lr_unit[p]->sgrproj_info);
     }
 
-    // to-do access to wiener info that is currently part of PartitionInfo_t
+    // to-do access to wiener info that is currently part of PartitionInfo
     //clear_loop_restoration(num_planes, part_info);
 #if ENABLE_ROW_MT_DECODE // post after finish of tile sb_row parsing
     int32_t sb_row_tile_start = 0;

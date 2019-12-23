@@ -15,7 +15,6 @@
 #include "convolve.h"
 #include "convolve_avx2.h"
 #include "EbInterPrediction.h"
-#include "EbMemory_AVX2.h"
 #include "synonyms.h"
 
 static INLINE void sr_y_round_store_32_avx2(const __m256i res[2],

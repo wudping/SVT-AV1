@@ -84,7 +84,7 @@ extern "C" {
         uint32_t                               luma_fast_distortion;
         uint32_t                               full_distortion;
         EbPtr                                 prediction_context_ptr;
-        PictureControlSet                   *picture_control_set_ptr;
+        PictureControlSet                   *pcs_ptr;
         EbPredDirection                        prediction_direction[MAX_NUM_OF_PU_PER_CU]; // 2 bits // Hsan: does not seem to be used why not removed ?
 
         int16_t                                motion_vector_pred_x[MAX_NUM_OF_REF_PIC_LIST]; // 16 bits // Hsan: does not seem to be used why not removed ?
@@ -137,7 +137,7 @@ extern "C" {
         InterInterCompoundData                 interinter_comp;
         uint8_t                                compound_idx;
         uint8_t                                comp_group_idx;
-        CAND_CLASS                             cand_class;
+        CandClass                             cand_class;
 #if II_COMP_FLAG
         INTERINTRA_MODE                        interintra_mode;
         uint8_t                                is_interintra_used;
@@ -153,7 +153,7 @@ extern "C" {
     typedef EbErrorType(*EbPredictionFunc)(
         uint8_t                              hbd_mode_decision,
         struct ModeDecisionContext           *context_ptr,
-        PictureControlSet                    *picture_control_set_ptr,
+        PictureControlSet                    *pcs_ptr,
         struct ModeDecisionCandidateBuffer   *candidate_buffer_ptr);
     typedef uint64_t(*EbFastCostFunc)(
         CodingUnit                           *cu_ptr,
@@ -163,7 +163,7 @@ extern "C" {
         uint64_t                                chroma_distortion,
         uint64_t                                lambda,
         EbBool                                  use_ssd,
-        PictureControlSet                    *picture_control_set_ptr,
+        PictureControlSet                    *pcs_ptr,
         CandidateMv                            *ref_mv_stack,
         const BlockGeom                        *blk_geom,
         uint32_t                                miRow,
@@ -193,9 +193,9 @@ extern "C" {
         uint64_t                               *cr_coeff_bits,
         uint32_t                                transform_size,
         uint32_t                                transform_chroma_size,
-        PictureControlSet                    *picture_control_set_ptr);
+        PictureControlSet                    *pcs_ptr);
     typedef EbErrorType(*EbAv1FullCostFunc)(
-        PictureControlSet                    *picture_control_set_ptr,
+        PictureControlSet                    *pcs_ptr,
         struct ModeDecisionContext           *context_ptr,
         struct ModeDecisionCandidateBuffer   *candidate_buffer_ptr,
         CodingUnit                           *cu_ptr,
@@ -298,7 +298,7 @@ extern "C" {
         uint32_t                                transform_size);
 
     typedef EbErrorType(*EB_FULL_NXN_COST_FUNC)(
-        PictureControlSet                    *picture_control_set_ptr,
+        PictureControlSet                    *pcs_ptr,
         ModeDecisionCandidateBuffer   *candidate_buffer_ptr,
         uint32_t                                qp,
         uint64_t                               *y_distortion,

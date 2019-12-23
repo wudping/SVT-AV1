@@ -42,6 +42,7 @@ static void set_restoration_unit_size(int32_t width, int32_t height, int32_t sx,
         rst[0].restoration_unit_size = RESTORATION_UNITSIZE_MAX;
     else
         rst[0].restoration_unit_size = (RESTORATION_UNITSIZE_MAX >> 1);
+
     rst[1].restoration_unit_size = rst[0].restoration_unit_size >> s;
     rst[2].restoration_unit_size = rst[1].restoration_unit_size;
 }
@@ -1118,7 +1119,6 @@ static void picture_parent_control_set_dctor(EbPtr p)
     EB_FREE_ARRAY(obj->non_moving_index_array);
     // SB noise variance array
     EB_FREE_ARRAY(obj->sb_flat_noise_array);
-    EB_FREE_ARRAY(obj->edge_results_ptr);
     EB_FREE_ARRAY(obj->sharp_edge_sb_flag);
     EB_FREE_ARRAY(obj->sb_stat_array);
     EB_FREE_ARRAY(obj->sb_depth_mode_array);
@@ -1252,7 +1252,6 @@ EbErrorType picture_parent_control_set_ctor(
     EB_MALLOC_ARRAY(object_ptr->non_moving_index_array, object_ptr->sb_total_count);
     // SB noise variance array
     EB_MALLOC_ARRAY(object_ptr->sb_flat_noise_array, object_ptr->sb_total_count);
-    EB_MALLOC_ARRAY(object_ptr->edge_results_ptr, object_ptr->sb_total_count);
 
     EB_MALLOC_ARRAY(object_ptr->sharp_edge_sb_flag, object_ptr->sb_total_count);
     EB_MALLOC_ARRAY(object_ptr->sb_stat_array, object_ptr->sb_total_count);
@@ -1306,7 +1305,7 @@ EbErrorType picture_parent_control_set_ctor(
 
     // Film grain noise model if film grain is applied
     if (initDataPtr->film_grain_noise_level) {
-        denoise_and_model_init_data_t fg_init_data;
+        DenoiseAndModelInitData fg_init_data;
         fg_init_data.encoder_bit_depth = initDataPtr->bit_depth;
         fg_init_data.encoder_color_format = initDataPtr->color_format;
         fg_init_data.noise_level = initDataPtr->film_grain_noise_level;

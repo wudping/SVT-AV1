@@ -391,20 +391,20 @@ int av1_count_colors_highbd(uint16_t *src, int stride, int rows, int cols,
    determine all palette luma candidates
  ****************************************/
  void  search_palette_luma(
-     PictureControlSet            *picture_control_set_ptr,
+     PictureControlSet            *pcs_ptr,
      ModeDecisionContext          *context_ptr,
      PaletteInfo                 *palette_cand,
      uint32_t                     *tot_palette_cands)
  {
      int colors, n;
-     EbPictureBufferDesc   *src_pic = picture_control_set_ptr->parent_pcs_ptr->enhanced_picture_ptr;
+     EbPictureBufferDesc   *src_pic = pcs_ptr->parent_pcs_ptr->enhanced_picture_ptr;
      const int src_stride = src_pic->stride_y;
      uint16_t * src16 = 0;
      const uint8_t *const src = src_pic->buffer_y + (context_ptr->cu_origin_x + src_pic->origin_x) + (context_ptr->cu_origin_y + src_pic->origin_y) * src_pic->stride_y;
      int block_width, block_height, rows, cols;
      uint8_t hbd_md = 0;
 
-     Av1Common  *cm = picture_control_set_ptr->parent_pcs_ptr->av1_cm;
+     Av1Common  *cm = pcs_ptr->parent_pcs_ptr->av1_cm;
      MacroBlockD  *xd = context_ptr->cu_ptr->av1xd;
      TileInfo * tile = &context_ptr->sb_ptr->tile_info;
      BlockSize bsize = context_ptr->blk_geom->bsize;
@@ -457,7 +457,7 @@ int av1_count_colors_highbd(uint16_t *src, int stride, int rows, int cols,
      int count_buf[1 << 12];  // Maximum (1 << 12) color levels.
 
      if(hbd_md)
-          colors = av1_count_colors_highbd(src16, src_stride, rows, cols, picture_control_set_ptr->parent_pcs_ptr->sequence_control_set_ptr->encoder_bit_depth, count_buf);
+          colors = av1_count_colors_highbd(src16, src_stride, rows, cols, pcs_ptr->parent_pcs_ptr->scs_ptr->encoder_bit_depth, count_buf);
      else
           colors = eb_av1_count_colors(src, src_stride, rows, cols, count_buf);
 
@@ -502,7 +502,7 @@ int av1_count_colors_highbd(uint16_t *src, int stride, int rows, int cols,
          // TODO: Try to avoid duplicate computation in cases
          // where the dominant colors and the k-means results are similar.
 
-         int step = (picture_control_set_ptr->parent_pcs_ptr->palette_mode == 6 && picture_control_set_ptr->temporal_layer_index > 0) ? 2 : 1;
+         int step = (pcs_ptr->parent_pcs_ptr->palette_mode == 6 && pcs_ptr->temporal_layer_index > 0) ? 2 : 1;
          for (n = AOMMIN(colors, PALETTE_MAX_SIZE); n >= 2; n-=step) {
 
              for (i = 0; i < n; ++i)
@@ -516,12 +516,12 @@ int av1_count_colors_highbd(uint16_t *src, int stride, int rows, int cols,
              assert((*tot_palette_cands) <= 14);
          }
 
-         if (picture_control_set_ptr->parent_pcs_ptr->palette_mode == 3)
-             if (picture_control_set_ptr->parent_pcs_ptr->is_used_as_reference_flag == 0)
+         if (pcs_ptr->parent_pcs_ptr->palette_mode == 3)
+             if (pcs_ptr->parent_pcs_ptr->is_used_as_reference_flag == 0)
                  return;
 
-         if (picture_control_set_ptr->parent_pcs_ptr->palette_mode == 5 || picture_control_set_ptr->parent_pcs_ptr->palette_mode == 6)
-             if (picture_control_set_ptr->temporal_layer_index > 0)
+         if (pcs_ptr->parent_pcs_ptr->palette_mode == 5 || pcs_ptr->parent_pcs_ptr->palette_mode == 6)
+             if (pcs_ptr->temporal_layer_index > 0)
                  return;
 
          // K-means clustering.

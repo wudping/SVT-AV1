@@ -20,7 +20,6 @@
 #include "EbDefinitions.h"
 
 #include "synonyms.h"
-#include "EbMemory_AVX2.h"
 #include "synonyms_avx2.h"
 #include "convolve_avx2.h"
 #include "EbBlend_sse4.h"

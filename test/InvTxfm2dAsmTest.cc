@@ -450,17 +450,17 @@ class InvTxfm2dAsmTest : public ::testing::TestWithParam<InvTxfm2dParam> {
         const TxSize htf_tx_size[num_htf_sizes] = {
             TX_16X64, TX_32X64, TX_64X16, TX_64X32, TX_64X64};
         const HandleTxfmFunc htf_ref_funcs[num_htf_sizes] = {
-            HandleTransform16x64_c,
-            HandleTransform32x64_c,
-            HandleTransform64x16_c,
-            HandleTransform64x32_c,
+            handle_transform16x64_c,
+            handle_transform32x64_c,
+            handle_transform64x16_c,
+            handle_transform64x32_c,
             handle_transform64x64_c};
         const HandleTxfmFunc htf_asm_funcs[num_htf_sizes] = {
-            HandleTransform16x64_avx2,
-            HandleTransform32x64_avx2,
-            HandleTransform64x16_avx2,
-            HandleTransform64x32_avx2,
-            HandleTransform64x64_avx2};
+            handle_transform16x64_avx2,
+            handle_transform32x64_avx2,
+            handle_transform64x16_avx2,
+            handle_transform64x32_avx2,
+            handle_transform64x64_avx2};
         DECLARE_ALIGNED(32, int32_t, input[MAX_TX_SQUARE]);
 
         for (int idx = 0; idx < num_htf_sizes; ++idx) {
@@ -492,17 +492,17 @@ class InvTxfm2dAsmTest : public ::testing::TestWithParam<InvTxfm2dParam> {
         const int widths[num_htf_sizes] = {16, 32, 64, 64, 64};
         const int heights[num_htf_sizes] = {64, 64, 16, 32, 64};
         const HandleTxfmFunc htf_ref_funcs[num_htf_sizes] = {
-            HandleTransform16x64_c,
-            HandleTransform32x64_c,
-            HandleTransform64x16_c,
-            HandleTransform64x32_c,
+            handle_transform16x64_c,
+            handle_transform32x64_c,
+            handle_transform64x16_c,
+            handle_transform64x32_c,
             handle_transform64x64_c};
         const HandleTxfmFunc htf_asm_funcs[num_htf_sizes] = {
-            HandleTransform16x64_avx2,
-            HandleTransform32x64_avx2,
-            HandleTransform64x16_avx2,
-            HandleTransform64x32_avx2,
-            HandleTransform64x64_avx2};
+            handle_transform16x64_avx2,
+            handle_transform32x64_avx2,
+            handle_transform64x16_avx2,
+            handle_transform64x32_avx2,
+            handle_transform64x64_avx2};
         DECLARE_ALIGNED(32, int32_t, input[MAX_TX_SQUARE]);
         double time_c, time_o;
         uint64_t start_time_seconds, start_time_useconds;
@@ -621,10 +621,10 @@ class InvTxfm2dAsmTest : public ::testing::TestWithParam<InvTxfm2dParam> {
         // post-process, re-pack the coeffcients
         switch (tx_size) {
         case TX_64X64: handle_transform64x64_c(input_); break;
-        case TX_64X32: HandleTransform64x32_c(input_); break;
-        case TX_32X64: HandleTransform32x64_c(input_); break;
-        case TX_64X16: HandleTransform64x16_c(input_); break;
-        case TX_16X64: HandleTransform16x64_c(input_); break;
+        case TX_64X32: handle_transform64x32_c(input_); break;
+        case TX_32X64: handle_transform32x64_c(input_); break;
+        case TX_64X16: handle_transform64x16_c(input_); break;
+        case TX_16X64: handle_transform16x64_c(input_); break;
         default: break;
         }
         return;

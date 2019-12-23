@@ -284,7 +284,7 @@ extern "C" {
 
     uint8_t                             combine_class12; // 1:class1 and 2 are combined.
 
-    CAND_CLASS                          target_class;
+    CandClass                          target_class;
 
     // fast_loop_core signals
     EbBool                              md_staging_use_bilinear;
@@ -361,7 +361,7 @@ extern "C" {
     int16_t full_pel_ref_window_height_th;
 
     // Signal to control initial and final pass PD setting(s)
-    PD_PASS pd_pass;
+    PdPass pd_pass;
 #endif
     } ModeDecisionContext;
 
@@ -399,7 +399,7 @@ extern "C" {
     );
 
     extern void reset_mode_decision_neighbor_arrays(
-        PictureControlSet *picture_control_set_ptr);
+        PictureControlSet *pcs_ptr);
 
     extern void lambda_assign_low_delay(
         uint32_t                    *fast_lambda,
@@ -434,23 +434,23 @@ extern "C" {
         208, 212, 216, 220, 224, 228, 232, 236, 240, 244, 249, 255};
 
     extern void reset_mode_decision(
-        SequenceControlSet    *sequence_control_set_ptr,
+        SequenceControlSet    *scs_ptr,
         ModeDecisionContext   *context_ptr,
-        PictureControlSet     *picture_control_set_ptr,
+        PictureControlSet     *pcs_ptr,
         uint32_t                 segment_index);
 
     extern void mode_decision_configure_lcu(
         ModeDecisionContext   *context_ptr,
-        PictureControlSet     *picture_control_set_ptr,
+        PictureControlSet     *pcs_ptr,
         uint8_t                  sb_qp);
 
     extern void cfl_rd_pick_alpha(
-        PictureControlSet             *picture_control_set_ptr,
+        PictureControlSet             *pcs_ptr,
         ModeDecisionCandidateBuffer   *candidate_buffer,
         SuperBlock                    *sb_ptr,
         ModeDecisionContext           *context_ptr,
         EbPictureBufferDesc           *input_picture_ptr,
-        uint32_t                         inputCbOriginIndex,
+        uint32_t                         input_cb_origin_index,
         uint32_t                         cuChromaOriginIndex);
 
 #ifdef __cplusplus

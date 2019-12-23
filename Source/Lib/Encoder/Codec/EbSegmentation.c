@@ -120,11 +120,11 @@ uint16_t get_variance_for_cu(const BlockGeom *blk_geom,
 
 void apply_segmentation_based_quantization(
         const BlockGeom *blk_geom,
-        PictureControlSet *picture_control_set_ptr,
+        PictureControlSet *pcs_ptr,
     SuperBlock            *sb_ptr,
         CodingUnit *cu_ptr) {
-    uint16_t *variance_ptr = picture_control_set_ptr->parent_pcs_ptr->variance[sb_ptr->index];
-    SegmentationParams *segmentation_params = &picture_control_set_ptr->parent_pcs_ptr->frm_hdr.segmentation_params;
+    uint16_t *variance_ptr = pcs_ptr->parent_pcs_ptr->variance[sb_ptr->index];
+    SegmentationParams *segmentation_params = &pcs_ptr->parent_pcs_ptr->frm_hdr.segmentation_params;
     uint16_t variance = get_variance_for_cu(blk_geom, variance_ptr);
     for (int i = 0; i < MAX_SEGMENTS; i++) {
         if (variance <= segmentation_params->variance_bin_edge[i]) {
@@ -132,25 +132,25 @@ void apply_segmentation_based_quantization(
             break;
         }
     }
-    int32_t q_index = picture_control_set_ptr->parent_pcs_ptr->frm_hdr.quantization_params.base_q_idx +
-                      picture_control_set_ptr->parent_pcs_ptr->frm_hdr.segmentation_params.feature_data[cu_ptr->segment_id][SEG_LVL_ALT_Q];
+    int32_t q_index = pcs_ptr->parent_pcs_ptr->frm_hdr.quantization_params.base_q_idx +
+                      pcs_ptr->parent_pcs_ptr->frm_hdr.segmentation_params.feature_data[cu_ptr->segment_id][SEG_LVL_ALT_Q];
     cu_ptr->qp = q_index_to_quantizer[q_index];
 
 }
 
 void setup_segmentation(
-        PictureControlSet *picture_control_set_ptr,
-        SequenceControlSet *sequence_control_set_ptr,
+        PictureControlSet *pcs_ptr,
+        SequenceControlSet *scs_ptr,
         RateControlLayerContext *rateControlLayerPtr)
 {
-    SegmentationParams *segmentation_params = &picture_control_set_ptr->parent_pcs_ptr->frm_hdr.segmentation_params;
-    segmentation_params->segmentation_enabled = (EbBool)(sequence_control_set_ptr->static_config.enable_adaptive_quantization == 1);
+    SegmentationParams *segmentation_params = &pcs_ptr->parent_pcs_ptr->frm_hdr.segmentation_params;
+    segmentation_params->segmentation_enabled = (EbBool)(scs_ptr->static_config.enable_adaptive_quantization == 1);
     if (segmentation_params->segmentation_enabled) {
         int32_t segment_qps[MAX_SEGMENTS] = {0};
         segmentation_params->segmentation_update_data = 1; //always updating for now. Need to set this based on actual deltas
         segmentation_params->segmentation_update_map = 1;
-        segmentation_params->segmentation_temporal_update = EB_FALSE; //!(picture_control_set_ptr->parent_pcs_ptr->av1FrameType == KEY_FRAME || picture_control_set_ptr->parent_pcs_ptr->av1FrameType == INTRA_ONLY_FRAME);
-        find_segment_qps(segmentation_params, picture_control_set_ptr);
+        segmentation_params->segmentation_temporal_update = EB_FALSE; //!(pcs_ptr->parent_pcs_ptr->av1FrameType == KEY_FRAME || pcs_ptr->parent_pcs_ptr->av1FrameType == INTRA_ONLY_FRAME);
+        find_segment_qps(segmentation_params, pcs_ptr);
         temporally_update_qps(segment_qps, rateControlLayerPtr->prev_segment_qps,
                               segmentation_params->segmentation_temporal_update);
         for (int i = 0; i < MAX_SEGMENTS; i++)
@@ -176,15 +176,15 @@ void calculate_segmentation_data(SegmentationParams *segmentation_params) {
 
 void find_segment_qps(
         SegmentationParams *segmentation_params,
-        PictureControlSet *picture_control_set_ptr) { //QP needs to be specified as qpindex, not qp.
+        PictureControlSet *pcs_ptr) { //QP needs to be specified as qpindex, not qp.
 
     uint16_t *variancePtr;
     uint16_t min_var = UINT16_MAX, max_var = MIN_UNSIGNED_VALUE, avg_var = 0;
     float strength = 2;//to tune
 
     // get range of variance
-    for (uint32_t lcuIdx = 0; lcuIdx < picture_control_set_ptr->sb_total_count; ++lcuIdx) {
-        variancePtr = picture_control_set_ptr->parent_pcs_ptr->variance[lcuIdx];
+    for (uint32_t lcuIdx = 0; lcuIdx < pcs_ptr->sb_total_count; ++lcuIdx) {
+        variancePtr = pcs_ptr->parent_pcs_ptr->variance[lcuIdx];
         uint32_t var_index, local_avg = 0;
         // Loop over all 8x8s in a 64x64
         for (var_index = ME_TIER_ZERO_PU_8x8_0; var_index <= ME_TIER_ZERO_PU_8x8_63; var_index++) {
@@ -194,7 +194,7 @@ void find_segment_qps(
         }
         avg_var += (local_avg >> 6);
     }
-    avg_var /= picture_control_set_ptr->sb_total_count;
+    avg_var /= pcs_ptr->sb_total_count;
     avg_var = Log2f(avg_var);
 
     //get variance bin edges & QPs

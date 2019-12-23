@@ -24,7 +24,7 @@ void av1_foreach_rest_unit_in_frame_seg(Av1Common *cm, int32_t plane,
     RestTileStartVisitor on_tile,
     RestUnitVisitor on_rest_unit,
     void *priv,
-    PictureControlSet   *picture_control_set_ptr,
+    PictureControlSet   *pcs_ptr,
     uint32_t segment_index);
 
 void eb_av1_selfguided_restoration_c(const uint8_t *dgd8, int32_t width, int32_t height,
@@ -45,14 +45,14 @@ void av1_foreach_rest_unit_in_frame(Av1Common *cm, int32_t plane,
 // Working precision for Wiener filter coefficients
 #define WIENER_TAP_SCALE_FACTOR ((int64_t)1 << 16)
 
-typedef int64_t(*sse_part_extractor_type)(const Yv12BufferConfig *a,
+typedef int64_t(*SsePartExtractorType)(const Yv12BufferConfig *a,
     const Yv12BufferConfig *b,
     int32_t hstart, int32_t width, int32_t vstart,
     int32_t height);
 
 #define NUM_EXTRACTORS (3 * (1 + 1))
 
-static const sse_part_extractor_type sse_part_extractors[NUM_EXTRACTORS] = {
+static const SsePartExtractorType sse_part_extractors[NUM_EXTRACTORS] = {
   eb_aom_get_y_sse_part,        eb_aom_get_u_sse_part,
   eb_aom_get_v_sse_part,        eb_aom_highbd_get_y_sse_part,
   eb_aom_highbd_get_u_sse_part, eb_aom_highbd_get_v_sse_part,

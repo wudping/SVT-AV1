@@ -296,8 +296,8 @@ static INLINE void store_rect_16bit_to_32bit_w8_avx2(const __m256i a,
   const __m256i one = _mm256_set1_epi16(1);
   const __m256i a_lo = _mm256_unpacklo_epi16(a, one);
   const __m256i a_hi = _mm256_unpackhi_epi16(a, one);
-  const __m256i b_lo = scale_round_avx2(a_lo, NewSqrt2);
-  const __m256i b_hi = scale_round_avx2(a_hi, NewSqrt2);
+  const __m256i b_lo = scale_round_avx2(a_lo, new_sqrt2);
+  const __m256i b_hi = scale_round_avx2(a_hi, new_sqrt2);
   const __m256i temp = _mm256_permute2f128_si256(b_lo, b_hi, 0x31);
   _mm_store_si128((__m128i *)b, _mm256_castsi256_si128(b_lo));
   _mm_store_si128((__m128i *)(b + 4), _mm256_castsi256_si128(b_hi));

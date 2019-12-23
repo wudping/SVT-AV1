@@ -4101,11 +4101,11 @@ void eb_av1_predict_intra_block(
     bsize = scale_chroma_bsize(bsize, pd->subsampling_x, pd->subsampling_y);
 
     const int32_t have_top_right = intra_has_top_right(
-        cm->p_pcs_ptr->sequence_control_set_ptr->seq_header.sb_size, bsize,
+        cm->p_pcs_ptr->scs_ptr->seq_header.sb_size, bsize,
         mi_row, mi_col, have_top, right_available, partition, tx_size,
         row_off, col_off, pd->subsampling_x, pd->subsampling_y);
     const int32_t have_bottom_left = intra_has_bottom_left(
-        cm->p_pcs_ptr->sequence_control_set_ptr->seq_header.sb_size, bsize,
+        cm->p_pcs_ptr->scs_ptr->seq_header.sb_size, bsize,
         mi_row, mi_col, bottom_available, have_left, partition,
         tx_size, row_off, col_off, pd->subsampling_x, pd->subsampling_y);
 
@@ -4358,11 +4358,11 @@ void eb_av1_predict_intra_block_16bit(
     bsize = scale_chroma_bsize(bsize, pd->subsampling_x, pd->subsampling_y);
 
     const int32_t have_top_right = intra_has_top_right(
-        cm->p_pcs_ptr->sequence_control_set_ptr->seq_header.sb_size, bsize,
+        cm->p_pcs_ptr->scs_ptr->seq_header.sb_size, bsize,
         mi_row, mi_col, have_top, right_available, partition, tx_size,
         row_off, col_off, pd->subsampling_x, pd->subsampling_y);
     const int32_t have_bottom_left = intra_has_bottom_left(
-        cm->p_pcs_ptr->sequence_control_set_ptr->seq_header.sb_size, bsize,
+        cm->p_pcs_ptr->scs_ptr->seq_header.sb_size, bsize,
         mi_row, mi_col, bottom_available, have_left, partition,
         tx_size, row_off, col_off, pd->subsampling_x, pd->subsampling_y);
 
@@ -4388,7 +4388,7 @@ is the main function to compute intra prediction for a PU
 EbErrorType eb_av1_intra_prediction_cl(
     uint8_t                              hbd_mode_decision,
     ModeDecisionContext                  *md_context_ptr,
-    PictureControlSet                    *picture_control_set_ptr,
+    PictureControlSet                    *pcs_ptr,
     ModeDecisionCandidateBuffer           *candidate_buffer_ptr)
 {
     (void) hbd_mode_decision;
@@ -4483,7 +4483,7 @@ EbErrorType eb_av1_intra_prediction_cl(
                 &md_context_ptr->sb_ptr->tile_info,
                 !ED_STAGE,
                 md_context_ptr->blk_geom,
-                picture_control_set_ptr->parent_pcs_ptr->av1_cm,                                      //const Av1Common *cm,
+                pcs_ptr->parent_pcs_ptr->av1_cm,                                      //const Av1Common *cm,
                 plane ? md_context_ptr->blk_geom->bwidth_uv : md_context_ptr->blk_geom->bwidth,          //int32_t wpx,
                 plane ? md_context_ptr->blk_geom->bheight_uv : md_context_ptr->blk_geom->bheight,          //int32_t hpx,
                 plane ? tx_size_Chroma : tx_size,                                               //TxSize tx_size,
@@ -4556,7 +4556,7 @@ EbErrorType eb_av1_intra_prediction_cl(
                 &md_context_ptr->sb_ptr->tile_info,
                 !ED_STAGE,
                 md_context_ptr->blk_geom,
-                picture_control_set_ptr->parent_pcs_ptr->av1_cm,                                      //const Av1Common *cm,
+                pcs_ptr->parent_pcs_ptr->av1_cm,                                      //const Av1Common *cm,
                 plane ? md_context_ptr->blk_geom->bwidth_uv : md_context_ptr->blk_geom->bwidth,          //int32_t wpx,
                 plane ? md_context_ptr->blk_geom->bheight_uv : md_context_ptr->blk_geom->bheight,          //int32_t hpx,
                 plane ? tx_size_Chroma : tx_size,                                               //TxSize tx_size,
@@ -4588,7 +4588,7 @@ EbErrorType eb_av1_intra_prediction_cl(
 #if II_COMP_FLAG
 EbErrorType  intra_luma_prediction_for_interintra(
     ModeDecisionContext         *md_context_ptr,
-    PictureControlSet           *picture_control_set_ptr,
+    PictureControlSet           *pcs_ptr,
     INTERINTRA_MODE              interintra_mode,
     EbPictureBufferDesc         *prediction_ptr)
 {
@@ -4633,7 +4633,7 @@ EbErrorType  intra_luma_prediction_for_interintra(
             &md_context_ptr->sb_ptr->tile_info,
             !ED_STAGE,
             md_context_ptr->blk_geom,
-            picture_control_set_ptr->parent_pcs_ptr->av1_cm,        //const Av1Common *cm,
+            pcs_ptr->parent_pcs_ptr->av1_cm,        //const Av1Common *cm,
             md_context_ptr->blk_geom->bwidth,                       //int32_t wpx,
             md_context_ptr->blk_geom->bheight,                      //int32_t hpx,
             tx_size,                                                //TxSize tx_size,
@@ -4673,7 +4673,7 @@ EbErrorType  intra_luma_prediction_for_interintra(
             &md_context_ptr->sb_ptr->tile_info,
             !ED_STAGE,
             md_context_ptr->blk_geom,
-            picture_control_set_ptr->parent_pcs_ptr->av1_cm,        //const Av1Common *cm,
+            pcs_ptr->parent_pcs_ptr->av1_cm,        //const Av1Common *cm,
             md_context_ptr->blk_geom->bwidth,                       //int32_t wpx,
             md_context_ptr->blk_geom->bheight,                      //int32_t hpx,
             tx_size,                                                //TxSize tx_size,

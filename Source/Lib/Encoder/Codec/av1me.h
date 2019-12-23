@@ -38,13 +38,13 @@ extern "C" {
   (SEARCH_RANGE_8P * SEARCH_GRID_STRIDE_8P + SEARCH_RANGE_8P)
 
 // motion search site
-typedef struct search_site {
+typedef struct SearchSite {
   MV mv;
   int offset;
-} search_site;
+} SearchSite;
 
 typedef struct SearchSiteConfig {
-  search_site ss[8 * MAX_MVSEARCH_STEPS + 1];
+  SearchSite ss[8 * MAX_MVSEARCH_STEPS + 1];
   int ss_count;
   int searches_per_step;
 } SearchSiteConfig;

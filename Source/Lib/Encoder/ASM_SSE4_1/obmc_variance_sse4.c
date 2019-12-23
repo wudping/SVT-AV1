@@ -9,8 +9,6 @@
  * PATENTS file, you can obtain it at www.aomedia.org/license/patent.
  */
 
-#include <assert.h>
-#include <immintrin.h>
 #include "aom_dsp_rtcd.h"
 #include "synonyms.h"
 

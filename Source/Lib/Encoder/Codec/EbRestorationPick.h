@@ -22,15 +22,6 @@ extern "C" {
     struct Yv12BufferConfig;
     struct Av1Comp;
 
-    static const uint8_t g_shuffle_stats_data[16] = {
-        0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8,
-    };
-
-    static const uint8_t g_shuffle_stats_highbd_data[32] = {
-        0, 1, 2, 3, 2, 3, 4, 5, 4, 5, 6, 7, 6, 7, 8, 9,
-        0, 1, 2, 3, 2, 3, 4, 5, 4, 5, 6, 7, 6, 7, 8, 9,
-    };
-
     static INLINE uint8_t find_average(const uint8_t *src, int32_t h_start, int32_t h_end,
         int32_t v_start, int32_t v_end, int32_t stride) {
         uint64_t sum = 0;

@@ -1441,7 +1441,7 @@ void read_skip_mode_params(bitstrm_t *bs, FrameHeader *frame_info, int FrameIsIn
 }
 
 void load_grain_params(EbDecHandle *dec_handle_ptr,
-    aom_film_grain_t *grain_params,
+    AomFilmGrain *grain_params,
     int film_grain_params_ref_idx)
 {
     EbDecPicBuf *ref_buf = dec_handle_ptr->
@@ -1452,7 +1452,7 @@ void load_grain_params(EbDecHandle *dec_handle_ptr,
 
 // Read film grain parameters
 void read_film_grain_params(EbDecHandle * dec_handle,
-    bitstrm_t *bs, aom_film_grain_t *grain_params)
+    bitstrm_t *bs, AomFilmGrain *grain_params)
 {
     SeqHeader *seq_header = &dec_handle->seq_header;
     FrameHeader *frame_info = &dec_handle->frame_header;
@@ -2354,7 +2354,7 @@ EbErrorType read_frame_header_obu(bitstrm_t *bs, EbDecHandle *dec_handle_ptr,
     return status;
 }
 
-void clear_loop_restoration(int num_planes, PartitionInfo_t *part_info)
+void clear_loop_restoration(int num_planes, PartitionInfo *part_info)
 {
     for (int p = 0; p < num_planes; ++p) {
         set_default_wiener(part_info->wiener_info + p);

@@ -227,6 +227,6 @@ typedef struct PartitionInfo {
     int8_t *cdef_strength;
 
     int32_t is_chroma_ref;
-} PartitionInfo_t;
+} PartitionInfo;
 
 #endif //EbDecBlock_h

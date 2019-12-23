@@ -364,24 +364,24 @@ extern "C" {
     void get_proj_subspace_avx2(const uint8_t *src8, int width, int height, int src_stride, const uint8_t *dat8, int dat_stride, int use_highbitdepth, int32_t *flt0, int flt0_stride, int32_t *flt1, int flt1_stride, int *xq, const SgrParamsType *params);
     RTCD_EXTERN void(*get_proj_subspace)(const uint8_t *src8, int width, int height, int src_stride, const uint8_t *dat8, int dat_stride, int use_highbitdepth, int32_t *flt0, int flt0_stride, int32_t *flt1, int flt1_stride, int *xq, const SgrParamsType *params);
 
-    uint64_t HandleTransform16x64_c(int32_t *output);
-    uint64_t HandleTransform16x64_avx2(int32_t *output);
+    uint64_t handle_transform16x64_c(int32_t *output);
+    uint64_t handle_transform16x64_avx2(int32_t *output);
     RTCD_EXTERN uint64_t(*handle_transform16x64)(int32_t *output);
 
-    uint64_t HandleTransform32x64_c(int32_t *output);
-    uint64_t HandleTransform32x64_avx2(int32_t *output);
+    uint64_t handle_transform32x64_c(int32_t *output);
+    uint64_t handle_transform32x64_avx2(int32_t *output);
     RTCD_EXTERN uint64_t(*handle_transform32x64)(int32_t *output);
 
-    uint64_t HandleTransform64x16_c(int32_t *output);
-    uint64_t HandleTransform64x16_avx2(int32_t *output);
+    uint64_t handle_transform64x16_c(int32_t *output);
+    uint64_t handle_transform64x16_avx2(int32_t *output);
     RTCD_EXTERN uint64_t(*handle_transform64x16)(int32_t *output);
 
-    uint64_t HandleTransform64x32_c(int32_t *output);
-    uint64_t HandleTransform64x32_avx2(int32_t *output);
+    uint64_t handle_transform64x32_c(int32_t *output);
+    uint64_t handle_transform64x32_avx2(int32_t *output);
     RTCD_EXTERN uint64_t(*handle_transform64x32)(int32_t *output);
 
     uint64_t handle_transform64x64_c(int32_t *output);
-    uint64_t HandleTransform64x64_avx2(int32_t *output);
+    uint64_t handle_transform64x64_avx2(int32_t *output);
     RTCD_EXTERN uint64_t(*handle_transform64x64)(int32_t *output);
 
     uint64_t search_one_dual_c(int *lev0, int *lev1, int nb_strengths, uint64_t(**mse)[64], int sb_count, int fast, int start_gi, int end_gi);

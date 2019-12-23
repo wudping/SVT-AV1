@@ -35,7 +35,7 @@ extern "C" {
         ModeDecisionCandidateBuffer  *candidate_buffer,
         ModeDecisionContext          *context_ptr,
         EbPictureBufferDesc          *input_picture_ptr,
-        PictureControlSet            *picture_control_set_ptr,
+        PictureControlSet            *pcs_ptr,
         uint32_t                          component_mask,
         uint32_t                          cb_qp,
         uint32_t                          cr_qp,
@@ -47,7 +47,7 @@ extern "C" {
         ModeDecisionCandidateBuffer  *candidate_buffer,
         ModeDecisionContext            *context_ptr,
         ModeDecisionCandidate           *candidate_ptr,
-        PictureControlSet            *picture_control_set_ptr,
+        PictureControlSet            *pcs_ptr,
         EbPictureBufferDesc          *input_picture_ptr,
         uint64_t                          cbFullDistortion[DIST_CALC_TOTAL],
         uint64_t                          crFullDistortion[DIST_CALC_TOTAL],
@@ -60,7 +60,7 @@ extern "C" {
     void product_full_loop(
         ModeDecisionCandidateBuffer  *candidate_buffer,
         ModeDecisionContext          *context_ptr,
-        PictureControlSet            *picture_control_set_ptr,
+        PictureControlSet            *pcs_ptr,
         EbPictureBufferDesc          *input_picture_ptr,
         uint32_t                      qp,
         uint32_t                     *y_count_non_zero_coeffs,
@@ -85,7 +85,7 @@ extern "C" {
     void product_full_loop_tx_search(
         ModeDecisionCandidateBuffer  *candidate_buffer,
         ModeDecisionContext          *context_ptr,
-        PictureControlSet            *picture_control_set_ptr);
+        PictureControlSet            *pcs_ptr);
 
     void inv_transform_recon_wrapper(
         uint8_t    *pred_buffer,
@@ -111,12 +111,12 @@ extern "C" {
         uint32_t                          tbOriginY,
         uint64_t                          full_lambda,
         MdRateEstimationContext      *md_rate_estimation_ptr,
-        PictureControlSet            *picture_control_set_ptr);
+        PictureControlSet            *pcs_ptr);
 
     // compute the cost of curr depth, and the depth above
     extern void  compute_depth_costs_md_skip(
         ModeDecisionContext *context_ptr,
-        SequenceControlSet  *sequence_control_set_ptr,
+        SequenceControlSet  *scs_ptr,
         uint32_t             above_depth_mds,
         uint32_t             step,
         uint64_t            *above_depth_cost,

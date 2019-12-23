@@ -10,9 +10,7 @@
  * PATENTS file, you can obtain it at www.aomedia.org/license/patent.
  */
 
-#include <stdio.h>
 #include <stdlib.h>
-#include <memory.h>
 #include <math.h>
 
 #include "global_motion.h"

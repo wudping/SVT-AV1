@@ -86,20 +86,20 @@ extern "C" {
 #endif
 #define Q_PEL_SEARCH_WIND 2  // 1/4-pel serach window
 #define HP_REF_OPT        1  // Remove redundant positions.
-    typedef enum ME_HP_MODE {
+    typedef enum MeHpMode {
         EX_HP_MODE = 0,       // Exhaustive  1/2-pel serach mode.
         REFINMENT_HP_MODE = 1 // Refinement 1/2-pel serach mode.
-    } ME_HP_MODE;
-    typedef enum ME_QP_MODE {
+    } MeHpMode;
+    typedef enum MeQpMode {
         EX_QP_MODE = 0,       // Exhaustive  1/4-pel serach mode.
         REFINMENT_QP_MODE = 1 // Refinement 1/4-pel serach mode.
-    } ME_QP_MODE;
+    } MeQpMode;
 #if GM_OPT
-    typedef enum GM_LEVEL {
+    typedef enum GmLevel {
         GM_FULL = 0,       // Exhaustive search mode.
         GM_DOWN = 1,       // Downsampled search mode, with a downsampling factor of 2 in each dimension
         GM_TRAN_ONLY = 2        // Translation only using ME MV.
-    } GM_LEVEL;
+    } GmLevel;
 #endif
     struct Buf2D
     {
@@ -512,15 +512,15 @@ one more than the minimum. */
 #endif /* ATTRIBUTE_PACKED */
 
 #if MULTI_PASS_PD
-    typedef enum PD_PASS {
+    typedef enum PdPass {
         PD_PASS_0,
         PD_PASS_1,
         PD_PASS_2,
         PD_PASS_TOTAL,
-    } PD_PASS;
+    } PdPass;
 #endif
 
-    typedef enum CAND_CLASS {
+    typedef enum CandClass {
         CAND_CLASS_0,
         CAND_CLASS_1,
         CAND_CLASS_2,
@@ -538,15 +538,15 @@ one more than the minimum. */
 #endif
         CAND_CLASS_8,
         CAND_CLASS_TOTAL
-    } CAND_CLASS;
+    } CandClass;
 
-    typedef enum MD_STAGE {
+    typedef enum MdStage {
         MD_STAGE_0,
         MD_STAGE_1,
         MD_STAGE_2,
         MD_STAGE_3,
         MD_STAGE_TOTAL
-    } MD_STAGE;
+    } MdStage;
 #define MD_STAGING_MODE_0    0
 #define MD_STAGING_MODE_1    1
 #define INTRA_NFL           16
@@ -2160,12 +2160,12 @@ API.  This is a 32 bit pointer and is aligned on a 32 bit word boundary.
     /** The MD_BIT_DEPTH_MODE type is used to describe the bitdepth of MD path.
     */
 
-    typedef enum MD_BIT_DEPTH_MODE
+    typedef enum MdBitDepthMode
     {
         EB_8_BIT_MD = 0,    // 8bit mode decision
         EB_10_BIT_MD = 1,    // 10bit mode decision
         EB_DUAL_BIT_MD = 2     // Auto: 8bit & 10bit mode decision
-    } MD_BIT_DEPTH_MODE;
+    } MdBitDepthMode;
 
     /** The EB_GOP type is used to describe the hierarchical coding structure of
     Groups of Pictures (GOP) units.
@@ -3316,10 +3316,10 @@ memset(dst, val, count)
         /*84 */3,
     };
 
-    typedef struct stat_struct_t
+    typedef struct StatStruct
     {
         uint32_t                        referenced_area[MAX_NUMBER_OF_TREEBLOCKS_PER_PICTURE];
-    } stat_struct_t;
+    } StatStruct;
 #define TWO_PASS_IR_THRSHLD 40  // Intra refresh threshold used to reduce the reference area.
     // If the periodic Intra refresh is less than the threshold,
     // the referenced area is normalized

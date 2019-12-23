@@ -21,7 +21,7 @@
 #include "EbPictureBufferDesc.h"
 #include "EbMotionEstimationContext.h"
 
-void global_motion_estimation(PictureParentControlSet *picture_control_set_ptr,
+void global_motion_estimation(PictureParentControlSet *pcs_ptr,
                               MeContext *context_ptr,
                               EbPictureBufferDesc *input_picture_ptr);
 void compute_global_motion(EbPictureBufferDesc *input_pic, EbPictureBufferDesc *ref_pic,

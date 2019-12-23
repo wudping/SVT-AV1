@@ -51,7 +51,7 @@ void interpolate_search_region_AVC_chroma(
         uint32_t                input_bit_depth);
 
     extern EbErrorType motion_estimate_lcu(
-        PictureParentControlSet   *picture_control_set_ptr,
+        PictureParentControlSet   *pcs_ptr,
         uint32_t                       sb_index,
         uint32_t                       sb_origin_x,
         uint32_t                       sb_origin_y,
@@ -77,7 +77,7 @@ void interpolate_search_region_AVC_chroma(
         uint32_t                   decim_step);
 
     extern EbErrorType open_loop_intra_search_sb(
-        PictureParentControlSet   *picture_control_set_ptr,
+        PictureParentControlSet   *pcs_ptr,
         uint32_t                       sb_index,
         MotionEstimationContext_t   *context_ptr,
         EbPictureBufferDesc       *input_ptr);
@@ -447,7 +447,7 @@ void interpolate_search_region_AVC_chroma(
         uint32_t         geom_offset_x,
         uint32_t         geom_offset_y);
     void half_pel_refinement_sb(
-        PictureParentControlSet *picture_control_set_ptr,
+        PictureParentControlSet *pcs_ptr,
         MeContext *context_ptr,  // input/output parameter, ME context Ptr, used
                                  // to get/update ME results
         uint8_t *refBuffer, uint32_t ref_stride,

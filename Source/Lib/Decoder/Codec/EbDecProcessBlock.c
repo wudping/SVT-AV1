@@ -14,16 +14,12 @@
 
 #include "EbSvtAv1Dec.h"
 #include "EbDecHandle.h"
-
 #include "EbDecParseHelper.h"
 #include "../../Encoder/Codec/EbCommonUtils.h"
-
 #include "EbDecInverseQuantize.h"
 #include "EbDecProcessFrame.h"
-
 #include "EbDecIntraPrediction.h"
 #include "EbDecInterPrediction.h"
-
 #include "EbDecNbr.h"
 #include "EbDecUtils.h"
 
@@ -31,7 +27,6 @@
 #include "EbDecLF.h"
 #include "EbDecPicMgr.h"
 
-#include <stdio.h>
 #include <stdlib.h>
 
 extern int select_samples(
@@ -42,7 +37,7 @@ extern int select_samples(
     BlockSize bsize);
 
 CflAllowedType store_cfl_required(const EbColorConfig *cc,
-                PartitionInfo_t  *xd, int32_t is_chroma_ref)
+                PartitionInfo  *xd, int32_t is_chroma_ref)
 {
     const BlockModeInfo *mbmi = xd->mi;
 
@@ -174,7 +169,7 @@ void decode_block(DecModCtxt *dec_mod_ctxt, int32_t mi_row, int32_t mi_col,
         sub_x, sub_y);
 
     /* TODO: Can move to a common init fun for parse & decode */
-    PartitionInfo_t part_info;
+    PartitionInfo part_info;
     part_info.mi = mode_info;
     part_info.sb_info = sb_info;
     part_info.mi_row = mi_row;

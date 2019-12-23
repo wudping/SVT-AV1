@@ -3,14 +3,15 @@
  * SPDX - License - Identifier: BSD - 2 - Clause - Patent
  */
 
+#include "EbDefinitions.h"
+
+#ifndef NON_AVX512_SUPPORT
+
 #include <assert.h>
 #include <immintrin.h>
-#include "EbDefinitions.h"
 #include "aom_dsp_rtcd.h"
 #include "EbTransforms.h"
 #include "synonyms_avx512.h"
-
-#ifndef NON_AVX512_SUPPORT
 
 extern const int8_t *eb_inv_txfm_shift_ls[];
 const int32_t *cospi_arr(int32_t n);
@@ -830,7 +831,7 @@ static INLINE void round_shift_16x16_avx512(__m512i *in, const int8_t shift) {
 }
 
 static INLINE void iidentity16_and_round_shift_avx512(__m512i *input, int32_t shift) {
-    const __m512i scalar = _mm512_set1_epi32(NewSqrt2);
+    const __m512i scalar = _mm512_set1_epi32(new_sqrt2);
     const __m512i rnding = _mm512_set1_epi32((1 << (NewSqrt2Bits - 2)) +
         (!!(shift) << (shift + NewSqrt2Bits - 2)));
 
@@ -2719,7 +2720,7 @@ static void idct64_avx512(__m512i *in, __m512i *out, const int8_t bit, int32_t d
 static void iidtx16_avx512(__m512i *in, __m512i *out, const int8_t bit, int32_t col_num) {
     (void)bit;
     const uint8_t bits = 12;       // NewSqrt2Bits = 12
-    const int32_t sqrt = 2 * 5793; // 2 * NewSqrt2
+    const int32_t sqrt = 2 * 5793; // 2 * new_sqrt2
     const __m512i newsqrt = _mm512_set1_epi32(sqrt);
     const __m512i rounding = _mm512_set1_epi32(1 << (bits - 1));
     __m512i temp;

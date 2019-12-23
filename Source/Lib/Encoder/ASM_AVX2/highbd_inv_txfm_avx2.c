@@ -613,9 +613,9 @@ static INLINE void round_shift_4x4(__m256i *in, int32_t shift) {
 
 static INLINE void iidentity4_and_round_shift_avx2(__m256i *input, int32_t shift)
 {
-    // Input takes 18 bits, can be multiplied with NewSqrt2 in 32 bits space.
+    // Input takes 18 bits, can be multiplied with new_sqrt2 in 32 bits space.
     // round_shift(NewSqrt2Bits) and next round_shift(shift) in one pass.
-    const __m256i scalar = _mm256_set1_epi32(NewSqrt2);
+    const __m256i scalar = _mm256_set1_epi32(new_sqrt2);
     const __m256i rnding = _mm256_set1_epi32((1 << (NewSqrt2Bits - 1)) +
         (!!(shift) << (shift + NewSqrt2Bits - 1)));
 
@@ -1347,11 +1347,11 @@ static INLINE void round_shift_16x16(__m256i *in, int32_t shift) {
 
 static INLINE void iidentity16_and_round_shift_avx2(__m256i *input, int32_t shift)
 {
-    // Input takes 18 bits, can be multiplied with NewSqrt2 in 32 bits space.
-    // Multiplied by half value NewSqrt2, instead (2*NewSqrt2),
+    // Input takes 18 bits, can be multiplied with new_sqrt2 in 32 bits space.
+    // Multiplied by half value new_sqrt2, instead (2*new_sqrt2),
     // and round_shift() by one bit less (NewSqrt2Bits-1).
     // round_shift(NewSqrt2Bits-1) and next round_shift(shift) in one pass.
-    const __m256i scalar = _mm256_set1_epi32(NewSqrt2);
+    const __m256i scalar = _mm256_set1_epi32(new_sqrt2);
     const __m256i rnding = _mm256_set1_epi32((1 << (NewSqrt2Bits - 2)) +
         (!!(shift) << (shift + NewSqrt2Bits - 2)));
 
@@ -4205,7 +4205,7 @@ static void iidentity16_avx2(__m256i *in, __m256i *out, int32_t bit, int32_t do_
     const __m256i clamp_lo = _mm256_set1_epi32(-(1 << (log_range - 1)));
     const __m256i clamp_hi = _mm256_set1_epi32((1 << (log_range - 1)) - 1);
     __m256i v[16];
-    __m256i fact = _mm256_set1_epi32(2 * NewSqrt2);
+    __m256i fact = _mm256_set1_epi32(2 * new_sqrt2);
     __m256i offset = _mm256_set1_epi32(1 << (NewSqrt2Bits - 1));
     __m256i a0, a1, a2, a3;
 
@@ -6158,10 +6158,10 @@ static void idct64_avx2(__m256i *in, __m256i *out, int32_t bit, int32_t do_cols,
     }
 }
 
-typedef void(*transform_1d_avx2)(__m256i *in, __m256i *out, int32_t bit,
+typedef void(*Transform1dAvx2)(__m256i *in, __m256i *out, int32_t bit,
     int32_t do_cols, int32_t bd, int32_t out_shift);
 
-static const transform_1d_avx2
+static const Transform1dAvx2
 highbd_txfm_all_1d_zeros_w8_arr[TX_SIZES][ITX_TYPES_1D][4] = {
     {
         { NULL, NULL, NULL, NULL },
@@ -6208,9 +6208,9 @@ static void highbd_inv_txfm2d_add_no_identity_avx2(const int32_t *input,
     ASSERT(eoby < 32);
     const int32_t fun_idx_x = lowbd_txfm_all_1d_zeros_idx[eobx];
     const int32_t fun_idx_y = lowbd_txfm_all_1d_zeros_idx[eoby];
-    const transform_1d_avx2 row_txfm =
+    const Transform1dAvx2 row_txfm =
         highbd_txfm_all_1d_zeros_w8_arr[txw_idx][hitx_1d_tab[tx_type]][fun_idx_x];
-    const transform_1d_avx2 col_txfm =
+    const Transform1dAvx2 col_txfm =
         highbd_txfm_all_1d_zeros_w8_arr[txh_idx][vitx_1d_tab[tx_type]][fun_idx_y];
 
     assert(col_txfm != NULL);
@@ -6230,7 +6230,7 @@ static void highbd_inv_txfm2d_add_no_identity_avx2(const int32_t *input,
         }
         if (rect_type == 1 || rect_type == -1) {
             av1_round_shift_rect_array_32_avx2(
-                buf0, buf0, buf_size_nonzero_w_div8 << 3, 0, NewInvSqrt2);
+                buf0, buf0, buf_size_nonzero_w_div8 << 3, 0, new_inv_sqrt2);
         }
         row_txfm(buf0, buf0, inv_cos_bit_row[txw_idx][txh_idx], 0, bd, -shift[0]);
 
@@ -6289,9 +6289,9 @@ static void highbd_inv_txfm2d_add_idtx_avx2(const int32_t *input,
     const int32_t row_max = AOMMIN(32, txfm_size_row);
     const int32_t rect_type = get_rect_tx_log_ratio(txfm_size_col, txfm_size_row);
 
-    const transform_1d_avx2 row_txfm =
+    const Transform1dAvx2 row_txfm =
         highbd_txfm_all_1d_zeros_w8_arr[txw_idx][hitx_1d_tab[tx_type]][0];
-    const transform_1d_avx2 col_txfm =
+    const Transform1dAvx2 col_txfm =
         highbd_txfm_all_1d_zeros_w8_arr[txh_idx][vitx_1d_tab[tx_type]][0];
 
     int32_t ud_flip, lr_flip, j;
@@ -6307,7 +6307,7 @@ static void highbd_inv_txfm2d_add_idtx_avx2(const int32_t *input,
         }
         if (rect_type == 1 || rect_type == -1) {
             av1_round_shift_rect_array_32_avx2(buf0, buf0, input_stride, 0,
-                NewInvSqrt2);
+                new_inv_sqrt2);
         }
         row_txfm(buf0, buf0, inv_cos_bit_row[txw_idx][txh_idx], 0, bd, -shift[0]);
 
@@ -6367,9 +6367,9 @@ static void highbd_inv_txfm2d_add_v_identity_avx2(const int32_t *input,
     const int32_t buf_size_h_div8 = (eoby + 8) >> 3;
     const int32_t rect_type = get_rect_tx_log_ratio(txfm_size_col, txfm_size_row);
     const int32_t fun_idx = lowbd_txfm_all_1d_zeros_idx[eoby];
-    const transform_1d_avx2 row_txfm =
+    const Transform1dAvx2 row_txfm =
         highbd_txfm_all_1d_zeros_w8_arr[txw_idx][hitx_1d_tab[tx_type]][0];
-    const transform_1d_avx2 col_txfm =
+    const Transform1dAvx2 col_txfm =
         highbd_txfm_all_1d_zeros_w8_arr[txh_idx][vitx_1d_tab[tx_type]][fun_idx];
     int32_t ud_flip, lr_flip;
     get_flip_cfg(tx_type, &ud_flip, &lr_flip);
@@ -6383,7 +6383,7 @@ static void highbd_inv_txfm2d_add_v_identity_avx2(const int32_t *input,
         }
         if (rect_type == 1 || rect_type == -1) {
             av1_round_shift_rect_array_32_avx2(buf0, buf0, input_stride, 0,
-                NewInvSqrt2);
+                new_inv_sqrt2);
         }
         row_txfm(buf0, buf0, inv_cos_bit_row[txw_idx][txh_idx], 0, bd, -shift[0]);
 
@@ -6441,9 +6441,9 @@ static void highbd_inv_txfm2d_add_h_identity_avx2(const int32_t *input,
     const int32_t buf_size_nonzero_w_div8 = (eobx + 8) >> 3;
     const int32_t rect_type = get_rect_tx_log_ratio(txfm_size_col, txfm_size_row);
     const int32_t fun_idx = lowbd_txfm_all_1d_zeros_idx[eobx];
-    const transform_1d_avx2 row_txfm =
+    const Transform1dAvx2 row_txfm =
         highbd_txfm_all_1d_zeros_w8_arr[txw_idx][hitx_1d_tab[tx_type]][fun_idx];
-    const transform_1d_avx2 col_txfm =
+    const Transform1dAvx2 col_txfm =
         highbd_txfm_all_1d_zeros_w8_arr[txh_idx][vitx_1d_tab[tx_type]][0];
     int32_t ud_flip, lr_flip;
     get_flip_cfg(tx_type, &ud_flip, &lr_flip);
@@ -6459,7 +6459,7 @@ static void highbd_inv_txfm2d_add_h_identity_avx2(const int32_t *input,
         }
         if (rect_type == 1 || rect_type == -1) {
             av1_round_shift_rect_array_32_avx2(
-                buf0, buf0, (buf_size_nonzero_w_div8 << 3), 0, NewInvSqrt2);
+                buf0, buf0, (buf_size_nonzero_w_div8 << 3), 0, new_inv_sqrt2);
         }
         row_txfm(buf0, buf0, inv_cos_bit_row[txw_idx][txh_idx], 0, bd, -shift[0]);
 

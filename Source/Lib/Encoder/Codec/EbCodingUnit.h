@@ -531,16 +531,10 @@ extern "C" {
         int8_t              best_distortion_index[CU_MAX_COUNT];
     } OisSbResults;
 
-    typedef struct EdgeLcuResults
-    {
-        uint8_t  edge_block_num;
-        uint8_t  isolated_high_intensity_sb; // to be cleanedup
-    } EdgeLcuResults;
-
     typedef struct SuperBlock
     {
         EbDctor                       dctor;
-        struct PictureControlSet     *picture_control_set_ptr;
+        struct PictureControlSet     *pcs_ptr;
 
         CodingUnit                   *final_cu_arr;
         uint32_t                      final_cu_count;

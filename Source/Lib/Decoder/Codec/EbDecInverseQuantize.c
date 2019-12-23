@@ -136,7 +136,7 @@ static INLINE int get_dqv(const int16_t dequant, int coeff_idx, const QmVal *iqm
     return dqv;
 }
 
-int32_t inverse_quantize(DecModCtxt *dec_mod_ctxt, PartitionInfo_t *part, BlockModeInfo *mode,
+int32_t inverse_quantize(DecModCtxt *dec_mod_ctxt, PartitionInfo *part, BlockModeInfo *mode,
     int32_t *level, int32_t *qcoeffs, TxType tx_type, TxSize tx_size, int plane)
 {
     (void)part;

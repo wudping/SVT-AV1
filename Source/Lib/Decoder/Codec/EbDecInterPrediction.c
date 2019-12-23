@@ -67,7 +67,7 @@ static INLINE MV dec_clamp_mv_to_umv_border_sb (
     return clamped_mv;
 }
 
-void svt_make_inter_predictor(PartitionInfo_t *part_info, int32_t ref,
+void svt_make_inter_predictor(PartitionInfo *part_info, int32_t ref,
     void *src, int32_t src_stride, void *dst_mod, int32_t dst_stride,
     EbDecPicBuf *ref_buf, int32_t pre_x, int32_t pre_y, int32_t bw, int32_t bh,
     ConvolveParams *conv_params, int32_t plane, int32_t do_warp)
@@ -188,7 +188,7 @@ void svt_make_inter_predictor(PartitionInfo_t *part_info, int32_t ref,
     }
 }
 
-void svt_make_masked_inter_predictor(PartitionInfo_t *part_info, int32_t ref,
+void svt_make_masked_inter_predictor(PartitionInfo *part_info, int32_t ref,
         void *src, int32_t src_stride, void *dst_ptr, int32_t dst_stride,
         EbDecPicBuf *ref_buf, int32_t pre_x, int32_t pre_y, int32_t bw,
         int32_t bh, ConvolveParams *conv_params, int32_t plane,
@@ -235,7 +235,7 @@ void svt_make_masked_inter_predictor(PartitionInfo_t *part_info, int32_t ref,
 
 }
 
-void av1_combine_interintra(PartitionInfo_t *part_info, BlockSize bsize,
+void av1_combine_interintra(PartitionInfo *part_info, BlockSize bsize,
     int plane, uint8_t *inter_pred, int inter_stride,
     uint8_t *intra_pred, int intra_stride, EbBitDepthEnum bit_depth)
 {
@@ -264,7 +264,7 @@ void av1_combine_interintra(PartitionInfo_t *part_info, BlockSize bsize,
 }
 
 void av1_build_intra_predictors_for_interintra(DecModCtxt *dec_mod_ctxt,
-    PartitionInfo_t *part_info, void *pv_blk_recon_buf, int32_t recon_stride,
+    PartitionInfo *part_info, void *pv_blk_recon_buf, int32_t recon_stride,
     BlockSize bsize, int32_t plane, uint8_t *dst, int dst_stride,
     EbBitDepthEnum bit_depth)
 {
@@ -304,7 +304,7 @@ void av1_build_intra_predictors_for_interintra(DecModCtxt *dec_mod_ctxt,
 
 /* Build interintra_predictors */
 void av1_build_interintra_predictors(DecModCtxt *dec_mod_ctxt,
-    PartitionInfo_t *part_info, void *pred, int32_t stride, int plane,
+    PartitionInfo *part_info, void *pred, int32_t stride, int plane,
     BlockSize bsize, EbBitDepthEnum bit_depth)
 {
     if (bit_depth > EB_8BIT) {
@@ -327,7 +327,7 @@ void av1_build_interintra_predictors(DecModCtxt *dec_mod_ctxt,
 
 
 void svtav1_predict_inter_block_plane(DecModCtxt *dec_mod_ctx,
-    EbDecHandle *dec_hdl, PartitionInfo_t *part_info, int32_t plane,
+    EbDecHandle *dec_hdl, PartitionInfo *part_info, int32_t plane,
     int32_t build_for_obmc, int32_t mi_x, int32_t mi_y,
     void *dst, int32_t dst_stride,
     int32_t some_use_intra, int32_t bit_depth)
@@ -451,7 +451,7 @@ void svtav1_predict_inter_block_plane(DecModCtxt *dec_mod_ctx,
 }
 
 void svtav1_predict_inter_block(DecModCtxt *dec_mod_ctxt,
-    EbDecHandle *dec_hdl, PartitionInfo_t *part_info,
+    EbDecHandle *dec_hdl, PartitionInfo *part_info,
     int32_t mi_row, int32_t mi_col, int32_t num_planes)
 {
     void *blk_recon_buf;

@@ -3,14 +3,16 @@
 * SPDX - License - Identifier: BSD - 2 - Clause - Patent
 */
 
+
+#include "EbDefinitions.h"
+
+
+#ifndef NON_AVX512_SUPPORT
 #include <immintrin.h>
 #include "aom_dsp_rtcd.h"
 #include "EbBitstreamUnit.h"
 #include "EbCdef.h"
-#include "EbDefinitions.h"
 #include "EbMemory_AVX2.h"
-
-#ifndef NON_AVX512_SUPPORT
 
 static INLINE __m512i loadu_u16_8x4_avx512(const uint16_t *const src,
     const uint32_t stride) {

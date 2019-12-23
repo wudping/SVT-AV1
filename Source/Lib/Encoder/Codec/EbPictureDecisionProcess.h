@@ -20,25 +20,25 @@ EbErrorType picture_decision_context_ctor(
 
 extern void* picture_decision_kernel(void *input_ptr);
 
-void DownsampleDecimationInputPicture(
-    PictureParentControlSet *picture_control_set_ptr,
+void downsample_decimation_input_picture(
+    PictureParentControlSet *pcs_ptr,
     EbPictureBufferDesc     *inputPaddedPicturePtr,
     EbPictureBufferDesc     *quarterDecimatedPicturePtr,
     EbPictureBufferDesc     *sixteenthDecimatedPicturePtr);
 
-void PadPictureToMultipleOfMinCuSizeDimensions(
-        SequenceControlSet            *sequence_control_set_ptr,
+void pad_picture_to_multiple_of_min_cu_size_dimensions(
+        SequenceControlSet            *scs_ptr,
         EbPictureBufferDesc           *input_picture_ptr);
 void PicturePreProcessingOperations(
-    PictureParentControlSet       *picture_control_set_ptr,
-    SequenceControlSet            *sequence_control_set_ptr,
+    PictureParentControlSet       *pcs_ptr,
+    SequenceControlSet            *scs_ptr,
     uint32_t                       sb_total_count);
-void PadPictureToMultipleOfLcuDimensions(
+void pad_picture_to_multiple_of_lcu_dimensions(
         EbPictureBufferDesc   *input_padded_picture_ptr);
 
-void GatheringPictureStatistics(
-        SequenceControlSet            *sequence_control_set_ptr,
-        PictureParentControlSet       *picture_control_set_ptr,
+void gathering_picture_statistics(
+        SequenceControlSet            *scs_ptr,
+        PictureParentControlSet       *pcs_ptr,
         EbPictureBufferDesc           *input_picture_ptr,
         EbPictureBufferDesc           *input_padded_picture_ptr,
         EbPictureBufferDesc           *sixteenth_decimated_picture_ptr,

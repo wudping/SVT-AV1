@@ -45,7 +45,7 @@ EbErrorType largest_coding_unit_ctor(
         // Which borderLargestCuSize is not a power of two
 
         // Which borderLargestCuSize is not a power of two
-    larget_coding_unit_ptr->picture_control_set_ptr = picture_control_set;
+    larget_coding_unit_ptr->pcs_ptr = picture_control_set;
 
     larget_coding_unit_ptr->origin_x = sb_origin_x;
     larget_coding_unit_ptr->origin_y = sb_origin_y;

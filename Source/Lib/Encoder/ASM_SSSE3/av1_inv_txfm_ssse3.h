@@ -211,7 +211,7 @@ av1_eob_to_eobxy_32x16_default,
         *eoby = (eob >= eoby_max) ? eoby_max : eob_fill[eob];
     }
 
-    typedef void(*transform_1d_ssse3)(const __m128i *input, __m128i *output,
+    typedef void(*Transform1dSsse3)(const __m128i *input, __m128i *output,
         int8_t cos_bit);
 
     void eb_av1_lowbd_inv_txfm2d_add_ssse3(const int32_t *input,

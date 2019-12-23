@@ -23,11 +23,9 @@ Contains the Decoder Loop Filtering related functions*/
 #include "EbSvtAv1Dec.h"
 #include "EbDecHandle.h"
 #include "EbObuParse.h"
-#include "EbDecProcessFrame.h"
 #include "EbDecUtils.h"
 #include "../../Encoder/Codec/EbDeblockingFilter.h"
 #include "EbDecLF.h"
-#include "EbDecParseHelper.h"
 
 #define FILTER_LEN 4
 
@@ -36,10 +34,10 @@ Contains the Decoder Loop Filtering related functions*/
 static int8_t filter_map[15] = { -1, -1, -1, -1, 0,-1, 1, -1, 2, -1,
                                 -1, -1, -1, -1, 3 };
 
-svt_lbd_filter_tap_fn_t lbd_vert_filter_tap[FILTER_LEN];
-svt_hbd_filter_tap_fn_t hbd_vert_filter_tap[FILTER_LEN];
-svt_lbd_filter_tap_fn_t lbd_horz_filter_tap[FILTER_LEN];
-svt_hbd_filter_tap_fn_t hbd_horz_filter_tap[FILTER_LEN];
+SvtLbdFilterTapFn lbd_vert_filter_tap[FILTER_LEN];
+SvtHbdFilterTapFn hbd_vert_filter_tap[FILTER_LEN];
+SvtLbdFilterTapFn lbd_horz_filter_tap[FILTER_LEN];
+SvtHbdFilterTapFn hbd_horz_filter_tap[FILTER_LEN];
 
 void set_lbd_lf_filter_tap_functions(void)
 {
@@ -121,7 +119,7 @@ void fill_4x4_param_uv(LFBlockParamUV* lf_block_uv, int32_t tu_x, int32_t tu_y,
 }
 
 /*Function to get transform size*/
-static INLINE TxSize dec_get_transform_size(const EDGE_DIR edge_dir, TxSize tx_size) {
+static INLINE TxSize dec_get_transform_size(const EdgeDir edge_dir, TxSize tx_size) {
     /*since in case of chrominance or non-square transorm need to convert
     transform size into transform size in particular direction.
     for vertical edge, filter direction is horizontal, for horizontal
@@ -136,7 +134,7 @@ static INLINE TxSize dec_get_transform_size(const EDGE_DIR edge_dir, TxSize tx_s
 static INLINE TxSize dec_set_lpf_parameters(AV1_DEBLOCKING_PARAMETERS *const params,
     EbPictureBufferDesc *recon_picture_buf, FrameHeader *frm_hdr,
     EbColorConfig *color_config, LFCtxt *lf_ctxt, LoopFilterInfoN *lf_info,
-    const EDGE_DIR edge_dir, const uint32_t x,
+    const EdgeDir edge_dir, const uint32_t x,
     const uint32_t y, const int32_t plane,
     int32_t *sb_delta_lf, int32_t *sb_delta_lf_prev)
 {

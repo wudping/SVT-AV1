@@ -585,7 +585,7 @@ typedef struct FrameHeader {
     //GlobalMotionParams      global_motion_params[ALTREF_FRAME + 1];
 
     /*!< Film Grain Parameters */
-    aom_film_grain_t         film_grain_params;
+    AomFilmGrain             film_grain_params;
 
     int32_t                  frame_refs_short_signaling;
 } FrameHeader;

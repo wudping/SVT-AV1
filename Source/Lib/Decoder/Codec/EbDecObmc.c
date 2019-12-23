@@ -50,7 +50,7 @@ int av1_skip_u4x4_pred_in_obmc(BlockSize bsize, int dir, int32_t sub_x, int32_t 
 const uint8_t *av1_get_obmc_mask(int length);
 
 static INLINE void build_obmc_inter_pred_above(EbDecHandle *dec_handle,
-    PartitionInfo_t *pi, BlockSize bsize, int rel_mi_col, uint8_t above_mi_width,
+    PartitionInfo *pi, BlockSize bsize, int rel_mi_col, uint8_t above_mi_width,
     uint8_t *above_tmp_buf[MAX_MB_PLANE], int above_tmp_stride[MAX_MB_PLANE],
     uint8_t *curr_blk_recon_buf[MAX_MB_PLANE],
     int32_t curr_recon_stride[MAX_MB_PLANE], const int num_planes)
@@ -112,7 +112,7 @@ static INLINE void build_obmc_inter_pred_above(EbDecHandle *dec_handle,
 
 
 static INLINE void build_obmc_inter_pred_left(EbDecHandle *dec_handle,
-    PartitionInfo_t *pi, BlockSize bsize,
+    PartitionInfo *pi, BlockSize bsize,
     int rel_mi_row, uint8_t left_mi_height,
     uint8_t *left_tmp_buf[MAX_MB_PLANE], int left_tmp_stride[MAX_MB_PLANE],
     uint8_t *curr_blk_recon_buf[MAX_MB_PLANE],
@@ -176,7 +176,7 @@ static INLINE void build_obmc_inter_pred_left(EbDecHandle *dec_handle,
 }
 
 static INLINE void dec_build_prediction_by_above_pred(DecModCtxt *dec_mod_ctx,
-    EbDecHandle *dec_handle, PartitionInfo_t *backup_pi, BlockSize bsize,
+    EbDecHandle *dec_handle, PartitionInfo *backup_pi, BlockSize bsize,
     int bw4, int mi_row, int mi_col, int rel_mi_col, uint8_t above_mi_width,
     BlockModeInfo *above_mbmi, uint8_t *tmp_buf[MAX_MB_PLANE], int tmp_stride[MAX_MB_PLANE],
     const int num_planes)
@@ -238,12 +238,12 @@ static INLINE void dec_build_prediction_by_above_pred(DecModCtxt *dec_mod_ctx,
 }
 
 static void dec_build_prediction_by_above_preds(DecModCtxt *dec_mod_ctx, EbDecHandle *dec_handle,
-    PartitionInfo_t *pi, int mi_row, int mi_col,
+    PartitionInfo *pi, int mi_row, int mi_col,
     uint8_t *above_dst_buf[MAX_MB_PLANE],
     int above_dst_stride[MAX_MB_PLANE])
 {
     if (!pi->up_available) return;
-    PartitionInfo_t backup_pi = *pi;
+    PartitionInfo backup_pi = *pi;
 
     // Adjust mb_to_bottom_edge to have the correct value for the OBMC
     // prediction block. This is half the height of the original block,
@@ -321,7 +321,7 @@ static void dec_build_prediction_by_above_preds(DecModCtxt *dec_mod_ctx, EbDecHa
 
 
 static INLINE void dec_build_prediction_by_left_pred(DecModCtxt *dec_mod_ctx,
-    EbDecHandle *dec_handle, PartitionInfo_t *backup_pi, BlockSize bsize,
+    EbDecHandle *dec_handle, PartitionInfo *backup_pi, BlockSize bsize,
     int bh4, int mi_row, int mi_col, int rel_mi_row, uint8_t left_mi_height,
     BlockModeInfo *left_mbmi, uint8_t *tmp_buf[MAX_MB_PLANE], int tmp_stride[MAX_MB_PLANE],
     const int num_planes)
@@ -385,12 +385,12 @@ static INLINE void dec_build_prediction_by_left_pred(DecModCtxt *dec_mod_ctx,
 }
 
 static void dec_build_prediction_by_left_preds(DecModCtxt *dec_mod_ctx,
-    EbDecHandle *dec_handle, PartitionInfo_t *pi, int mi_row, int mi_col,
+    EbDecHandle *dec_handle, PartitionInfo *pi, int mi_row, int mi_col,
     uint8_t *left_dst_buf[MAX_MB_PLANE],
     int left_dst_stride[MAX_MB_PLANE])
 {
     if (!pi->left_available) return;
-    PartitionInfo_t backup_pi = *pi;
+    PartitionInfo backup_pi = *pi;
 
     // Adjust mb_to_right_edge to have the correct value for the OBMC
     // prediction block. This is half the width of the original block,
@@ -460,7 +460,7 @@ static void dec_build_prediction_by_left_preds(DecModCtxt *dec_mod_ctx,
 
 
 void dec_build_obmc_inter_predictors_sb(void *pv_dec_mod_ctxt,
-    EbDecHandle *dec_handle, PartitionInfo_t *pi, int mi_row, int mi_col)
+    EbDecHandle *dec_handle, PartitionInfo *pi, int mi_row, int mi_col)
 {
     DecModCtxt *dec_mod_ctxt = (DecModCtxt *)pv_dec_mod_ctxt;
     uint8_t *dst_buf[MAX_MB_PLANE];
