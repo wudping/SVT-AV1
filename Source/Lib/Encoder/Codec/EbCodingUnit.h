@@ -195,7 +195,7 @@ extern "C" {
         // int interintra_wedge_sign; Always 0
     } InterIntraModeParams;
 
-    typedef struct BlockModeInfo {
+    typedef struct block_mode_info {
         // Common for both INTER and INTRA blocks
         BlockSize          sb_type;
         PredictionMode      mode;
@@ -273,7 +273,7 @@ extern "C" {
         int32_t mi_row;
         int32_t mi_col;
 #endif
-    } BlockModeInfo;
+    } block_mode_info;
 
     typedef struct MbModeInfo
     {
@@ -289,7 +289,7 @@ extern "C" {
         TxSize tx_size;
         uint8_t inter_tx_size[INTER_TX_SIZE_BUF_LEN];
         uint8_t tx_depth;
-        BlockModeInfo block_mi;
+        block_mode_info block_mi;
 #if PAL_SUP
         PaletteModeInfo palette_mode_info;
 #endif

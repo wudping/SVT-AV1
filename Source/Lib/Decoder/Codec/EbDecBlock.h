@@ -130,7 +130,7 @@ typedef struct SBInfo {
 
     int32_t         *sb_coeff[MAX_MB_PLANE];
 
-    BlockModeInfo   *sb_mode_info;
+    block_mode_info   *sb_mode_info;
 
 } SBInfo;
 
@@ -141,17 +141,17 @@ typedef struct PartitionInfo {
     /*!< Specifies the horizontal location of the block in units of 4x4 luma samples. */
     uint16_t        mi_col;
 
-    BlockModeInfo   *mi;
+    block_mode_info   *mi;
 
     SBInfo          *sb_info;
 
-    BlockModeInfo   *left_mbmi;
+    block_mode_info   *left_mbmi;
 
-    BlockModeInfo   *above_mbmi;
+    block_mode_info   *above_mbmi;
 
-    BlockModeInfo   *chroma_left_mbmi;
+    block_mode_info   *chroma_left_mbmi;
 
-    BlockModeInfo   *chroma_above_mbmi;
+    block_mode_info   *chroma_above_mbmi;
 
     /*!< Indicates if the information from the block above cab be used on the luma plane. */
     uint8_t up_available;

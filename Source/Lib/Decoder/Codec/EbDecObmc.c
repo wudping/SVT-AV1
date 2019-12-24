@@ -28,7 +28,7 @@
 #include "../../Encoder/Codec/aom_dsp_rtcd.h"
 
 //This function is present in encoder also, but encoder structures & decoder structures are different.
-static INLINE int dec_is_neighbor_overlappable(const BlockModeInfo *mbmi){
+static INLINE int dec_is_neighbor_overlappable(const block_mode_info *mbmi){
     // TODO: currently intrabc  is not supporting
     return mbmi->use_intrabc || mbmi->ref_frame[0] > INTRA_FRAME;
 }
@@ -37,7 +37,7 @@ static INLINE int dec_is_neighbor_overlappable(const BlockModeInfo *mbmi){
 //    return AOMMIN(block_size_wide[bsize], block_size_high[bsize]) >= 8;
 //}
 
-void av1_modify_neighbor_predictor_for_obmc(BlockModeInfo *mbmi) {
+void av1_modify_neighbor_predictor_for_obmc(block_mode_info *mbmi) {
     mbmi->ref_frame[1] = NONE_FRAME;
     mbmi->inter_inter_compound.type = COMPOUND_AVERAGE;
     return;
@@ -178,7 +178,7 @@ static INLINE void build_obmc_inter_pred_left(EbDecHandle *dec_handle,
 static INLINE void dec_build_prediction_by_above_pred(DecModCtxt *dec_mod_ctx,
     EbDecHandle *dec_handle, PartitionInfo *backup_pi, BlockSize bsize,
     int bw4, int mi_row, int mi_col, int rel_mi_col, uint8_t above_mi_width,
-    BlockModeInfo *above_mbmi, uint8_t *tmp_buf[MAX_MB_PLANE], int tmp_stride[MAX_MB_PLANE],
+    block_mode_info *above_mbmi, uint8_t *tmp_buf[MAX_MB_PLANE], int tmp_stride[MAX_MB_PLANE],
     const int num_planes)
 {
     EbPictureBufferDesc *recon_picture_buf = dec_handle->cur_pic_buf[0]->
@@ -187,7 +187,7 @@ static INLINE void dec_build_prediction_by_above_pred(DecModCtxt *dec_mod_ctx,
     int mi_x, mi_y;
     uint8_t *tmp_recon_buf;
     int32_t tmp_recon_stride;
-    BlockModeInfo bakup_abv_mbmi = *above_mbmi;
+    block_mode_info bakup_abv_mbmi = *above_mbmi;
     backup_pi->mi = &bakup_abv_mbmi;
     av1_modify_neighbor_predictor_for_obmc(backup_pi->mi);
 
@@ -286,7 +286,7 @@ static void dec_build_prediction_by_above_preds(DecModCtxt *dec_mod_ctx, EbDecHa
 
     for (int above_mi_col = mi_col; above_mi_col < end_col && nb_count < nb_max;
         above_mi_col += mi_step) {
-        BlockModeInfo *above_mi = get_cur_mode_info(dec_handle, mi_row-1,
+        block_mode_info *above_mi = get_cur_mode_info(dec_handle, mi_row-1,
             above_mi_col, NULL);
 
         mi_step =
@@ -323,7 +323,7 @@ static void dec_build_prediction_by_above_preds(DecModCtxt *dec_mod_ctx, EbDecHa
 static INLINE void dec_build_prediction_by_left_pred(DecModCtxt *dec_mod_ctx,
     EbDecHandle *dec_handle, PartitionInfo *backup_pi, BlockSize bsize,
     int bh4, int mi_row, int mi_col, int rel_mi_row, uint8_t left_mi_height,
-    BlockModeInfo *left_mbmi, uint8_t *tmp_buf[MAX_MB_PLANE], int tmp_stride[MAX_MB_PLANE],
+    block_mode_info *left_mbmi, uint8_t *tmp_buf[MAX_MB_PLANE], int tmp_stride[MAX_MB_PLANE],
     const int num_planes)
 {
     EbPictureBufferDesc *recon_picture_buf = dec_handle->cur_pic_buf[0]->
@@ -332,7 +332,7 @@ static INLINE void dec_build_prediction_by_left_pred(DecModCtxt *dec_mod_ctx,
     int mi_x, mi_y;
     uint8_t *tmp_recon_buf;
     int32_t tmp_recon_stride;
-    BlockModeInfo bakup_left_mbmi = *left_mbmi;
+    block_mode_info bakup_left_mbmi = *left_mbmi;
     backup_pi->mi = &bakup_left_mbmi;
     av1_modify_neighbor_predictor_for_obmc(backup_pi->mi);
 
@@ -433,7 +433,7 @@ static void dec_build_prediction_by_left_preds(DecModCtxt *dec_mod_ctx,
 
     for (int left_mi_row = mi_row; left_mi_row < end_row && nb_count < nb_max;
         left_mi_row += mi_step) {
-        BlockModeInfo *left_mi =
+        block_mode_info *left_mi =
             get_cur_mode_info(dec_handle, left_mi_row, mi_col-1, NULL);
         mi_step =
             AOMMIN(mi_size_high[left_mi->sb_type], mi_size_high[BLOCK_64X64]);

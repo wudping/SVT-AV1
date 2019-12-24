@@ -63,9 +63,9 @@ void set_segment_id(EbDecHandle *dec_handle, int mi_offset,
 static INLINE int get_tx_size_context(const PartitionInfo *xd,
                                       ParseCtxt *parse_ctxt)
 {
-    const BlockModeInfo *mbmi = xd->mi;
-    const BlockModeInfo *const above_mbmi = xd->above_mbmi;
-    const BlockModeInfo *const left_mbmi = xd->left_mbmi;
+    const block_mode_info *mbmi = xd->mi;
+    const block_mode_info *const above_mbmi = xd->above_mbmi;
+    const block_mode_info *const left_mbmi = xd->left_mbmi;
     const TxSize max_tx_size = max_txsize_rect_lookup[mbmi->sb_type];
     const uint8_t max_tx_wide = tx_size_wide[max_tx_size];
     const uint8_t max_tx_high = tx_size_high[max_tx_size];
@@ -142,8 +142,8 @@ TxSize read_selected_tx_size(PartitionInfo *xd, ParseCtxt *parse_ctxt) {
 }
 
 int get_intra_inter_context(PartitionInfo *xd) {
-    const BlockModeInfo *const above_mbmi = xd->above_mbmi;
-    const BlockModeInfo *const left_mbmi = xd->left_mbmi;
+    const block_mode_info *const above_mbmi = xd->above_mbmi;
+    const block_mode_info *const left_mbmi = xd->left_mbmi;
     const int has_above = xd->up_available;
     const int has_left = xd->left_available;
 
@@ -234,15 +234,15 @@ IntMv gm_get_motion_vector(const GlobalMotionParams *gm, int allow_hp,
     return res;
 }
 
-static INLINE int has_uni_comp_refs(const BlockModeInfo *mbmi) {
+static INLINE int has_uni_comp_refs(const block_mode_info *mbmi) {
   return has_second_ref(mbmi) && (!((mbmi->ref_frame[0] >= BWDREF_FRAME) ^
                                     (mbmi->ref_frame[1] >= BWDREF_FRAME)));
 }
 
 int get_comp_reference_type_context(const PartitionInfo *xd) {
     int pred_context;
-    const BlockModeInfo *const above_mbmi = xd->above_mbmi;
-    const BlockModeInfo *const left_mbmi = xd->left_mbmi;
+    const block_mode_info *const above_mbmi = xd->above_mbmi;
+    const block_mode_info *const left_mbmi = xd->left_mbmi;
     const int above_in_image = xd->up_available;
     const int left_in_image = xd->left_available;
 
@@ -254,7 +254,7 @@ int get_comp_reference_type_context(const PartitionInfo *xd) {
             pred_context = 2;
         }
         else if (above_intra || left_intra) {  // intra/inter
-            const BlockModeInfo *inter_mbmi = above_intra ? left_mbmi : above_mbmi;
+            const block_mode_info *inter_mbmi = above_intra ? left_mbmi : above_mbmi;
 
             if (!has_second_ref(inter_mbmi))  // single pred
                 pred_context = 2;
@@ -296,7 +296,7 @@ int get_comp_reference_type_context(const PartitionInfo *xd) {
         }
     }
     else if (above_in_image || left_in_image) {  // one edge available
-        const BlockModeInfo *edge_mbmi = above_in_image ? above_mbmi : left_mbmi;
+        const block_mode_info *edge_mbmi = above_in_image ? above_mbmi : left_mbmi;
 
         if (!is_inter_block(edge_mbmi)) {  // intra
             pred_context = 2;

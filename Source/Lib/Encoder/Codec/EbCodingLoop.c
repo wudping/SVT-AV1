@@ -2081,7 +2081,7 @@ EB_EXTERN void av1_encode_pass(
     mdcontextPtr = context_ptr->md_context;
     inputPicture = context_ptr->input_samples = (EbPictureBufferDesc*)pcs_ptr->parent_pcs_ptr->enhanced_picture_ptr;
 
-    SbStat                *sb_stat_ptr = &(pcs_ptr->parent_pcs_ptr->sb_stat_array[tbAddr]);
+    sb_stat                *sb_stat_ptr = &(pcs_ptr->parent_pcs_ptr->sb_stat_array[tbAddr]);
     // SB Stats
     uint32_t                  sb_width = MIN(scs_ptr->sb_size_pix, scs_ptr->seq_header.max_frame_width - sb_origin_x);
     uint32_t                  sb_height = MIN(scs_ptr->sb_size_pix, scs_ptr->seq_header.max_frame_height - sb_origin_y);

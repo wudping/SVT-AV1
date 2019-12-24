@@ -45,7 +45,7 @@ typedef struct DecModCtxt {
     CflCtx  cfl_ctx;
 
     /*OBMC context*/
-    ObmcCtx obmc_ctx;
+    ombc_ctx obmc_ctx;
 
     /* TODO: IntraRef Scratch buf! Should be moved to thrd ctxt */
     uint16_t    topNeighArray[64 * 2 + 1];

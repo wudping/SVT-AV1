@@ -275,7 +275,7 @@ EbErrorType CopyConfigurationParameters(
     return return_error;
 }
 
-static EbErrorType AllocateFrameBuffer(EbConfig *config, uint8_t *p_buffer)
+static EbErrorType allocate_frame_buffer(EbConfig *config, uint8_t *p_buffer)
 {
     const int32_t tenBitPackedMode =
         (config->encoder_bit_depth > 8) &&
@@ -366,7 +366,7 @@ EbErrorType AllocateInputBuffers(EbConfig *config, EbAppContext *callback_data)
 
     // Allocate frame buffer for the p_buffer
     if (config->buffered_input == -1)
-        AllocateFrameBuffer(config, callback_data->input_buffer_pool->p_buffer);
+        allocate_frame_buffer(config, callback_data->input_buffer_pool->p_buffer);
 
     // Assign the variables
     callback_data->input_buffer_pool->p_app_private = NULL;

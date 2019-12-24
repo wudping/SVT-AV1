@@ -54,8 +54,8 @@ static INLINE void svt_collect_neighbors_ref_counts(PartitionInfo *pi) {
 
     uint8_t *const ref_counts = pi->neighbors_ref_counts;
 
-    const BlockModeInfo *const above_mbmi = pi->above_mbmi;
-    const BlockModeInfo *const left_mbmi = pi->left_mbmi;
+    const block_mode_info *const above_mbmi = pi->above_mbmi;
+    const block_mode_info *const left_mbmi = pi->left_mbmi;
     const int above_in_image = pi->up_available;
     const int left_in_image = pi->left_available;
 
@@ -81,8 +81,8 @@ static INLINE int is_inside(TileInfo *tile, int mi_col, int mi_row) {
 
 static int get_reference_mode_context(const PartitionInfo *xd) {
     int ctx;
-    const BlockModeInfo *const above_mbmi = xd->above_mbmi;
-    const BlockModeInfo *const left_mbmi = xd->left_mbmi;
+    const block_mode_info *const above_mbmi = xd->above_mbmi;
+    const block_mode_info *const left_mbmi = xd->left_mbmi;
     const int has_above = xd->up_available;
     const int has_left = xd->left_available;
 
@@ -107,7 +107,7 @@ static int get_reference_mode_context(const PartitionInfo *xd) {
             ctx = 4;
     }
     else if (has_above || has_left) {  // one edge available
-        const BlockModeInfo *edge_mbmi = has_above ? above_mbmi : left_mbmi;
+        const block_mode_info *edge_mbmi = has_above ? above_mbmi : left_mbmi;
 
         if (!has_second_ref(edge_mbmi))
             // edge does not use comp pred (0/1)
@@ -430,7 +430,7 @@ int has_newmv(PredictionMode mode) {
 }
 
 static void add_ref_mv_candidate(EbDecHandle *dec_handle,
-    const BlockModeInfo *const candidate, const MvReferenceFrame rf[2],
+    const block_mode_info *const candidate, const MvReferenceFrame rf[2],
     uint8_t *num_mv_found, uint8_t *found_match, uint8_t *newmv_count,
     CandidateMv *ref_mv_stack, IntMv *gm_mv_candidates, int weight)
 {
@@ -531,7 +531,7 @@ static void scan_row_mbmi(EbDecHandle *dec_handle, ParseCtxt *parse_ctx,
         int mv_col = mi_col + delta_col + i;
         if (!is_inside(&parse_ctx->cur_tile_info, mv_col, mv_row))
             break;
-        BlockModeInfo *candidate = get_cur_mode_info(dec_handle,
+        block_mode_info *candidate = get_cur_mode_info(dec_handle,
             mv_row, mv_col, pi->sb_info);
         int len = AOMMIN(bw4, mi_size_wide[candidate->sb_type]);
         const int n4_w = mi_size_wide[candidate->sb_type];
@@ -580,7 +580,7 @@ static void scan_col_mbmi(EbDecHandle *dec_handle, ParseCtxt *parse_ctx,
         int mv_col = mi_col + delta_col;
         if (!is_inside(&parse_ctx->cur_tile_info, mv_col, mv_row))
             break;
-        BlockModeInfo *candidate = get_cur_mode_info(dec_handle,
+        block_mode_info *candidate = get_cur_mode_info(dec_handle,
             mv_row, mv_col, pi->sb_info);
         int len = AOMMIN(bh4, mi_size_high[candidate->sb_type]);
         const int n4_h = mi_size_high[candidate->sb_type];
@@ -615,7 +615,7 @@ static void scan_blk_mbmi(EbDecHandle *dec_handle, ParseCtxt *parse_ctx,
     int weight = 4;
 
     if (is_inside(&parse_ctx->cur_tile_info, mv_col, mv_row)) {
-        BlockModeInfo * candidate = get_cur_mode_info(dec_handle,
+        block_mode_info * candidate = get_cur_mode_info(dec_handle,
             mv_row, mv_col, pi->sb_info);
 
         add_ref_mv_candidate(dec_handle, candidate, rf, num_mv_found, found_match,
@@ -773,7 +773,7 @@ static int add_tpl_ref_mv(EbDecHandle *dec_handle, ParseCtxt *parse_ctx,
     return 1;
 }
 
-static void add_extra_mv_candidate(BlockModeInfo * candidate, EbDecHandle *dec_handle,
+static void add_extra_mv_candidate(block_mode_info * candidate, EbDecHandle *dec_handle,
     MvReferenceFrame *rf, IntMv ref_id[2][2], int ref_id_count[2],
     IntMv ref_diff[2][2], int ref_diff_count[2])
 {
@@ -802,7 +802,7 @@ static void add_extra_mv_candidate(BlockModeInfo * candidate, EbDecHandle *dec_h
     }
 }
 
-static void process_single_ref_mv_candidate(BlockModeInfo * candidate,
+static void process_single_ref_mv_candidate(block_mode_info * candidate,
     EbDecHandle *dec_handle, MvReferenceFrame ref_frame,
     uint8_t refmv_count[MODE_CTX_REF_FRAMES],
     CandidateMv ref_mv_stack[][MAX_REF_MV_STACK_SIZE])
@@ -1042,7 +1042,7 @@ static void dec_setup_ref_mv_list(EbDecHandle *dec_handle,
 
                 if (!is_inside(&parse_ctx->cur_tile_info, mv_col, mv_row)) break;
 
-                BlockModeInfo *nbr = get_cur_mode_info(dec_handle,
+                block_mode_info *nbr = get_cur_mode_info(dec_handle,
                     mv_row, mv_col, pi->sb_info);
 
                 if (rf[1] != NONE_FRAME)
@@ -1258,7 +1258,7 @@ static INLINE uint8_t get_drl_ctx(const CandidateMv *ref_mv_stack, int ref_idx) 
 }
 
 static void read_drl_idx(ParseCtxt *parse_ctxt, PartitionInfo *pi,
-    BlockModeInfo *mbmi, int num_mv_found)
+    block_mode_info *mbmi, int num_mv_found)
 {
     SvtReader *r = &parse_ctxt->r;
     uint8_t ref_frame_type = av1_ref_frame_type(mbmi->ref_frame);
@@ -1356,7 +1356,7 @@ static INLINE int assign_mv(ParseCtxt *parse_ctxt, PartitionInfo *pi,
     int is_compound, int allow_hp)
 {
     SvtReader *r = &parse_ctxt->r;
-    BlockModeInfo *mbmi = pi->mi;
+    block_mode_info *mbmi = pi->mi;
 
     if (parse_ctxt->frame_header->force_integer_mv)
         allow_hp = MV_SUBPEL_NONE;
@@ -1526,7 +1526,7 @@ void assign_intrabc_mv(ParseCtxt *parse_ctxt,
     IntMv ref_mvs[INTRA_FRAME + 1][MAX_MV_REF_CANDIDATES],
     PartitionInfo *pi)
 {
-    BlockModeInfo *mbmi = pi->mi;
+    block_mode_info *mbmi = pi->mi;
     IntMv nearestmv, nearmv;
     svt_find_best_ref_mvs(0, ref_mvs[INTRA_FRAME], &nearestmv, &nearmv, 0);
     IntMv dv_ref = nearestmv.as_int == 0 ? nearmv : nearestmv;
@@ -1542,7 +1542,7 @@ void assign_intrabc_mv(ParseCtxt *parse_ctxt,
 }
 
 
-void read_interintra_mode(ParseCtxt *parse_ctxt, BlockModeInfo *mbmi) {
+void read_interintra_mode(ParseCtxt *parse_ctxt, block_mode_info *mbmi) {
     SvtReader *r = &parse_ctxt->r;
     FRAME_CONTEXT *frm_ctx = &parse_ctxt->cur_tile_ctx;
     BlockSize bsize = mbmi->sb_type;
@@ -1573,7 +1573,7 @@ void read_interintra_mode(ParseCtxt *parse_ctxt, BlockModeInfo *mbmi) {
     }
 }
 
-static INLINE void add_samples(BlockModeInfo *mbmi, int *pts, int *pts_inref,
+static INLINE void add_samples(block_mode_info *mbmi, int *pts, int *pts_inref,
     int row_offset, int sign_r, int col_offset, int sign_c)
 {
     int bw = block_size_wide[mbmi->sb_type];
@@ -1593,7 +1593,7 @@ int find_warp_samples(EbDecHandle *dec_handle, TileInfo *tile, PartitionInfo *pi
     int mi_row = pi->mi_row;
     int mi_col = pi->mi_col;
 
-    BlockModeInfo *const mbmi0 = pi->mi;
+    block_mode_info *const mbmi0 = pi->mi;
     int ref_frame = mbmi0->ref_frame[0];
     int up_available = pi->up_available;
     int left_available = pi->left_available;
@@ -1606,7 +1606,7 @@ int find_warp_samples(EbDecHandle *dec_handle, TileInfo *tile, PartitionInfo *pi
 
     // scan the nearest above rows
     if (up_available) {
-        BlockModeInfo *mbmi = get_cur_mode_info(dec_handle,
+        block_mode_info *mbmi = get_cur_mode_info(dec_handle,
             mi_row - 1, mi_col, pi->sb_info);
         uint8_t n4_w = mi_size_wide[mbmi->sb_type];
 
@@ -1649,7 +1649,7 @@ int find_warp_samples(EbDecHandle *dec_handle, TileInfo *tile, PartitionInfo *pi
     // scan the nearest left columns
     if (left_available) {
 
-        BlockModeInfo *mbmi = get_cur_mode_info(dec_handle,
+        block_mode_info *mbmi = get_cur_mode_info(dec_handle,
             mi_row, mi_col - 1, pi->sb_info);
         uint8_t n4_h = mi_size_high[mbmi->sb_type];
 
@@ -1691,7 +1691,7 @@ int find_warp_samples(EbDecHandle *dec_handle, TileInfo *tile, PartitionInfo *pi
     // Top-left block
     if (do_tl && left_available && up_available) {
 
-        BlockModeInfo *mbmi = get_cur_mode_info(dec_handle,
+        block_mode_info *mbmi = get_cur_mode_info(dec_handle,
             mi_row - 1, mi_col - 1, pi->sb_info);
 
         if (mbmi->ref_frame[0] == ref_frame && mbmi->ref_frame[1] == NONE_FRAME) {
@@ -1712,7 +1712,7 @@ int find_warp_samples(EbDecHandle *dec_handle, TileInfo *tile, PartitionInfo *pi
         int mv_col = mi_col + b4_w;
 
         if (is_inside(tile, mv_col, mv_row)) {
-            BlockModeInfo *mbmi =
+            block_mode_info *mbmi =
                 get_cur_mode_info(dec_handle,
                     mv_row, mv_col, pi->sb_info);
 
@@ -1734,14 +1734,14 @@ int has_overlappable_cand(EbDecHandle *dec_handle, ParseCtxt *parse_ctx,
     int mi_row = pi->mi_row;
     int mi_col = pi->mi_col;
     const TileInfo *const tile = &parse_ctx->cur_tile_info;
-    BlockModeInfo *mbmi = pi->mi;
+    block_mode_info *mbmi = pi->mi;
     if (!is_motion_variation_allowed_bsize(mbmi->sb_type)) return 0;
 
     if (pi->up_available) {
         int w4 = mi_size_wide[mbmi->sb_type];
         int x4 = mi_col;
         while (x4 < AOMMIN(tile->mi_col_end, mi_col + w4)) {
-            BlockModeInfo *top_nb_mode = get_cur_mode_info(dec_handle,
+            block_mode_info *top_nb_mode = get_cur_mode_info(dec_handle,
                 mi_row - 1, x4 | 1, pi->sb_info);
             x4 += AOMMAX(2, mi_size_wide[top_nb_mode->sb_type] >> 2);
             if (is_inter_block(top_nb_mode))
@@ -1752,7 +1752,7 @@ int has_overlappable_cand(EbDecHandle *dec_handle, ParseCtxt *parse_ctx,
         int h4 = mi_size_high[mbmi->sb_type];
         int y4 = mi_row;
         while (y4 < AOMMIN(tile->mi_row_end, mi_row + h4)) {
-            BlockModeInfo *left_nb_mode = get_cur_mode_info(dec_handle,
+            block_mode_info *left_nb_mode = get_cur_mode_info(dec_handle,
                 y4 | 1, mi_col - 1, pi->sb_info);
             y4 += AOMMAX(2, mi_size_high[left_nb_mode->sb_type] >> 2);
             if (is_inter_block(left_nb_mode))
@@ -1766,7 +1766,7 @@ static INLINE MotionMode is_motion_mode_allowed(EbDecHandle *dec_handle,
     ParseCtxt *parse_ctx, GlobalMotionParams *gm_params, PartitionInfo *pi,
     int allow_warped_motion)
 {
-    BlockModeInfo *mbmi = pi->mi;
+    block_mode_info *mbmi = pi->mi;
     if (dec_handle->frame_header.force_integer_mv == 0) {
         const TransformationType gm_type = gm_params[mbmi->ref_frame[0]].gm_type;
         if (is_global_mv_block(mbmi->mode, mbmi->sb_type, gm_type))
@@ -1801,7 +1801,7 @@ MotionMode read_motion_mode(EbDecHandle *dec_handle, ParseCtxt *parse_ctxt,
     FRAME_CONTEXT *frm_ctx = &parse_ctxt->cur_tile_ctx;
     FrameHeader *frame_info = &dec_handle->frame_header;
     int allow_warped_motion = frame_info->allow_warped_motion;
-    BlockModeInfo *mbmi = pi->mi;
+    block_mode_info *mbmi = pi->mi;
 
     if (dec_handle->frame_header.is_motion_mode_switchable == 0) return SIMPLE_TRANSLATION;
     if (mbmi->skip_mode) return SIMPLE_TRANSLATION;
@@ -1830,8 +1830,8 @@ MotionMode read_motion_mode(EbDecHandle *dec_handle, ParseCtxt *parse_ctxt,
 static INLINE int get_comp_group_idx_context(ParseCtxt *parse_ctxt,
     const PartitionInfo *xd)
 {
-    const BlockModeInfo *const above_mi = xd->above_mbmi;
-    const BlockModeInfo *const left_mi = xd->left_mbmi;
+    const block_mode_info *const above_mi = xd->above_mbmi;
+    const block_mode_info *const left_mi = xd->left_mbmi;
     int above_ctx = 0, left_ctx = 0;
 
     if (above_mi) {
@@ -1856,7 +1856,7 @@ static INLINE int get_comp_group_idx_context(ParseCtxt *parse_ctxt,
 }
 
 int get_comp_index_context(EbDecHandle *dec_handle, PartitionInfo *pi) {
-    BlockModeInfo *mbmi = pi->mi;
+    block_mode_info *mbmi = pi->mi;
     SeqHeader *seq_params = &dec_handle->seq_header;
     FrameHeader *frm_header = &dec_handle->frame_header;
 
@@ -1874,8 +1874,8 @@ int get_comp_index_context(EbDecHandle *dec_handle, PartitionInfo *pi) {
     int bck = abs(get_relative_dist(&seq_params->order_hint_info,
         cur_frame_index, bck_frame_index));
 
-    const BlockModeInfo *const above_mi = pi->above_mbmi;
-    const BlockModeInfo *const left_mi = pi->left_mbmi;
+    const block_mode_info *const above_mi = pi->above_mbmi;
+    const block_mode_info *const left_mi = pi->left_mbmi;
 
     int above_ctx = 0, left_ctx = 0;
     const int offset = (fwd == bck);
@@ -1919,7 +1919,7 @@ void read_compound_type(EbDecHandle *dec_handle, ParseCtxt *parse_ctxt,
     PartitionInfo *pi)
 {
     SvtReader *r = &parse_ctxt->r;
-    BlockModeInfo *mbmi = pi->mi;
+    block_mode_info *mbmi = pi->mi;
     BlockSize bsize = mbmi->sb_type;
     int32_t comp_group_idx = 0;
     mbmi->compound_idx = 1;
@@ -1987,7 +1987,7 @@ static INLINE int is_nontrans_global_motion(PartitionInfo *pi,
     GlobalMotionParams *gm_params)
 {
     int ref;
-    BlockModeInfo * mbmi = pi->mi;
+    block_mode_info * mbmi = pi->mi;
     // First check if all modes are GLOBALMV
     if (mbmi->mode != GLOBALMV && mbmi->mode != GLOBAL_GLOBALMV) return 0;
 
@@ -2004,14 +2004,14 @@ static INLINE int is_nontrans_global_motion(PartitionInfo *pi,
 static INLINE int av1_is_interp_needed(PartitionInfo *pi,
     GlobalMotionParams *gm_params)
 {
-    BlockModeInfo * mbmi = pi->mi;
+    block_mode_info * mbmi = pi->mi;
     if (mbmi->skip_mode) return 0;
     if (mbmi->motion_mode == WARPED_CAUSAL) return 0;
     if (is_nontrans_global_motion(pi, gm_params)) return 0;
     return 1;
 }
 
-static InterpFilter get_ref_filter_type(const BlockModeInfo *ref_mbmi,
+static InterpFilter get_ref_filter_type(const block_mode_info *ref_mbmi,
     int dir, MvReferenceFrame ref_frame)
 {
     return ((ref_mbmi->ref_frame[0] == ref_frame ||
@@ -2021,7 +2021,7 @@ static InterpFilter get_ref_filter_type(const BlockModeInfo *ref_mbmi,
 }
 
 int get_context_interp(PartitionInfo *pi, int dir) {
-    const BlockModeInfo *const mbmi = pi->mi;
+    const block_mode_info *const mbmi = pi->mi;
     const int ctx_offset =
         (mbmi->ref_frame[1] > INTRA_FRAME) * INTER_FILTER_COMP_OFFSET;
     assert(dir == 0 || dir == 1);
@@ -2059,7 +2059,7 @@ int get_context_interp(PartitionInfo *pi, int dir) {
 void inter_block_mode_info(EbDecHandle *dec_handle, ParseCtxt *parse_ctxt,
     PartitionInfo* pi)
 {
-    BlockModeInfo *mbmi = pi->mi;
+    block_mode_info *mbmi = pi->mi;
     SvtReader *r = &parse_ctxt->r;
     const int allow_hp = dec_handle->frame_header.allow_high_precision_mv;
     IntMv ref_mvs[MODE_CTX_REF_FRAMES][MAX_MV_REF_CANDIDATES] = { { { 0 } } };
@@ -2308,7 +2308,7 @@ void palette_tokens(EbDecHandle *dec_handle, ParseCtxt *parse_ctx,
 {
     int mi_row = pi->mi_row;
     int mi_col = pi->mi_col;
-    BlockModeInfo *mbmi = pi->mi;
+    block_mode_info *mbmi = pi->mi;
     BlockSize bsize = mbmi->sb_type;
     FRAME_CONTEXT *frm_ctx = &parse_ctx->cur_tile_ctx;
     SvtReader *r = &parse_ctx->r;

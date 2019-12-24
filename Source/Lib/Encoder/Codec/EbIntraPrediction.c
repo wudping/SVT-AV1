@@ -26,7 +26,7 @@
 
 void *eb_aom_memset16(void *dest, int32_t val, size_t length);
 
-int32_t is_inter_block(const BlockModeInfo *mbmi);
+int32_t is_inter_block(const block_mode_info *mbmi);
 
 // Some basic checks on weights for smooth predictor.
 #define sm_weights_sanity_checks(weights_w, weights_h, weights_scale, \
@@ -50,7 +50,7 @@ static PartitionType from_shape_to_part[] = {
     PARTITION_VERT_4,
     PARTITION_SPLIT
 };
-int is_smooth(const BlockModeInfo *block_mi, int plane) {
+int is_smooth(const block_mode_info *block_mi, int plane) {
     if (plane == 0) {
         const PredictionMode mode = block_mi->mode;
         return (mode == SMOOTH_PRED || mode == SMOOTH_V_PRED ||

@@ -157,8 +157,8 @@ static EbErrorType init_master_frame_ctxt(EbDecHandle  *dec_handle_ptr) {
             (num_sb * sizeof(SBInfo)), EB_N_PTR);
 
         /* ModeInfo str allocation at 4x4 level */
-        EB_MALLOC_DEC(BlockModeInfo*, cur_frame_buf->mode_info,
-                    (num_sb * num_mis_in_sb * sizeof(BlockModeInfo)), EB_N_PTR);
+        EB_MALLOC_DEC(block_mode_info*, cur_frame_buf->mode_info,
+                    (num_sb * num_mis_in_sb * sizeof(block_mode_info)), EB_N_PTR);
 
         /* TransformInfo str allocation at 4x4 level
            TO-DO optimize memory based on the chroma subsampling.*/

@@ -54,7 +54,7 @@ typedef struct LFCtxt {
 
 void fill_4x4_param_luma(LFBlockParamL* lf_block_l,
     int32_t tu_x, int32_t tu_y, int32_t stride,
-    TxSize tx_size, BlockModeInfo *mode_info);
+    TxSize tx_size, block_mode_info *mode_info);
 
 void fill_4x4_param_uv(LFBlockParamUV* lf_block_uv, int32_t tu_x, int32_t tu_y,
     int32_t stride, TxSize tx_size, int32_t sub_x, int32_t sub_y);

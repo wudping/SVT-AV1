@@ -72,7 +72,7 @@ void svt_make_inter_predictor(PartitionInfo *part_info, int32_t ref,
     EbDecPicBuf *ref_buf, int32_t pre_x, int32_t pre_y, int32_t bw, int32_t bh,
     ConvolveParams *conv_params, int32_t plane, int32_t do_warp)
 {
-    const BlockModeInfo *mi = part_info->mi;
+    const block_mode_info *mi = part_info->mi;
     const int32_t is_intrabc = is_intrabc_block(mi);
 
     const int32_t ss_x = plane ? part_info->subsampling_x : 0;
@@ -239,7 +239,7 @@ void av1_combine_interintra(PartitionInfo *part_info, BlockSize bsize,
     int plane, uint8_t *inter_pred, int inter_stride,
     uint8_t *intra_pred, int intra_stride, EbBitDepthEnum bit_depth)
 {
-    BlockModeInfo *mi = part_info->mi;
+    block_mode_info *mi = part_info->mi;
     int32_t sub_x = (plane > 0) ? part_info->subsampling_x : 0;
     int32_t sub_y = (plane > 0) ? part_info->subsampling_y : 0;
     const BlockSize plane_bsize = get_plane_block_size(bsize, sub_x, sub_y);
@@ -268,7 +268,7 @@ void av1_build_intra_predictors_for_interintra(DecModCtxt *dec_mod_ctxt,
     BlockSize bsize, int32_t plane, uint8_t *dst, int dst_stride,
     EbBitDepthEnum bit_depth)
 {
-    BlockModeInfo *mi = part_info->mi;
+    block_mode_info *mi = part_info->mi;
     int32_t sub_x = (plane > 0) ? part_info->subsampling_x : 0;
     int32_t sub_y = (plane > 0) ? part_info->subsampling_y : 0;
     BlockSize plane_bsize = get_plane_block_size(bsize, sub_x, sub_y);
@@ -332,7 +332,7 @@ void svtav1_predict_inter_block_plane(DecModCtxt *dec_mod_ctx,
     void *dst, int32_t dst_stride,
     int32_t some_use_intra, int32_t bit_depth)
 {
-    const BlockModeInfo *mi = part_info->mi;
+    const block_mode_info *mi = part_info->mi;
     const FrameHeader *cur_frm_hdr = dec_mod_ctx->frame_header;
     SeqHeader *seq_header = dec_mod_ctx->seq_header;
     int32_t is_compound = has_second_ref(mi);
@@ -478,7 +478,7 @@ void svtav1_predict_inter_block(DecModCtxt *dec_mod_ctxt,
 
         for (i = row_start; i <= row_end; i++) {
             for (j = col_start; j <= col_end; j++) {
-                BlockModeInfo *mode_info = get_cur_mode_info(dec_hdl,
+                block_mode_info *mode_info = get_cur_mode_info(dec_hdl,
                     i, j, part_info->sb_info);
                 if (mode_info->ref_frame[0] == INTRA_FRAME)
                     some_use_intra = 1;

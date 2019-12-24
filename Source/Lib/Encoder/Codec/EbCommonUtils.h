@@ -67,7 +67,7 @@ static INLINE PredictionMode get_uv_mode(UvPredictionMode mode) {
     return uv2y[mode];
 }
 
-static INLINE TxType intra_mode_to_tx_type(const BlockModeInfo *mbmi, PlaneType plane_type) {
+static INLINE TxType intra_mode_to_tx_type(const block_mode_info *mbmi, PlaneType plane_type) {
     static const TxType _intra_mode_to_tx_type[INTRA_MODES] = {
         DCT_DCT,    // DC
         ADST_DCT,   // V

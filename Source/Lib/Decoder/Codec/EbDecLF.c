@@ -68,7 +68,7 @@ void set_hbd_lf_filter_tap_functions(void)
 /*Population of neighbour block LUMA params for each 4x4 block*/
 void fill_4x4_param_luma(LFBlockParamL* lf_block_l,
     int32_t tu_x, int32_t tu_y, int32_t stride,
-    TxSize tx_size, BlockModeInfo *mode_info)
+    TxSize tx_size, block_mode_info *mode_info)
 {
     const int txw = tx_size_wide_unit[tx_size];
     const int txh = tx_size_high_unit[tx_size];

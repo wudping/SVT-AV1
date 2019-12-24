@@ -89,7 +89,7 @@ typedef struct ParseCtxt {
     uint16_t        first_tu_offset[MAX_MB_PLANE - 1];
 
     /* TODO: Points to the cur ModeInfo_t in SB. Should be moved out */
-    BlockModeInfo   *cur_mode_info;
+    block_mode_info   *cur_mode_info;
     /* TODO: Points to the cur ModeInfo_t in SB. Should be moved out */
     int32_t         cur_mode_info_cnt;
     /* TODO: cur SB row idx. Should be moved out */

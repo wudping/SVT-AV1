@@ -15,7 +15,7 @@ void setup_segmentation_dequant(DecModCtxt *dec_mod_ctxt);
 void av1_inverse_qm_init(DecModCtxt *dec_mod_ctxt, SeqHeader *seq_header);
 void update_dequant(DecModCtxt *dec_mod_ctxt, SBInfo *sb_info);
 int32_t inverse_quantize(DecModCtxt *dec_mod_ctxt, PartitionInfo *part,
-    BlockModeInfo *mode, int32_t *level, int32_t *qcoeffs,
+    block_mode_info *mode, int32_t *level, int32_t *qcoeffs,
     TxType tx_type, TxSize tx_size, int plane);
 
 #endif // EbDecInverseQuantize_h

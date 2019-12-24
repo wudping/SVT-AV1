@@ -81,7 +81,7 @@ typedef struct EbDecPicBuf {
 typedef struct CurFrameBuf {
     SBInfo          *sb_info;
 
-    BlockModeInfo   *mode_info;
+    block_mode_info   *mode_info;
 
     int32_t         *coeff[MAX_MB_PLANE];
 

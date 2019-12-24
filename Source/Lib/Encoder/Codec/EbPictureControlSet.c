@@ -276,7 +276,7 @@ EbErrorType picture_control_set_ctor(
     PictureControlSet *object_ptr,
     EbPtr object_init_data_ptr)
 {
-    PictureControlSetInitData *initDataPtr = (PictureControlSetInitData*)object_init_data_ptr;
+    picture_control_set_init_data *initDataPtr = (picture_control_set_init_data*)object_init_data_ptr;
 
     EbPictureBufferDescInitData input_picture_buffer_desc_init_data;
     EbPictureBufferDescInitData coeffBufferDescInitData;
@@ -1154,7 +1154,7 @@ EbErrorType picture_parent_control_set_ctor(
     PictureParentControlSet *object_ptr,
     EbPtr object_init_data_ptr)
 {
-    PictureControlSetInitData *initDataPtr = (PictureControlSetInitData*)object_init_data_ptr;
+    picture_control_set_init_data *initDataPtr = (picture_control_set_init_data*)object_init_data_ptr;
     EbErrorType return_error = EB_ErrorNone;
     const uint16_t pictureLcuWidth = (uint16_t)((initDataPtr->picture_width + initDataPtr->sb_sz - 1) / initDataPtr->sb_sz);
     const uint16_t pictureLcuHeight = (uint16_t)((initDataPtr->picture_height + initDataPtr->sb_sz - 1) / initDataPtr->sb_sz);

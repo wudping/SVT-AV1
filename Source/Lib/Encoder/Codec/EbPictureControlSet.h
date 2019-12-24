@@ -550,7 +550,7 @@ extern "C" {
         uint32_t          grad;
     } CuStat;
 
-    typedef struct SbStat
+    typedef struct sb_stat
     {
         CuStat          cu_stat_array[CU_MAX_COUNT];
         uint8_t           stationary_edge_over_time_flag;
@@ -559,7 +559,7 @@ extern "C" {
         uint8_t           check1_for_logo_stationary_edge_over_time_flag;
         uint8_t           check2_for_logo_stationary_edge_over_time_flag;
         uint8_t           low_dist_logo;
-    } SbStat;
+    } sb_stat;
 
     //CHKN
     // Add the concept of PictureParentControlSet which is a subset of the old PictureControlSet.
@@ -677,7 +677,7 @@ extern "C" {
         int16_t                               non_moving_index_max_distance;
         uint16_t                              qp_scaling_average_complexity;
         EbBool                                dark_back_groundlight_fore_ground;
-        SbStat                            *sb_stat_array;
+        sb_stat                            *sb_stat_array;
         uint8_t                               very_low_var_pic_flag;
         uint32_t                              intra_complexity_min[4];
         uint32_t                              intra_complexity_max[4];
@@ -928,7 +928,7 @@ extern "C" {
 
     } PictureParentControlSet;
 
-    typedef struct PictureControlSetInitData
+    typedef struct picture_control_set_init_data
     {
         uint16_t                           picture_width;
         uint16_t                           picture_height;
@@ -960,7 +960,7 @@ extern "C" {
         uint8_t                            nsq_present;
         uint8_t                            over_boundary_block_mode;
         uint8_t                            mfmv;
-    } PictureControlSetInitData;
+    } picture_control_set_init_data;
 
     typedef struct Av1Comp
     {

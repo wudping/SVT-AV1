@@ -3570,9 +3570,9 @@ void edge_detection_mean_luma_chroma16x16(
     // The values are calculated for every 4th frame
     if ((pcs_ptr->picture_number & 3) == 0) {
         for (sb_index = 0; sb_index < totalLcuCount; sb_index++) {
-            SbStat *sb_stat_ptr = &pcs_ptr->sb_stat_array[sb_index];
+            sb_stat *sb_stat_ptr = &pcs_ptr->sb_stat_array[sb_index];
 
-            EB_MEMSET(sb_stat_ptr, 0, sizeof(SbStat));
+            EB_MEMSET(sb_stat_ptr, 0, sizeof(sb_stat));
             SbParams     *sb_params = &scs_ptr->sb_params_array[sb_index];
             if (sb_params->potential_logo_sb &&sb_params->is_complete_sb)
 
@@ -3634,7 +3634,7 @@ void edge_detection_mean_luma_chroma16x16(
         for (sb_index = 0; sb_index < totalLcuCount; sb_index++) {
             SbParams *sb_params = &scs_ptr->sb_params_array[sb_index];
             if (sb_params->potential_logo_sb &&sb_params->is_complete_sb) {
-                SbStat *sb_stat_ptr = &pcs_ptr->sb_stat_array[sb_index];
+                sb_stat *sb_stat_ptr = &pcs_ptr->sb_stat_array[sb_index];
 
                 uint32_t rasterScanCuIndex;
                 for (rasterScanCuIndex = RASTER_SCAN_CU_INDEX_16x16_0; rasterScanCuIndex <= RASTER_SCAN_CU_INDEX_16x16_15; rasterScanCuIndex++)
@@ -3644,9 +3644,9 @@ void edge_detection_mean_luma_chroma16x16(
     }
     else {
         for (sb_index = 0; sb_index < totalLcuCount; sb_index++) {
-            SbStat *sb_stat_ptr = &pcs_ptr->sb_stat_array[sb_index];
+            sb_stat *sb_stat_ptr = &pcs_ptr->sb_stat_array[sb_index];
 
-            EB_MEMSET(sb_stat_ptr, 0, sizeof(SbStat));
+            EB_MEMSET(sb_stat_ptr, 0, sizeof(sb_stat));
         }
     }
 }

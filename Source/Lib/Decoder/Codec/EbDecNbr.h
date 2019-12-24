@@ -14,17 +14,17 @@ void update_nbrs_before_sb(FrameMiMap *frame_mi_map, int32_t sb_col);
 
 void update_nbrs_after_sb(FrameMiMap *frame_mi_map, int32_t sb_col);
 #endif
-BlockModeInfo* get_cur_mode_info(void *pv_dec_handle,
+block_mode_info* get_cur_mode_info(void *pv_dec_handle,
     int mi_row, int mi_col, SBInfo *sb_info);
 
 void update_block_nbrs(EbDecHandle *dec_handle,
     ParseCtxt *parse_ctx, int mi_row, int mi_col,
     BlockSize subsize);
 
-BlockModeInfo * get_left_mode_info(EbDecHandle *dec_handle,
+block_mode_info * get_left_mode_info(EbDecHandle *dec_handle,
     int mi_row, int mi_col, SBInfo *sb_info);
 
-BlockModeInfo* get_top_mode_info(EbDecHandle *dec_handle,
+block_mode_info* get_top_mode_info(EbDecHandle *dec_handle,
     int mi_row, int mi_col, SBInfo *sb_info);
 
 #endif //EbDecNbr_h

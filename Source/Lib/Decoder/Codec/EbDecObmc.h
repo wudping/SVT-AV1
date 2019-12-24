@@ -16,7 +16,7 @@
 
 #define MAX_OBMC_LEN 32
 
-typedef struct ObmcCtx {
+typedef struct ombc_ctx {
     /*we can reduce memory size by fixing one side to 32, because
     for left or above pred one side max is 32 only*/
     /*Note : If we change one side DIM to 32,make sure strides also changed appropriately*/
@@ -25,7 +25,7 @@ typedef struct ObmcCtx {
     int dst_stride[MAX_MB_PLANE];
 
 
-} ObmcCtx;
+} ombc_ctx;
 
 static const int max_neighbor_obmc[6] = { 0, 1, 2, 3, 4, 4 };
 

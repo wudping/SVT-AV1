@@ -948,7 +948,7 @@ EB_API EbErrorType eb_init_encoder(EbComponentType *svt_enc_component)
 
     for (instance_index = 0; instance_index < enc_handle_ptr->encode_instance_total_count; ++instance_index) {
         // The segment Width & Height Arrays are in units of LCUs, not samples
-        PictureControlSetInitData inputData;
+        picture_control_set_init_data inputData;
 
         inputData.picture_width = enc_handle_ptr->sequence_control_set_instance_array[instance_index]->scs_ptr->max_input_luma_width;
         inputData.picture_height = enc_handle_ptr->sequence_control_set_instance_array[instance_index]->scs_ptr->max_input_luma_height;
@@ -988,7 +988,7 @@ EB_API EbErrorType eb_init_encoder(EbComponentType *svt_enc_component)
 
     for (instance_index = 0; instance_index < enc_handle_ptr->encode_instance_total_count; ++instance_index) {
         // The segment Width & Height Arrays are in units of LCUs, not samples
-        PictureControlSetInitData inputData;
+        picture_control_set_init_data inputData;
         unsigned i;
 
         inputData.enc_dec_segment_col = 0;

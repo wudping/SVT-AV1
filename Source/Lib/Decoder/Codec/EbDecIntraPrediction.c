@@ -36,14 +36,14 @@ int32_t dec_get_filt_type(const PartitionInfo *part_info, int32_t plane) {
     int ab_sm, le_sm;
 
     if (plane == 0) {
-        const BlockModeInfo *ab = part_info->above_mbmi;
-        const BlockModeInfo *le = part_info->left_mbmi;
+        const block_mode_info *ab = part_info->above_mbmi;
+        const block_mode_info *le = part_info->left_mbmi;
         ab_sm = ab ? is_smooth(ab, plane) : 0;
         le_sm = le ? is_smooth(le, plane) : 0;
     }
     else {
-        const BlockModeInfo *ab = part_info->chroma_above_mbmi;
-        const BlockModeInfo *le = part_info->chroma_left_mbmi;
+        const block_mode_info *ab = part_info->chroma_above_mbmi;
+        const block_mode_info *le = part_info->chroma_left_mbmi;
         ab_sm = ab ? is_smooth(ab, plane) : 0;
         le_sm = le ? is_smooth(le, plane) : 0;
     }
@@ -183,7 +183,7 @@ static INLINE CflAllowedType is_cfl_allowed_with_frame_header(const PartitionInf
                                               FrameHeader *fh )
 
 {
-    const BlockModeInfo *mbmi = xd->mi;
+    const block_mode_info *mbmi = xd->mi;
     const BlockSize bsize = mbmi->sb_type;
     assert(bsize < BlockSizeS_ALL);
     if (fh->lossless_array[mbmi->segment_id]) {
@@ -212,7 +212,7 @@ void cfl_predict_block(PartitionInfo *xd, CflCtx *cfl_ctx, uint8_t *dst,
                        int32_t dst_stride, TxSize tx_size, int32_t plane,
                        EbColorConfig *cc, FrameHeader *fh)
 {
-    BlockModeInfo *mbmi = xd->mi;
+    block_mode_info *mbmi = xd->mi;
     CflAllowedType is_cfl_allowed_flag = is_cfl_allowed_with_frame_header(xd, cc, fh);
     assert(is_cfl_allowed_flag == CFL_ALLOWED);
     (void)is_cfl_allowed_flag;
@@ -704,7 +704,7 @@ void svtav1_predict_intra_block(PartitionInfo *xd, int32_t plane,
     int32_t sub_x = plane ? cc->subsampling_x : 0;
     int32_t sub_y = plane ? cc->subsampling_y : 0;
 
-    const BlockModeInfo *const mbmi = xd->mi;
+    const block_mode_info *const mbmi = xd->mi;
 
     const int txwpx = tx_size_wide[tx_size];
     const int txhpx = tx_size_high[tx_size];

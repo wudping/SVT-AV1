@@ -70,13 +70,13 @@ void update_block_nbrs(EbDecHandle *dec_handle,
 /* Should be called within same SB */
 #endif
 /* TODO : Should remove dec_mod_ctxt dependency */
-BlockModeInfo* get_cur_mode_info(void *pv_dec_handle,
+block_mode_info* get_cur_mode_info(void *pv_dec_handle,
                               int mi_row, int mi_col, SBInfo *sb_info)
 {
     EbDecHandle *dec_handle     = (EbDecHandle *)pv_dec_handle;
     FrameMiMap  *frame_mi_map   = &dec_handle->master_frame_buf.frame_mi_map;
 
-    BlockModeInfo *cur_mi = NULL;
+    block_mode_info *cur_mi = NULL;
     (void)sb_info;
 #if FRAME_MI_MAP
     int32_t cur_sb_row = mi_row >> (frame_mi_map->sb_size_log2 - MI_SIZE_LOG2);
@@ -106,7 +106,7 @@ BlockModeInfo* get_cur_mode_info(void *pv_dec_handle,
 }
 
 /* TODO : Should remove parse_ctx dependency */
-BlockModeInfo * get_left_mode_info(EbDecHandle *dec_handle,
+block_mode_info * get_left_mode_info(EbDecHandle *dec_handle,
     int mi_row, int mi_col, SBInfo *sb_info)
 {
     (void)sb_info;
@@ -115,7 +115,7 @@ BlockModeInfo * get_left_mode_info(EbDecHandle *dec_handle,
 #else
     ParseCtxt   *parse_ctx = (ParseCtxt*)dec_handle->pv_parse_ctxt;
     FrameMiMap  *frame_mi_map = &dec_handle->master_frame_buf.frame_mi_map;
-    BlockModeInfo  *left_mi = NULL;
+    block_mode_info  *left_mi = NULL;
 
     int32_t num_mis_in_sb_wd = frame_mi_map->num_mis_in_sb_wd;
 
@@ -139,7 +139,7 @@ BlockModeInfo * get_left_mode_info(EbDecHandle *dec_handle,
 }
 
 /* TODO : Should remove parse_ctx dependency */
-BlockModeInfo* get_top_mode_info(EbDecHandle *dec_handle,
+block_mode_info* get_top_mode_info(EbDecHandle *dec_handle,
     int mi_row, int mi_col, SBInfo *sb_info)
 {
     (void)sb_info;
@@ -148,7 +148,7 @@ BlockModeInfo* get_top_mode_info(EbDecHandle *dec_handle,
 #else
     ParseCtxt   *parse_ctx = (ParseCtxt*)dec_handle->pv_parse_ctxt;
     FrameMiMap  *frame_mi_map = &dec_handle->master_frame_buf.frame_mi_map;
-    BlockModeInfo  *top_mi = NULL;
+    block_mode_info  *top_mi = NULL;
 
     int32_t num_mis_in_sb_wd = frame_mi_map->num_mis_in_sb_wd;
 

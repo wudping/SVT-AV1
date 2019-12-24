@@ -24,7 +24,7 @@ typedef struct MvCount{
 static INLINE CflAllowedType is_cfl_allowed(PartitionInfo *xd,
     EbColorConfig* color_cfg, uint8_t *lossless_array)
 {
-    const BlockModeInfo *mbmi = xd->mi;
+    const block_mode_info *mbmi = xd->mi;
     const BlockSize bsize = mbmi->sb_type;
     assert(bsize < BlockSizeS_ALL);
     if (lossless_array[mbmi->segment_id]) {
@@ -40,7 +40,7 @@ static INLINE CflAllowedType is_cfl_allowed(PartitionInfo *xd,
         block_size_high[bsize] <= 32);
 }
 
-extern int is_inter_block(const BlockModeInfo *mbmi);
+extern int is_inter_block(const block_mode_info *mbmi);
 
 static INLINE int allow_palette(int allow_screen_content_tools, BlockSize sb_type) {
     return allow_screen_content_tools && block_size_wide[sb_type] <= 64 &&

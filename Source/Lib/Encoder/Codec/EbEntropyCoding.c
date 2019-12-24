@@ -50,7 +50,7 @@ int has_uni_comp_refs(const MbModeInfo *mbmi) {
     return has_second_ref(mbmi) && (!((mbmi->block_mi.ref_frame[0] >= BWDREF_FRAME) ^
         (mbmi->block_mi.ref_frame[1] >= BWDREF_FRAME)));
 }
-int32_t is_inter_block(const BlockModeInfo *mbmi);
+int32_t is_inter_block(const block_mode_info *mbmi);
 #if(CHAR_BIT!=8)
 #undef CHAR_BIT
 #define CHAR_BIT      8         /* number of bits in a char */

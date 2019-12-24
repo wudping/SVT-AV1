@@ -132,7 +132,7 @@ extern "C" {
         return pcs_ptr->av1_ref_signal.ref_dpb_index[ref_frame - LAST_FRAME];//LAST-LAST2-LAST3-GOLDEN-BWD-ALT2-ALT
     }
 
-    static INLINE int is_intrabc_block(const BlockModeInfo *block_mi) {
+    static INLINE int is_intrabc_block(const block_mode_info *block_mi) {
         return block_mi->use_intrabc;
     }
 

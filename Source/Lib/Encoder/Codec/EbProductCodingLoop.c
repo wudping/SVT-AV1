@@ -4141,7 +4141,7 @@ static INLINE int block_signals_txsize(BlockSize bsize) {
     return bsize > BLOCK_4X4;
 }
 
-static INLINE int is_inter_block(const BlockModeInfo *bloc_mi) {
+static INLINE int is_inter_block(const block_mode_info *bloc_mi) {
     return is_intrabc_block(bloc_mi) || bloc_mi->ref_frame[0] > INTRA_FRAME;
 }
 

@@ -39,7 +39,7 @@ extern int select_samples(
 CflAllowedType store_cfl_required(const EbColorConfig *cc,
                 PartitionInfo  *xd, int32_t is_chroma_ref)
 {
-    const BlockModeInfo *mbmi = xd->mi;
+    const block_mode_info *mbmi = xd->mi;
 
     if (cc->mono_chrome) return CFL_DISALLOWED;
     if(!is_chroma_ref) {
@@ -65,7 +65,7 @@ PartitionType get_partition(DecModCtxt *dec_mod_ctxt, FrameHeader *frame_header,
     if (mi_row >= frame_header->mi_rows || mi_col >= frame_header->mi_cols)
         return PARTITION_INVALID;
 
-    BlockModeInfo *mode_info = get_cur_mode_info(dec_mod_ctxt->dec_handle_ptr, mi_row, mi_col, sb_info);
+    block_mode_info *mode_info = get_cur_mode_info(dec_mod_ctxt->dec_handle_ptr, mi_row, mi_col, sb_info);
 
     const BlockSize subsize = mode_info->sb_type;
 
@@ -81,9 +81,9 @@ PartitionType get_partition(DecModCtxt *dec_mod_ctxt, FrameHeader *frame_header,
     {
         // In this case, the block might be using an extended partition type.
         /* TODO: Fix the nbr access! */
-        const BlockModeInfo *const mbmi_right = get_cur_mode_info(dec_mod_ctxt->dec_handle_ptr,
+        const block_mode_info *const mbmi_right = get_cur_mode_info(dec_mod_ctxt->dec_handle_ptr,
             mi_row, mi_col + (bwide / 2), sb_info);
-        const BlockModeInfo *const mbmi_below = get_cur_mode_info(dec_mod_ctxt->dec_handle_ptr,
+        const block_mode_info *const mbmi_below = get_cur_mode_info(dec_mod_ctxt->dec_handle_ptr,
             mi_row + (bhigh / 2), mi_col, sb_info);
 
         if (sswide == bwide) {
@@ -150,7 +150,7 @@ void decode_block(DecModCtxt *dec_mod_ctxt, int32_t mi_row, int32_t mi_col,
 
     int num_planes = av1_num_planes(color_config);
 
-    BlockModeInfo *mode_info = get_cur_mode_info(dec_mod_ctxt->dec_handle_ptr, mi_row, mi_col, sb_info);
+    block_mode_info *mode_info = get_cur_mode_info(dec_mod_ctxt->dec_handle_ptr, mi_row, mi_col, sb_info);
     bool inter_block = is_inter_block(mode_info);
 
 #if MODE_INFO_DBG

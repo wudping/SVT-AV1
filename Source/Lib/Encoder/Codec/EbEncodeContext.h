@@ -152,9 +152,9 @@ typedef struct EncodeContext
 #endif
 } EncodeContext;
 
-typedef struct EncodeContextInitData {
+typedef struct encode_context_init_data {
     int32_t junk;
-} EncodeContextInitData;
+} encode_context_init_data;
 
 /**************************************
  * Extern Function Declarations

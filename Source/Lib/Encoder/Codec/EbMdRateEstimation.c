@@ -518,7 +518,7 @@ uint8_t av1_drl_ctx(const CandidateMv *ref_mv_stack, int32_t ref_idx);
 
 int32_t have_newmv_in_inter_mode(PredictionMode mode);
  //Returns a context number for the given MB prediction signal
-static InterpFilter get_ref_filter_type(const BlockModeInfo *ref_mbmi,
+static InterpFilter get_ref_filter_type(const block_mode_info *ref_mbmi,
     int dir,
     MvReferenceFrame ref_frame) {
 
@@ -540,7 +540,7 @@ int av1_filter_intra_allowed(
 INLINE int32_t is_chroma_reference(int32_t mi_row, int32_t mi_col, BlockSize bsize,
     int32_t subsampling_x, int32_t subsampling_y);
 
-int32_t is_inter_block(const BlockModeInfo *mbmi);
+int32_t is_inter_block(const block_mode_info *mbmi);
 
 int av1_allow_palette(int allow_screen_content_tools,
     BlockSize sb_type);

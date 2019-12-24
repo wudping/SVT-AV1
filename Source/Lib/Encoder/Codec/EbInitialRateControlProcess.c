@@ -428,7 +428,7 @@ EbErrorType initial_rate_control_context_ctor(
 ** Check if reference pictures are needed
 ** release them when appropriate
 ************************************************/
-void ReleasePaReferenceObjects(
+void release_pa_reference_objects(
     SequenceControlSet              *scs_ptr,
     PictureParentControlSet         *pcs_ptr)
 {
@@ -493,9 +493,9 @@ void StationaryEdgeCountLcu(
     uint32_t               sb_index;
     for (sb_index = 0; sb_index < totalLcuCount; sb_index++) {
         SbParams sb_params = scs_ptr->sb_params_array[sb_index];
-        SbStat *sb_stat_ptr = &pcs_ptr->sb_stat_array[sb_index];
+        sb_stat *sb_stat_ptr = &pcs_ptr->sb_stat_array[sb_index];
         if (sb_params.potential_logo_sb &&sb_params.is_complete_sb && sb_stat_ptr->check1_for_logo_stationary_edge_over_time_flag && sb_stat_ptr->check2_for_logo_stationary_edge_over_time_flag) {
-            SbStat *tempLcuStatPtr = &temporalPictureControlSetPtr->sb_stat_array[sb_index];
+            sb_stat *tempLcuStatPtr = &temporalPictureControlSetPtr->sb_stat_array[sb_index];
             uint32_t rasterScanCuIndex;
 
             if (tempLcuStatPtr->check1_for_logo_stationary_edge_over_time_flag)
@@ -517,7 +517,7 @@ void StationaryEdgeOverUpdateOverTimeLcuPart1(
 
     for (sb_index = 0; sb_index < pcs_ptr->sb_total_count; sb_index++) {
         SbParams sb_params = scs_ptr->sb_params_array[sb_index];
-        SbStat *sb_stat_ptr = &pcs_ptr->sb_stat_array[sb_index];
+        sb_stat *sb_stat_ptr = &pcs_ptr->sb_stat_array[sb_index];
 
         if (sb_params.potential_logo_sb &&sb_params.is_complete_sb) {
             // Current MV
@@ -563,7 +563,7 @@ void StationaryEdgeOverUpdateOverTimeLcuPart2(
 
     for (sb_index = 0; sb_index < pcs_ptr->sb_total_count; sb_index++) {
         SbParams sb_params = scs_ptr->sb_params_array[sb_index];
-        SbStat *sb_stat_ptr = &pcs_ptr->sb_stat_array[sb_index];
+        sb_stat *sb_stat_ptr = &pcs_ptr->sb_stat_array[sb_index];
 
         if (sb_params.potential_logo_sb &&sb_params.is_complete_sb) {
             uint32_t meDist = 0;
@@ -607,7 +607,7 @@ void StationaryEdgeOverUpdateOverTimeLcu(
     for (sb_index = 0; sb_index < totalLcuCount; sb_index++) {
         SbParams sb_params = scs_ptr->sb_params_array[sb_index];
 
-        SbStat *sb_stat_ptr = &pcs_ptr->sb_stat_array[sb_index];
+        sb_stat *sb_stat_ptr = &pcs_ptr->sb_stat_array[sb_index];
         sb_stat_ptr->stationary_edge_over_time_flag = EB_FALSE;
         if (sb_params.potential_logo_sb &&sb_params.is_complete_sb && sb_stat_ptr->check1_for_logo_stationary_edge_over_time_flag && sb_stat_ptr->check2_for_logo_stationary_edge_over_time_flag) {
             uint32_t rasterScanCuIndex;
@@ -630,7 +630,7 @@ void StationaryEdgeOverUpdateOverTimeLcu(
 
         for (sb_index = 0; sb_index < pcs_ptr->sb_total_count; ++sb_index) {
             SbParams                sb_params = scs_ptr->sb_params_array[sb_index];
-            SbStat *sb_stat_ptr = &pcs_ptr->sb_stat_array[sb_index];
+            sb_stat *sb_stat_ptr = &pcs_ptr->sb_stat_array[sb_index];
 
             sb_x = sb_params.horizontal_index;
             sb_y = sb_params.vertical_index;
@@ -655,7 +655,7 @@ void StationaryEdgeOverUpdateOverTimeLcu(
 
         for (sb_index = 0; sb_index < pcs_ptr->sb_total_count; ++sb_index) {
             SbParams                sb_params = scs_ptr->sb_params_array[sb_index];
-            SbStat *sb_stat_ptr = &pcs_ptr->sb_stat_array[sb_index];
+            sb_stat *sb_stat_ptr = &pcs_ptr->sb_stat_array[sb_index];
 
             sb_x = sb_params.horizontal_index;
             sb_y = sb_params.vertical_index;
@@ -1028,7 +1028,7 @@ void* initial_rate_control_kernel(void *input_ptr)
             MeBasedGlobalMotionDetection(
                 pcs_ptr);
             // Release Pa Ref pictures when not needed
-            ReleasePaReferenceObjects(
+            release_pa_reference_objects(
                 scs_ptr,
                 pcs_ptr);
 

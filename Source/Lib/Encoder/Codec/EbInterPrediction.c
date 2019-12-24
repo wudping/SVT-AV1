@@ -1235,7 +1235,7 @@ void av1_get_convolve_filter_params( uint32_t interp_filters,
     *params_y = av1_get_interp_filter_params_with_block_size(filter_y, h);
 }
 
-int32_t is_inter_block(const BlockModeInfo *mbmi);
+int32_t is_inter_block(const block_mode_info *mbmi);
 BlockSize scale_chroma_bsize(BlockSize bsize, int32_t subsampling_x,
     int32_t subsampling_y);
 

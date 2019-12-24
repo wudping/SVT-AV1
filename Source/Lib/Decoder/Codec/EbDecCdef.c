@@ -26,7 +26,7 @@
 #include "EbUtility.h"
 
 /*Compute's whether 8x8 block is skip or not skip block*/
-static INLINE int32_t dec_is_8x8_block_skip(BlockModeInfo *mbmi) {
+static INLINE int32_t dec_is_8x8_block_skip(block_mode_info *mbmi) {
     int32_t is_skip = mbmi->skip;
     /* To get mode info for special cases wx4, 4xh & 4x4 blocksize */
     /* Skip is set to(Skips[r][c] && Skips[r + 1][c] && Skips[r][c + 1] &&
@@ -69,7 +69,7 @@ static INLINE int32_t dec_sb_compute_cdef_list(EbDecHandle *dec_handle,
     int32_t count = 0;
     for (int32_t r = 0; r < maxr; r += r_step) {
         for (int32_t c = 0; c < maxc; c += c_step) {
-            BlockModeInfo *mbmi = get_cur_mode_info(dec_handle, (mi_row + r),
+            block_mode_info *mbmi = get_cur_mode_info(dec_handle, (mi_row + r),
                 (mi_col + c), sb_info);
             if (!dec_is_8x8_block_skip(mbmi)) {
                 dlist[count].by = (uint8_t)(r >> r_shift);

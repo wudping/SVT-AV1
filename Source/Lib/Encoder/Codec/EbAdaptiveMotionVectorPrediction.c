@@ -96,7 +96,7 @@ EbErrorType clip_mv(
 #define MVREF_ROWS 3
 #define MVREF_COLS 3
 
-/*static INLINE*/ int32_t is_inter_block(const BlockModeInfo *mbmi) {
+/*static INLINE*/ int32_t is_inter_block(const block_mode_info *mbmi) {
     return (mbmi->use_intrabc || (mbmi->ref_frame[0] > INTRA_FRAME));
 }
 
