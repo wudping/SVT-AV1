@@ -517,7 +517,7 @@ EbErrorType read_obu_header(bitstrm_t *bs, ObuHeader   *header)
         return EB_Corrupt_Frame;
     }
     PRINT_NAME("obu_forbidden_bit");
-    header->obu_type = (obuType)dec_get_bits(bs, 4);
+    header->obu_type = (ObuType)dec_get_bits(bs, 4);
     PRINT("obu_type", header->obu_type);
     if (!is_valid_obu_type(header->obu_type))
         return EB_Corrupt_Frame;

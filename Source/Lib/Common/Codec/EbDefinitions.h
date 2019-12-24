@@ -2511,7 +2511,7 @@ printf("Total App Memory: %.2lf KB\n\n",*total_app_memory/(double)1024);
 
 #ifndef _ERRNO_T_DEFINED
 #define _ERRNO_T_DEFINED
-    typedef int32_t errno_t;
+    typedef int32_t ErrNo;
 #endif  /* _ERRNO_T_DEFINED */
 
     extern void

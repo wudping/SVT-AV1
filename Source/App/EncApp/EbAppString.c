@@ -47,12 +47,12 @@
 
 /* SAFE STRING LIBRARY */
 
-static constraint_handler_t str_handler = NULL;
+static ConstraintHandler str_handler = NULL;
 
 void
 invoke_safe_str_constraint_handler(const char *msg,
 void *ptr,
-errno_t error)
+ErrNo error)
 {
     if (NULL != str_handler)
         str_handler(msg, ptr, error);
@@ -60,7 +60,7 @@ errno_t error)
         sl_default_handler(msg, ptr, error);
 }
 
-void ignore_handler_s(const char *msg, void *ptr, errno_t error)
+void ignore_handler_s(const char *msg, void *ptr, ErrNo error)
 {
     (void)msg;
     (void)ptr;
@@ -70,10 +70,10 @@ void ignore_handler_s(const char *msg, void *ptr, errno_t error)
     return;
 }
 
-errno_t
-strncpy_ss(char *dest, rsize_t dmax, const char *src, rsize_t slen)
+ErrNo
+strncpy_ss(char *dest, Rsize dmax, const char *src, Rsize slen)
 {
-    rsize_t orig_dmax;
+    Rsize orig_dmax;
     char *orig_dest;
     const char *overlap_bumper;
 
@@ -188,10 +188,10 @@ strncpy_ss(char *dest, rsize_t dmax, const char *src, rsize_t slen)
     return RCNEGATE(ESNOSPC);
 }
 
-errno_t
-strcpy_ss(char *dest, rsize_t dmax, const char *src)
+ErrNo
+strcpy_ss(char *dest, Rsize dmax, const char *src)
 {
-    rsize_t orig_dmax;
+    Rsize orig_dmax;
     char *orig_dest;
     const char *overlap_bumper;
 
@@ -275,10 +275,10 @@ strcpy_ss(char *dest, rsize_t dmax, const char *src)
     return RCNEGATE(ESNOSPC);
 }
 
-rsize_t
-strnlen_ss(const char *dest, rsize_t dmax)
+Rsize
+strnlen_ss(const char *dest, Rsize dmax)
 {
-    rsize_t count;
+    Rsize count;
 
     if (dest == NULL)
         return RCNEGATE(0);

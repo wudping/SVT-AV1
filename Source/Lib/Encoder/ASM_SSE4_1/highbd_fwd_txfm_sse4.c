@@ -30,9 +30,6 @@ static const int8_t *fwd_txfm_shift_ls[TX_SIZES_ALL] = {
     fwd_shift_32x8, fwd_shift_16x64, fwd_shift_64x16,
 };
 
-typedef void(*fwd_transform_1d_sse4_1)(__m128i *in, __m128i *out, int32_t bit,
-    const int32_t num_cols);
-
 static INLINE void load_buffer_4x4(const int16_t *input, __m128i *in,
     int32_t stride, int32_t flipud, int32_t fliplr,
     int32_t shift) {

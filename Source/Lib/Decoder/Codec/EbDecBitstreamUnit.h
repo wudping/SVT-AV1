@@ -19,7 +19,7 @@
 
 #include "EbCabacContextModel.h"
 #include "EbBitstreamUnit.h"
-//Added this EbBitstreamUnit.h because od_ec_window is defined in it, but
+//Added this EbBitstreamUnit.h because OdEcWindow is defined in it, but
 //we also defining it, so it leads to warning,  so i commented our defination & added EbBitstreamUnit.h file.
 
 #ifdef __cplusplus
@@ -41,12 +41,12 @@ extern "C" {
 #define EC_PROB_SHIFT 6
 #define EC_MIN_PROB 4  // must be <= (1<<EC_PROB_SHIFT)/16
 
-/*OPT: od_ec_window must be at least 32 bits, but if you have fast arithmetic
+/*OPT: OdEcWindow must be at least 32 bits, but if you have fast arithmetic
    on a larger type, you can speed up the decoder by using it here.*/
-//typedef uint32_t od_ec_window;
+//typedef uint32_t OdEcWindow;
 
-/*The size in bits of od_ec_window.*/
-//#define OD_EC_WINDOW_SIZE ((int)sizeof(od_ec_window) * CHAR_BIT)
+/*The size in bits of OdEcWindow.*/
+//#define OD_EC_WINDOW_SIZE ((int)sizeof(OdEcWindow) * CHAR_BIT)
 
 /********************************************************************************************************************************/
 /********************************************************************************************************************************/
@@ -103,7 +103,7 @@ static INLINE void dec_update_cdf(AomCdfProb *cdf, int8_t val, int nsymbs) {
 // entdec.h from AOM
 
 /*The entropy decoder context.*/
-typedef struct od_ec_dec {
+typedef struct OdEcDec {
     /*The start of the current input buffer.*/
     const unsigned char *buf;
 
@@ -125,15 +125,15 @@ typedef struct od_ec_dec {
     As we shift up during renormalization, if we don't have enough bits left in
     the window to fill the top 16, we'll read in more bits of the coded
     value.*/
-    od_ec_window dif;
+    OdEcWindow dif;
     /*The number of values in the current range.*/
     uint16_t rng;
     /*The number of bits of data in the current value.*/
     int16_t cnt;
-} od_ec_dec;
+} OdEcDec;
 
-int od_ec_decode_bool_q15(od_ec_dec *dec, unsigned f);
-int od_ec_decode_cdf_q15(od_ec_dec *dec, const uint16_t *cdf, int nsyms);
+int od_ec_decode_bool_q15(OdEcDec *dec, unsigned f);
+int od_ec_decode_cdf_q15(OdEcDec *dec, const uint16_t *cdf, int nsyms);
 
 /********************************************************************************************************************************/
 /********************************************************************************************************************************/
@@ -144,7 +144,7 @@ int od_ec_decode_cdf_q15(od_ec_dec *dec, const uint16_t *cdf, int nsyms);
 typedef struct DaalaReader_s {
     const uint8_t   *buffer;
     const uint8_t   *buffer_end;
-    od_ec_dec       ec;
+    OdEcDec       ec;
     uint8_t         allow_update_cdf;
 } DaalaReader_t;
 

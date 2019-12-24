@@ -421,12 +421,12 @@ typedef struct config_entry_s {
     const char *token;
     const char *name;
     void (*scf)(const char *, EbConfig *);
-} config_entry_t;
+} ConfigEntry;
 
 /**********************************
  * Config Entry Array
  **********************************/
-config_entry_t config_entry[] = {
+ConfigEntry config_entry[] = {
     // File I/O
     { SINGLE_INPUT, INPUT_FILE_TOKEN, "InputFile", SetCfgInputFile },
     { SINGLE_INPUT, OUTPUT_BITSTREAM_TOKEN,   "StreamFile",       SetCfgStreamFile },

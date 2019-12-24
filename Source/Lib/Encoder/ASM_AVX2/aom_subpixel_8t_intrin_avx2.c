@@ -41,7 +41,7 @@
 #define MM256_BROADCASTSI128_SI256(x) _mm256_broadcastsi128_si256(x)
 #endif  // __clang__
 
-typedef void filter8_1dfunction(const uint8_t *src_ptr, ptrdiff_t src_pitch,
+typedef void FIlter81dFunction(const uint8_t *src_ptr, ptrdiff_t src_pitch,
                                 uint8_t *output_ptr, ptrdiff_t out_pitch,
                                 uint32_t output_height, const int16_t *filter);
 void  aom_filter_block1d4_v8_sse2(const uint8_t *src_ptr, ptrdiff_t src_pitch,
@@ -66,13 +66,13 @@ void  aom_filter_block1d4_v8_sse2(const uint8_t *src_ptr, ptrdiff_t src_pitch,
                                 uint8_t *output_ptr, ptrdiff_t out_pitch,
                                 uint32_t output_height, const int16_t *filter);
 
-filter8_1dfunction aom_filter_block1d4_v8_ssse3;
-filter8_1dfunction aom_filter_block1d16_v2_ssse3;
-filter8_1dfunction aom_filter_block1d16_h2_ssse3;
-filter8_1dfunction aom_filter_block1d8_v2_ssse3;
-filter8_1dfunction aom_filter_block1d8_h2_ssse3;
-filter8_1dfunction aom_filter_block1d4_v2_ssse3;
-filter8_1dfunction aom_filter_block1d4_h2_ssse3;
+FIlter81dFunction aom_filter_block1d4_v8_ssse3;
+FIlter81dFunction aom_filter_block1d16_v2_ssse3;
+FIlter81dFunction aom_filter_block1d16_h2_ssse3;
+FIlter81dFunction aom_filter_block1d8_v2_ssse3;
+FIlter81dFunction aom_filter_block1d8_h2_ssse3;
+FIlter81dFunction aom_filter_block1d4_v2_ssse3;
+FIlter81dFunction aom_filter_block1d4_h2_ssse3;
 #define aom_filter_block1d4_v8_avx2  aom_filter_block1d4_v8_sse2
 #define aom_filter_block1d16_v2_avx2 aom_filter_block1d16_v2_ssse3
 #define aom_filter_block1d16_h2_avx2 aom_filter_block1d16_h2_ssse3

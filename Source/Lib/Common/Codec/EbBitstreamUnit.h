@@ -101,7 +101,7 @@ extern "C" {
 #endif
     /********************************************************************************************************************************/
     //odintrin.h
-    typedef int32_t od_coeff;
+    typedef int32_t OdCoeff;
 
 #define OD_DIVU_DMAX (1024)
 
@@ -169,11 +169,11 @@ The 0* term provides compile-time type checking */
 #define EC_PROB_SHIFT 6
 #define EC_MIN_PROB 4  // must be <= (1<<EC_PROB_SHIFT)/16
 
-/*OPT: od_ec_window must be at least 32 bits, but if you have fast arithmetic
+/*OPT: OdEcWindow must be at least 32 bits, but if you have fast arithmetic
 on a larger type, you can speed up the decoder by using it here.*/
-    typedef uint32_t od_ec_window;
+    typedef uint32_t OdEcWindow;
 
-#define OD_EC_WINDOW_SIZE ((int32_t)sizeof(od_ec_window) * CHAR_BIT)
+#define OD_EC_WINDOW_SIZE ((int32_t)sizeof(OdEcWindow) * CHAR_BIT)
 
     /*The resolution of fractional-precision bit usage measurements, i.e.,
     3 => 1/8th bits.*/
@@ -205,7 +205,7 @@ on a larger type, you can speed up the decoder by using it here.*/
         /*The offset at which the next entropy-coded byte will be written.*/
         uint32_t offs;
         /*The low end of the current range.*/
-        od_ec_window low;
+        OdEcWindow low;
         /*The number of values in the current range.*/
         uint16_t rng;
         /*The number of bits of data in the current value.*/

@@ -223,7 +223,7 @@ extern "C" {
 
     void write_sequence_header(SequenceControlSet *scs_ptr/*Av1Comp *cpi*/, struct AomWriteBitBuffer *wb);
 
-    uint32_t WriteObuHeader(obuType obuType, int32_t obuExtension,
+    uint32_t WriteObuHeader(ObuType ObuType, int32_t obuExtension,
         uint8_t *const dst);
 
     int32_t WriteUlebObuSize(uint32_t obuHeaderSize, uint32_t obuPayloadSize,

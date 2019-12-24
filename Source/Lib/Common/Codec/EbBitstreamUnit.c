@@ -165,7 +165,7 @@ URL="http://researchcommons.waikato.ac.nz/bitstream/handle/10289/78/content.pdf"
 necessary), and stores them back in the encoder context.
 low: The new value of low.
 rng: The new value of the range.*/
-static void od_ec_enc_normalize(OdEcEnc *enc, od_ec_window low,
+static void od_ec_enc_normalize(OdEcEnc *enc, OdEcWindow low,
     unsigned rng) {
     int32_t d;
     int32_t c;
@@ -175,7 +175,7 @@ static void od_ec_enc_normalize(OdEcEnc *enc, od_ec_window low,
     d = 16 - OD_ILOG_NZ(rng);
     s = c + d;
     /*TODO: Right now we flush every time we have at least one byte available.
-    Instead we should use an od_ec_window and flush right before we're about to
+    Instead we should use an OdEcWindow and flush right before we're about to
     shift bits off the end of the window.
     For a 32-bit window this is about the same amount of work, but for a 64-bit
     window it should be a fair win.*/
@@ -266,7 +266,7 @@ including
 the one to be encoded.*/
 static void od_ec_encode_q15(OdEcEnc *enc, unsigned fl, unsigned fh, int32_t s,
     int32_t nsyms) {
-    od_ec_window l;
+    OdEcWindow l;
     unsigned r;
     unsigned u;
     unsigned v;
@@ -303,7 +303,7 @@ static void od_ec_encode_q15(OdEcEnc *enc, unsigned fl, unsigned fh, int32_t s,
 val: The value to encode (0 or 1).
 f: The probability that the val is one, scaled by 32768.*/
 void eb_od_ec_encode_bool_q15(OdEcEnc *enc, int32_t val, unsigned f) {
-    od_ec_window l;
+    OdEcWindow l;
     unsigned r;
     unsigned v;
     assert(0 < f);
@@ -344,9 +344,9 @@ uint8_t *eb_od_ec_enc_done(OdEcEnc *enc, uint32_t *nbytes) {
     uint32_t storage;
     uint16_t *buf;
     uint32_t offs;
-    od_ec_window m;
-    od_ec_window e;
-    od_ec_window l;
+    OdEcWindow m;
+    OdEcWindow e;
+    OdEcWindow l;
     int32_t c;
     int32_t s;
     if (enc->error) return NULL;

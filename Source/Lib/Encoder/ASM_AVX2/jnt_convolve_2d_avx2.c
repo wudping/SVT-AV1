@@ -2850,12 +2850,12 @@ static void jnt_convolve_2d_ver_8tap_avx2(
     }
 }
 
-typedef void(*jnt_convolve_2d_hor_tap_func)(
+typedef void(*JntConvolve2dHorTapFunc)(
     const uint8_t *src, const int32_t src_stride, const int32_t w,
     const int32_t h, const InterpFilterParams *filter_params_x,
     const int32_t subpel_x_q4, int16_t *const im_block);
 
-typedef void(*jnt_convolve_2d_ver_tap_func)(
+typedef void(*JntConvolve2dVerTapFunc)(
     const int16_t *const im_block, const int32_t w, const int32_t h,
     const InterpFilterParams *const filter_params_y, const int32_t subpel_y_q4,
     const ConvolveParams *const conv_params, uint8_t *dst8,
@@ -2868,7 +2868,7 @@ void eb_av1_jnt_convolve_2d_avx2(const uint8_t *src, int32_t src_stride,
     const int32_t subpel_x_q4,
     const int32_t subpel_y_q4,
     ConvolveParams *conv_params) {
-    static const jnt_convolve_2d_hor_tap_func
+    static const JntConvolve2dHorTapFunc
         jnt_convolve_2d_hor_tap_func_table[MAX_FILTER_TAP + 1] = {
         NULL,
         NULL,
@@ -2879,7 +2879,7 @@ void eb_av1_jnt_convolve_2d_avx2(const uint8_t *src, int32_t src_stride,
         jnt_convolve_2d_hor_6tap_avx2,
         NULL,
         jnt_convolve_2d_hor_8tap_avx2 };
-    static const jnt_convolve_2d_ver_tap_func
+    static const JntConvolve2dVerTapFunc
         jnt_convolve_2d_ver_tap_func_table[MAX_FILTER_TAP + 1] = {
         NULL,
         jnt_convolve_2d_ver_2tap_half_avx2,

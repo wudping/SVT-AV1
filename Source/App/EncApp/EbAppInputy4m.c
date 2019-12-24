@@ -12,7 +12,7 @@
 
 /* copy a string until a specified character or a new line is found */
 char* copyUntilCharacterOrNewLine(char *src, char *dst, char chr){
-    rsize_t count = 0;
+    Rsize count = 0;
     char * src_init = src;
 
     while (*src != chr && *src != '\n') {

@@ -1242,9 +1242,9 @@ void eb_av1_loop_restoration_filter_frame(Yv12BufferConfig *frame,
     Av1Common *cm, int32_t optimized_lr) {
     // assert(!cm->all_lossless);
     const int32_t num_planes = 3;// av1_num_planes(cm);
-    typedef void(*copy_fun)(const Yv12BufferConfig *src,
+    typedef void(*CopyFun)(const Yv12BufferConfig *src,
         Yv12BufferConfig *dst);
-    static const copy_fun copy_funs[3] = { eb_aom_yv12_copy_y_c, eb_aom_yv12_copy_u_c, eb_aom_yv12_copy_v_c };//CHKN SSE
+    static const CopyFun copy_funs[3] = { eb_aom_yv12_copy_y_c, eb_aom_yv12_copy_u_c, eb_aom_yv12_copy_v_c };//CHKN SSE
 
     Yv12BufferConfig *dst = &cm->rst_frame;
 

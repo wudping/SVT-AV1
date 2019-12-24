@@ -368,9 +368,6 @@ typedef void(*cfl_subsample_hbd_fn)(const uint16_t *input, int input_stride,
 
 typedef void(*cfl_subtract_average_fn)(int16_t *dst);
 
-typedef void(*cfl_predict_lbd_fn)(const int16_t *pred_buf_q3, uint8_t *pred, int32_t pred_stride,
-    uint8_t *dst, int32_t dst_stride, int32_t alpha_q3, int32_t bit_depth, int32_t width, int32_t height);
-
 typedef void(*cfl_predict_hbd_fn)(const int16_t *src, uint16_t *dst,
     int dst_stride, int alpha_q3, int bd);
 

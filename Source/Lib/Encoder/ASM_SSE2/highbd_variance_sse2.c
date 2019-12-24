@@ -15,7 +15,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-    typedef uint32_t(*high_variance_fn_t)(const uint16_t *src, int32_t src_stride,
+    typedef uint32_t(*HighVarianceFn)(const uint16_t *src, int32_t src_stride,
         const uint16_t *ref, int32_t ref_stride,
         uint32_t *sse, int32_t *sum);
 
@@ -37,7 +37,7 @@ extern "C" {
 static void highbd_8_variance_sse2(const uint16_t *src, int32_t src_stride,
     const uint16_t *ref, int32_t ref_stride, int32_t w,
     int32_t h, uint32_t *sse, int32_t *sum,
-    high_variance_fn_t var_fn, int32_t block_size) {
+    HighVarianceFn var_fn, int32_t block_size) {
     int32_t i, j;
 
     *sse = 0;
@@ -58,7 +58,7 @@ static void highbd_8_variance_sse2(const uint16_t *src, int32_t src_stride,
 static void highbd_10_variance_sse2(const uint16_t *src, int32_t src_stride,
     const uint16_t *ref, int32_t ref_stride, int32_t w,
     int32_t h, uint32_t *sse, int32_t *sum,
-    high_variance_fn_t var_fn, int32_t block_size) {
+    HighVarianceFn var_fn, int32_t block_size) {
     int32_t i, j;
     uint64_t sse_long = 0;
     int32_t sum_long = 0;
@@ -80,7 +80,7 @@ static void highbd_10_variance_sse2(const uint16_t *src, int32_t src_stride,
 static void highbd_12_variance_sse2(const uint16_t *src, int32_t src_stride,
     const uint16_t *ref, int32_t ref_stride, int32_t w,
     int32_t h, uint32_t *sse, int32_t *sum,
-    high_variance_fn_t var_fn, int32_t block_size) {
+    HighVarianceFn var_fn, int32_t block_size) {
     int32_t i, j;
     uint64_t sse_long = 0;
     int32_t sum_long = 0;

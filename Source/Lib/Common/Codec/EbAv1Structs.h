@@ -24,7 +24,7 @@ typedef enum ATTRIBUTE_PACKED {
     OBU_FRAME = 6,
     OBU_REDUNDANT_FRAME_HEADER = 7,
     OBU_PADDING = 15,
-} obuType;
+} ObuType;
 
 typedef struct ObuHeader {
 
@@ -35,7 +35,7 @@ typedef struct ObuHeader {
     uint8_t obu_forbidden_bit;
 
     /*!<Specifies the type of data structure contained in the OBU payload*/
-    obuType obu_type;
+    ObuType obu_type;
 
     /*!<Indicates if the optional obu_extension_header is present*/
     uint8_t obu_extension_flag;

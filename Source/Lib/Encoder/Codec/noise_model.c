@@ -552,11 +552,11 @@ void eb_aom_flat_block_finder_extract_block(
 typedef struct {
     int32_t index;
     float score;
-} index_and_score_t;
+} IndexAndScore;
 
 static int32_t compare_scores(const void *a, const void *b) {
     const float diff =
-        ((index_and_score_t *)a)->score - ((index_and_score_t *)b)->score;
+        ((IndexAndScore *)a)->score - ((IndexAndScore *)b)->score;
     if (diff < 0)
         return -1;
     else if (diff > 0)
@@ -584,7 +584,7 @@ int32_t eb_aom_flat_block_finder_run(const AomFlatBlockFinder *block_finder,
     int32_t bx = 0, by = 0;
     double *plane = (double *)malloc(n * sizeof(*plane));
     double *block = (double *)malloc(n * sizeof(*block));
-    index_and_score_t *scores = (index_and_score_t *)malloc(
+    IndexAndScore *scores = (IndexAndScore *)malloc(
         num_blocks_w * num_blocks_h * sizeof(*scores));
     if (plane == NULL || block == NULL || scores == NULL) {
         fprintf(stderr, "Failed to allocate memory for block of size %d\n", n);

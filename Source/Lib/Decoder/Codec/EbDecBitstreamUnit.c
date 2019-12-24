@@ -86,9 +86,9 @@
 
 /*The return value of od_ec_dec_tell does not change across an od_ec_dec_refill
    call.*/
-static void od_ec_dec_refill(od_ec_dec *dec) {
+static void od_ec_dec_refill(OdEcDec *dec) {
   int s;
-  od_ec_window dif;
+  OdEcWindow dif;
   int16_t cnt;
   const unsigned char *bptr;
   const unsigned char *end;
@@ -102,7 +102,7 @@ static void od_ec_dec_refill(od_ec_dec *dec) {
        is incremented by 8, so the total number of consumed bits (the return
        value of od_ec_dec_tell) does not change.*/
     assert(s <= OD_EC_WINDOW_SIZE - 8);
-    dif ^= (od_ec_window)bptr[0] << s;
+    dif ^= (OdEcWindow)bptr[0] << s;
     cnt += 8;
   }
   if (bptr >= end) {
@@ -133,7 +133,7 @@ static void od_ec_dec_refill(od_ec_dec *dec) {
   ret: The value to return.
   Return: ret.
           This allows the compiler to jump to this function via a tail-call.*/
-static int od_ec_dec_normalize(od_ec_dec *dec, od_ec_window dif, unsigned rng,
+static int od_ec_dec_normalize(OdEcDec *dec, OdEcWindow dif, unsigned rng,
                                int ret)
 {
   int d;
@@ -152,7 +152,7 @@ static int od_ec_dec_normalize(od_ec_dec *dec, od_ec_window dif, unsigned rng,
 /*Initializes the decoder.
   buf: The input buffer to use.
   storage: The size in bytes of the input buffer.*/
-static void od_ec_dec_init(od_ec_dec    *dec,
+static void od_ec_dec_init(OdEcDec    *dec,
                     const unsigned char *buf,
                     uint32_t            storage)
 {
@@ -160,7 +160,7 @@ static void od_ec_dec_init(od_ec_dec    *dec,
     dec->tell_offs = 10 - (OD_EC_WINDOW_SIZE - 8);
     dec->end = buf + storage;
     dec->bptr = buf;
-    dec->dif = ((od_ec_window)1 << (OD_EC_WINDOW_SIZE - 1)) - 1;
+    dec->dif = ((OdEcWindow)1 << (OD_EC_WINDOW_SIZE - 1)) - 1;
     dec->rng = 0x8000;
     dec->cnt = -15;
     od_ec_dec_refill(dec);
@@ -169,9 +169,9 @@ static void od_ec_dec_init(od_ec_dec    *dec,
 /*Decode a single binary value.
   f: The probability that the bit is one, scaled by 32768.
   Return: The value decoded (0 or 1).*/
-int od_ec_decode_bool_q15(od_ec_dec *dec, unsigned f) {
-  od_ec_window dif;
-  od_ec_window vw;
+int od_ec_decode_bool_q15(OdEcDec *dec, unsigned f) {
+  OdEcWindow dif;
+  OdEcWindow vw;
   unsigned r;
   unsigned r_new;
   unsigned v;
@@ -184,7 +184,7 @@ int od_ec_decode_bool_q15(od_ec_dec *dec, unsigned f) {
   assert(32768U <= r);
   v = ((r >> 8) * (uint32_t)(f >> EC_PROB_SHIFT) >> (7 - EC_PROB_SHIFT));
   v += EC_MIN_PROB;
-  vw = (od_ec_window)v << (OD_EC_WINDOW_SIZE - 16);
+  vw = (OdEcWindow)v << (OD_EC_WINDOW_SIZE - 16);
   ret = 1;
   r_new = v;
   if (dif >= vw) {
@@ -204,8 +204,8 @@ int od_ec_decode_bool_q15(od_ec_dec *dec, unsigned f) {
   nsyms: The number of symbols in the alphabet.
          This should be at most 16.
   Return: The decoded symbol s.*/
-int od_ec_decode_cdf_q15(od_ec_dec *dec, const uint16_t *icdf, int nsyms) {
-  od_ec_window dif;
+int od_ec_decode_cdf_q15(OdEcDec *dec, const uint16_t *icdf, int nsyms) {
+  OdEcWindow dif;
   unsigned r;
   unsigned c;
   unsigned u;
@@ -232,7 +232,7 @@ int od_ec_decode_cdf_q15(od_ec_dec *dec, const uint16_t *icdf, int nsyms) {
   assert(v < u);
   assert(u <= r);
   r = u - v;
-  dif -= (od_ec_window)v << (OD_EC_WINDOW_SIZE - 16);
+  dif -= (OdEcWindow)v << (OD_EC_WINDOW_SIZE - 16);
   return od_ec_dec_normalize(dec, dif, r, ret);
 }
 

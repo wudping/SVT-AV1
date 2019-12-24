@@ -11,7 +11,7 @@
 #include "EbSvtAv1Enc.h"
 
 #ifdef _WIN32
-typedef __int64 off64_t;
+typedef __int64 Off64;
 #define fseeko _fseeki64
 #define ftello _ftelli64
 #endif

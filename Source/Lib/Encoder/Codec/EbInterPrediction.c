@@ -3239,7 +3239,7 @@ struct build_prediction_ctxt {
 static const int max_neighbor_obmc[6] = { 0, 1, 2, 3, 4, 4 };
 
 
-typedef void(*overlappable_nb_visitor_t)(
+typedef void(*OverlappableNbVisitor)(
     uint8_t is16bit,
     MacroBlockD *xd,
     int rel_mi_pos,
@@ -3254,7 +3254,7 @@ static INLINE void foreach_overlappable_nb_above(
     MacroBlockD *xd,
     int mi_col,
     int nb_max,
-    overlappable_nb_visitor_t fun,
+    OverlappableNbVisitor fun,
     void *fun_ctxt) {
     const int num_planes = 2;
     if (!xd->up_available) return;
@@ -3302,7 +3302,7 @@ static INLINE void foreach_overlappable_nb_left(
     MacroBlockD *xd,
     int mi_row,
     int nb_max,
-    overlappable_nb_visitor_t fun,
+    OverlappableNbVisitor fun,
     void *fun_ctxt) {
     const int num_planes = 2;
     if (!xd->left_available) return;

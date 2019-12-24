@@ -54,13 +54,13 @@ extern "C" {
 #endif // __cplusplus
 
 #ifndef _RSIZE_T_DEFINED
-typedef size_t rsize_t;
+typedef size_t Rsize;
 #define _RSIZE_T_DEFINED
 #endif  /* _RSIZE_T_DEFINED */
 
 #ifndef _ERRNO_T_DEFINED
 #define _ERRNO_T_DEFINED
-typedef int32_t errno_t;
+typedef int32_t ErrNo;
 #endif  /* _ERRNO_T_DEFINED */
 
 #ifndef EOK
@@ -114,9 +114,9 @@ typedef int32_t errno_t;
 #define sldebug_printf(...)
 #endif
 
-typedef void(*constraint_handler_t) (const char * /* msg */,
+typedef void(*ConstraintHandler) (const char * /* msg */,
     void *       /* ptr */,
-    errno_t      /* error */);
+    ErrNo      /* error */);
 
 /*
 * Function used by the libraries to invoke the registered
@@ -125,10 +125,10 @@ typedef void(*constraint_handler_t) (const char * /* msg */,
 extern void invoke_safe_str_constraint_handler(
     const char *msg,
     void *ptr,
-    errno_t error);
+    ErrNo error);
 
-static inline void handle_error(char *orig_dest, rsize_t orig_dmax,
-    char *err_msg, errno_t err_code)
+static inline void handle_error(char *orig_dest, Rsize orig_dmax,
+    char *err_msg, ErrNo err_code)
 {
     (void)orig_dmax;
     *orig_dest = '\0';
@@ -138,19 +138,19 @@ static inline void handle_error(char *orig_dest, rsize_t orig_dmax,
 }
 
 #define sl_default_handler ignore_handler_s
-extern void ignore_handler_s(const char *msg, void *ptr, errno_t error);
+extern void ignore_handler_s(const char *msg, void *ptr, ErrNo error);
 
 /* string copy */
-errno_t strcpy_ss(
-    char *dest, rsize_t dmax, const char *src);
+ErrNo strcpy_ss(
+    char *dest, Rsize dmax, const char *src);
 
 /* fitted string copy */
-errno_t strncpy_ss(
-    char *dest, rsize_t dmax, const char *src, rsize_t slen);
+ErrNo strncpy_ss(
+    char *dest, Rsize dmax, const char *src, Rsize slen);
 
 /* string length */
-rsize_t strnlen_ss(
-    const char *s, rsize_t smax);
+Rsize strnlen_ss(
+    const char *s, Rsize smax);
 
 #define EB_STRNCPY(dst, dst_size, src, count) \
     strncpy_ss(dst, dst_size, src, count)
